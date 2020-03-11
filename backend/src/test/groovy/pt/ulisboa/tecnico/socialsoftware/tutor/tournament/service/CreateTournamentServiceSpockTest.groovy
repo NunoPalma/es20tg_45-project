@@ -44,7 +44,7 @@ class CreateTournamentServiceSpockTest extends Specification {
     }
 
     def "all arguments are valid and create tournament"() {
-        // tournament is created
+        // Tournament is created
         expect: false
     }
 }
