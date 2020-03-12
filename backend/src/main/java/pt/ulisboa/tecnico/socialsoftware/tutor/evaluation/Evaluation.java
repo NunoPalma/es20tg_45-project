@@ -2,14 +2,15 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.evaluation;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "evaluations")
 public class Evaluation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private boolean approvedEvaluation = false;
 
@@ -18,22 +19,20 @@ public class Evaluation {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "evaluation")
     private Question submittedQuestion;
 
-    Evaluation() {
+    public Evaluation(){
     }
 
-    Evaluation(Question question, EvaluationDto evaluationDto) {
+    public Evaluation(Question question) {
         submittedQuestion = question;
     }
 
-    public boolean getEvaluation() {
-        return approvedEvaluation;
-    }
+    public boolean getEvaluation() { return approvedEvaluation; }
 
-    public String getJustification() {
-        return justification;
-    }
+    public void approveEvaluation() { approvedEvaluation = true; }
 
-    public Question getSubmittedQuestion() {
-        return submittedQuestion;
-    }
+    public String getJustification() { return justification; }
+
+    public void setJustification(String justification) { this.justification = justification; }
+
+    public Question getSubmittedQuestion() { return submittedQuestion; }
 }
