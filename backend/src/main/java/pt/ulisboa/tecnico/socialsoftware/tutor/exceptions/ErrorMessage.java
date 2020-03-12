@@ -63,6 +63,13 @@ public enum ErrorMessage {
     TOURNAMENT_CREATOR_IS_NOT_STUDENT("The tournament creator is not a student"),
     EMPTY_COURSE_EXECUTION("The tournament course execution is empty"),
 
+    INVALID_ENROLLMENT_ATTEMPT_NOT_STUDENT("The user attempting to enroll in the tournament isn't a student"),
+    USER_NOT_DEFINED("User not defined"),
+    TOURNAMENT_NOT_DEFINED("Tournament not defined"),
+    STUDENT_ALREADY_ENROLLED("The student is already enrolled in the tournament"),
+    INVALID_ENROLLMENT_CLOSED_TOURNAMENT("The tournament is already closed"),
+    INVALID_ENROLLMENT_CREATED_TOURNAMENT("The tournament hasn't open yet"),
+    INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
 
     ACCESS_DENIED("You do not have permission to view this resource");
 

@@ -6,6 +6,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 public class TournamentDto {
@@ -18,9 +19,14 @@ public class TournamentDto {
 	private Set<Topic> topics;
 	private Integer numQuestions;
 
-	public TournamentDto() {}
+	private Set<User> participants;
+
+	public TournamentDto() {
+		participants = new HashSet<>();
+	}
 
 	public TournamentDto(User creator, CourseExecution courseExecution) {
+		participants = new HashSet<>();
 		this.creator = creator;
 		this.courseExecution = courseExecution;
 	}

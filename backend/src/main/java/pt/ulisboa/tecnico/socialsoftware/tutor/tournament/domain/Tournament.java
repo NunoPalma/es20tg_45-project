@@ -6,6 +6,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Tournament {
@@ -17,14 +18,17 @@ public class Tournament {
     private LocalDateTime endDate;
     private Set<Topic> topics;
     private Integer numQuestions;
+    private Set<User> participants;
+    private TournamentState tournamentState;
 
     public Tournament(User creator, CourseExecution courseExecution) {
+        participants = new HashSet<>();
         this.creator = creator;
         this.courseExecution = courseExecution;
     }
 
     public Tournament(TournamentDto tournamentDto) {
-        ;
+        participants = new HashSet<>();
     }
 
     public User getCreator() {
@@ -73,5 +77,37 @@ public class Tournament {
 
     public void setNumQuestions(Integer numQuestions) {
         this.numQuestions = numQuestions;
+    }
+
+    public Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void addParticipant(User user) {
+        participants.add(user);
+    }
+
+    public void setState(TournamentState tournamentState) {
+        this.tournamentState = tournamentState;
+    }
+
+    public TournamentState getState() {
+        return tournamentState;
+    }
+
+    public TournamentState getCreatedState() {
+        return null;
+    }
+
+    public TournamentState getOpenState() {
+        return null;
+    }
+
+    public TournamentState getClosedState() {
+        return null;
+    }
+
+    public TournamentState getCancelledState() {
+        return null;
     }
 }
