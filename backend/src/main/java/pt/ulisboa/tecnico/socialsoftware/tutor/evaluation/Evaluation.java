@@ -12,6 +12,9 @@ public class Evaluation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(unique=true, nullable = false)
+    private Integer key;
+
     private boolean approvedEvaluation = false;
 
     private String justification;
@@ -23,6 +26,7 @@ public class Evaluation {
     }
 
     public Evaluation(Question question) {
+        key = question.getKey();
         submittedQuestion = question;
     }
 
@@ -36,7 +40,11 @@ public class Evaluation {
 
     public Integer getId() { return id; }
 
-    public void getId(Integer id) { this.id = id; }
+    public void setId(Integer id) { this.id = id; }
+
+    public Integer getKey() { return key; }
+
+    public void setKey(Integer key) { this.key = key; }
 
     public Question getSubmittedQuestion() { return submittedQuestion; }
 }

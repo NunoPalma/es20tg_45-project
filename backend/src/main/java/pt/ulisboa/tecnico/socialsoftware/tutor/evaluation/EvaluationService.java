@@ -43,8 +43,6 @@ public class EvaluationService {
             throw new TutorException(QUESTION_NOT_PENDING, question.getKey());
         }
 
-        evaluationDto.setId(questionDto.getKey());
-
         Evaluation evaluation = new Evaluation(question);
         this.entityManager.persist(evaluation);
         return new EvaluationDto(evaluation, questionDto);
@@ -55,8 +53,8 @@ public class EvaluationService {
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public EvaluationDto submitEvaluation(QuestionDto questionDto, boolean approvedEvaluation, String justification) {
-        Evaluation evaluation = evaluationRepository.findById(questionDto.getKey()).orElseThrow(() -> new TutorException(EVALUATION_NOT_AVAILABLE, questionDto.getKey()));
-        Question question = questionRepository.findById(questionDto.getKey()).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionDto.getKey()));
+        Evaluation evaluation = evaluationRepository.findByKey(questionDto.getKey()).orElseThrow(() -> new TutorException(EVALUATION_NOT_AVAILABLE, questionDto.getKey()));
+        Question question = questionRepository.findByKey(questionDto.getKey()).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionDto.getKey()));
 
         if (approvedEvaluation) {
             question.setStatus(Question.Status.AVAILABLE);

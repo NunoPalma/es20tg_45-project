@@ -7,6 +7,7 @@ public class EvaluationDto {
     private boolean approvedEvaluation = false;
 
     private Integer id;
+    private Integer key;
 
     private String justification;
 
@@ -21,6 +22,7 @@ public class EvaluationDto {
             approvedEvaluation = true;
         }
         this.id = evaluation.getId();
+        this.key = questionDto.getKey();
         this.justification = evaluation.getJustification();
         this.submittedQuestion = questionDto;
     }
@@ -28,6 +30,10 @@ public class EvaluationDto {
     public void setId(int questionId) { id = questionId; }
 
     public Integer getId() { return id; }
+
+    public void setKey(int questionKey) { key = questionKey; }
+
+    public Integer getKey() { return key; }
 
     public QuestionDto getSubmittedQuestionDto() { return submittedQuestion; }
 

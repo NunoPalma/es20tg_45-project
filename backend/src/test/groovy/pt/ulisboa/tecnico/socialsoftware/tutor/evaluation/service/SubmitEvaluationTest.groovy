@@ -25,22 +25,19 @@ class SubmitEvaluationTest extends Specification {
     @Autowired
     QuestionRepository questionRepository
 
-    def pendingQuestion
-    def pendingQuestionDto
 
     def "rejected question must have justification"() {
         given: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
         and: "a question"
-        pendingQuestion = new Question()
+        def pendingQuestion = new Question()
         pendingQuestion.setStatus(Question.Status.PENDING)
         pendingQuestion.setKey(1)
         questionRepository.save(pendingQuestion)
         and: "a questionDto"
-        pendingQuestionDto = new QuestionDto(pendingQuestion)
+        def pendingQuestionDto = new QuestionDto(pendingQuestion)
 
         evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
-
 
         when:
         evaluationService.submitEvaluation(pendingQuestionDto, false, JUSTIFICATION)
@@ -59,12 +56,12 @@ class SubmitEvaluationTest extends Specification {
         given: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
         and: "a question"
-        pendingQuestion = new Question()
+        def pendingQuestion = new Question()
         pendingQuestion.setStatus(Question.Status.PENDING)
         pendingQuestion.setKey(1)
         questionRepository.save(pendingQuestion)
         and: "a questionDto"
-        pendingQuestionDto = new QuestionDto(pendingQuestion)
+        def pendingQuestionDto = new QuestionDto(pendingQuestion)
 
         evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
 
