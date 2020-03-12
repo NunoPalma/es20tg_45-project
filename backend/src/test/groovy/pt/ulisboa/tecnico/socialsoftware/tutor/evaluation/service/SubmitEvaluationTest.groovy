@@ -8,6 +8,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import spock.lang.Specification
 
 @DataJpaTest
@@ -15,27 +17,37 @@ class SubmitEvaluationTest extends Specification {
     public static final String JUSTIFICATION = "QUESTION JUSTIFICATION"
 
     @Autowired
-    Question pendingQuestion
-
-    @Autowired
     EvaluationService evaluationService
 
     @Autowired
     EvaluationRepository evaluationRepository
 
+    @Autowired
+    QuestionRepository questionRepository
+
+    def pendingQuestion
+    def pendingQuestionDto
+
     def "rejected question must have justification"() {
         given: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
         and: "a question"
-        def pendingQuestion = new Question()
+        pendingQuestion = new Question()
+        pendingQuestion.setStatus(Question.Status.PENDING)
         pendingQuestion.setKey(1)
-        evaluationService.createEvaluation(evaluationDto, pendingQuestion.getKey())
-        def evaluation = evaluationRepository.findAll().get(0)
+        questionRepository.save(pendingQuestion)
+        and: "a questionDto"
+        pendingQuestionDto = new QuestionDto(pendingQuestion)
+
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+
 
         when:
-        evaluationService.submitEvaluation(pendingQuestion.getKey(), false, JUSTIFICATION)
+        evaluationService.submitEvaluation(pendingQuestionDto, false, JUSTIFICATION)
 
         then:
+        evaluationRepository.count() == 1L
+        def evaluation = evaluationRepository.findAll().get(0)
         def evalJustification = evaluation.getJustification()
         evalJustification != null
         evalJustification.length() != 0
@@ -47,15 +59,21 @@ class SubmitEvaluationTest extends Specification {
         given: "an evaluationDto"
         def evaluationDto = new EvaluationDto()
         and: "a question"
-        def pendingQuestion = new Question()
+        pendingQuestion = new Question()
+        pendingQuestion.setStatus(Question.Status.PENDING)
         pendingQuestion.setKey(1)
-        evaluationService.createEvaluation(evaluationDto, pendingQuestion.getKey())
-        def evaluation = evaluationRepository.findAll().get(0)
+        questionRepository.save(pendingQuestion)
+        and: "a questionDto"
+        pendingQuestionDto = new QuestionDto(pendingQuestion)
+
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
 
         when:
-        evaluationService.submitEvaluation(pendingQuestion.getKey(), true, JUSTIFICATION)
+        evaluationService.submitEvaluation(pendingQuestionDto, true, JUSTIFICATION)
 
         then:
+        evaluationRepository.count() == 1L
+        def evaluation = evaluationRepository.findAll().get(0)
         evaluation.getSubmittedQuestion().getStatus() == Question.Status.AVAILABLE
     }
 

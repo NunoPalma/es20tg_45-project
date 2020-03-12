@@ -12,19 +12,28 @@ public class EvaluationDto {
 
     private QuestionDto submittedQuestion;
 
-    EvaluationDto() {
+    public EvaluationDto() {
 
     }
 
-    public void setId(int questionId) {
-        id = questionId;
+    public EvaluationDto(Evaluation evaluation, QuestionDto questionDto) {
+        if (evaluation.getEvaluation()) {
+            approvedEvaluation = true;
+        }
+        this.id = evaluation.getId();
+        this.justification = evaluation.getJustification();
+        this.submittedQuestion = questionDto;
     }
 
-    public void setJustification(String message) {
-        justification  = message;
-    }
+    public void setId(int questionId) { id = questionId; }
 
-    public void approveEvaluationDto() {
-        approvedEvaluation = true;
-    }
+    public Integer getId() { return id; }
+
+    public QuestionDto getSubmittedQuestionDto() { return submittedQuestion; }
+
+    public void setSubmittedQuestionDto(QuestionDto questionDto) { this.submittedQuestion = questionDto; }
+
+    public void setJustification(String message) { justification  = message; }
+
+    public void approveEvaluationDto() { approvedEvaluation = true; }
 }

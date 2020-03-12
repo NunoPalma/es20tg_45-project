@@ -34,5 +34,9 @@ public class Evaluation {
 
     public void setJustification(String justification) { this.justification = justification; }
 
+    public Integer getId() { return id; }
+
+    public void getId(Integer id) { this.id = id; }
+
     public Question getSubmittedQuestion() { return submittedQuestion; }
 }
