@@ -79,6 +79,8 @@ public class Doubt{
         this.status = Status.UNSOLVED;
     }
 
-
+    public Status getStatus() {
+        return status;
+    }
 }
 
