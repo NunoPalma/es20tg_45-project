@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "evaluations")
-
 public class Evaluation {
 
     private boolean approvedEvaluation = false;
@@ -19,22 +18,22 @@ public class Evaluation {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "evaluation")
     private Question submittedQuestion;
 
-    Evaluation(){
+    Evaluation() {
     }
 
-    Evaluation(Question question, EvaluationDto evaluationDto){
+    Evaluation(Question question, EvaluationDto evaluationDto) {
         submittedQuestion = question;
     }
 
-    public boolean getEvaluation(){
+    public boolean getEvaluation() {
         return approvedEvaluation;
     }
 
-    public String getJustification(){
+    public String getJustification() {
         return justification;
     }
 
-    public Question getSubmittedQuestion(){
+    public Question getSubmittedQuestion() {
         return submittedQuestion;
     }
 }
