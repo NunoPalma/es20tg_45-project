@@ -1,8 +1,16 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification;
 
-public class ClarificationService {
+import org.springframework.stereotype.Service;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
-    public ClarificationService() {
+@Service
+public class ClarificationService{
 
+    public ClarificationService(){
     }
+
+    public ClarificationDto createClarification(ClarificationDto clarification, Integer userId) {
+        return clarification;
+    }
+
 }
