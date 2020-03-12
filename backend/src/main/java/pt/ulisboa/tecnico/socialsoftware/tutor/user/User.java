@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
@@ -56,6 +57,9 @@ public class User implements UserDetails, Importable {
 
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
+
+    @OneToMany
+    private Set<Doubt> doubts = new HashSet<>();
 
     public User() {
     }
@@ -156,8 +160,7 @@ public class User implements UserDetails, Importable {
 
     public Integer getNumberOfTeacherQuizzes() {
         if (this.numberOfTeacherQuizzes == null)
-            this.numberOfTeacherQuizzes = (int) getQuizAnswers().stream()
-                    .filter(quizAnswer -> quizAnswer.getCompleted())
+            this.numberOfTeacherQuizzes = (int) getQuizAnswers().stream().filter(quizAnswer -> quizAnswer.getCompleted())
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.PROPOSED))
                     .count();
 
@@ -180,6 +183,10 @@ public class User implements UserDetails, Importable {
 
     public void setNumberOfStudentQuizzes(Integer numberOfStudentQuizzes) {
         this.numberOfStudentQuizzes = numberOfStudentQuizzes;
+    }
+
+    public Set<Doubt> getDoubts() {
+        return doubts;
     }
 
     public Integer getNumberOfInClassQuizzes() {
@@ -224,6 +231,11 @@ public class User implements UserDetails, Importable {
     public void setNumberOfInClassAnswers(Integer numberOfInClassAnswers) {
         this.numberOfInClassAnswers = numberOfInClassAnswers;
     }
+
+    public void addDoubt(Doubt doubt){
+        this.doubts.add(doubt);
+    }
+
 
     public Integer getNumberOfStudentAnswers() {
         if (this.numberOfStudentAnswers == null) {

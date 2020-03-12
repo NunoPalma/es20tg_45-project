@@ -1,4 +1,30 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
-public class DoubtDto {
+import java.io.Serializable;
+
+public class DoubtDto implements Serializable {
+    private Integer id;
+    private String content;
+    private String author;
+    public DoubtDto(Doubt doubt){
+        this.id = doubt.getId();
+        this.content = doubt.getContent();
+        this.author = doubt.getAuthor().getName();
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

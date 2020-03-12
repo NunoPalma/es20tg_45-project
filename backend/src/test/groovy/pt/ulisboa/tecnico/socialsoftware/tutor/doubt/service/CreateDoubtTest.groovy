@@ -21,7 +21,7 @@ import spock.lang.Specification
 @DataJpaTest
 class CreateDoubtTest extends Specification {
     public static final String COURSE_NAME = "Software Architecture"
-    public static final String COURSE2_NAME = "Sistemas Distribuidos"
+    public static final String COURSE2_NAME = "Distributed Systems"
     public static final String COURSE_EXEC_ACRNOYM = "ES"
     public static final String COURSE2_EXEC_ACRNOYM = "SDIS"
     public static final String COURSE_EXEC_TERM = "2019-2020"
@@ -62,8 +62,10 @@ class CreateDoubtTest extends Specification {
     def courseExecution
     def courseExecution2
     def courseSet
+    def quiz
 
     def setup() {
+        quiz =
         doubtService = new DoubtService()
         course = new Course(COURSE_NAME, Course.Type.TECNICO)
         course2 = new Course(COURSE2_NAME, Course.Type.TECNICO)
@@ -218,19 +220,22 @@ class CreateDoubtTest extends Specification {
         doubtService.createDoubt(doubtdto, QUESTION2_ID, student.getId())
 
         then:
-        doubtRepository.count() == 1L
+        doubtRepository.count() == 2L
         def result = doubtRepository.findAll().get(0)
         result.getId() != null
         result.getContent() == DOUBT_CONTENT
         result.getAuthor().getName() == USER_NAME
         result.getAuthor().getId().getRole() == User.Role.STUDENT
         question.getDoubts().get(0).equals(result)
+        student.getDoubts().get(0).equals(result)
         def result2 = doubtRepository.findAll().get(1)
         result2.getId() != null
         result2.getContent() == DOUBT2_CONTENT
         result2.getAuthor().getName() == USER_NAME
         result2.getAuthor().getId().getRole() == User.Role.STUDENT
         question2.getDoubts().get(0).equals(result2)
+        student.getDoubts().get(1).equals(result2)
+        student.getDoubts().size() == 2
 
     }
 
