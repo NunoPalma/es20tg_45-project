@@ -52,6 +52,11 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
+    DOUBT_USER_IS_EMPTY("The doubt's user is empty"),
+    DOUBT_QUESTION_IS_EMPTY("The doubt's question is empty"),
+    DOUBT_CONTENT_IS_EMPTY("The doubt's content is empty"),
+    DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
+    DOUBT_COURSE_EXECUTION_DOESNT_MATCH("Question's Course Execution doesn't match the User's"),
 
     ACCESS_DENIED("You do not have permission to view this resource");
 
