@@ -1,6 +1,11 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.exceptions;
 
 public enum ErrorMessage {
+
+    CLARIFICATION_EMPTY("A clarification cannot be empty"),
+    CLARIFICATION_INVALID_USER("User is not a teacher"),
+    CLARIFICATION_NOT_ALLOWED("This doubt is already solved"),
+
     QUIZ_NOT_FOUND("Quiz not found with id %d"),
     QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
     QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),

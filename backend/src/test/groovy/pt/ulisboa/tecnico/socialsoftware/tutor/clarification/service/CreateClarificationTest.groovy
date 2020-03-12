@@ -6,6 +6,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
@@ -37,6 +40,9 @@ class CreateClarificationTest extends Specification {
 
     @Autowired
     ClarificationService clarificationService
+
+    @Autowired
+    ClarificationRepository clarificationRepository
 
     @Autowired
     UserService userService
@@ -87,14 +93,14 @@ class CreateClarificationTest extends Specification {
 
         then: "the correct clarification is successfully added to the repository"
         clarificationRepository.count() == 1L
-        def insertedClarification = clarificationRepository.findAll.get(0)
+        def insertedClarification = clarificationRepository.findAll().get(0)
 
         insertedClarification.getId() != null
-        insertedClarification.getDescr() == CLARIFICATION_DESCRIPTION
+        insertedClarification.getClarification() == CLARIFICATION_DESCRIPTION
         insertedClarification.getAuthor().getName() == USER_NAME
         insertedClarification.getDoubt().getDescr() == DOUBT_DESCRIPTION
         insertedClarification.getDoubt().getStatus() == Doubt.Status.SOLVED
-        insertedClarification.getAuthor.getRole() == User.Role.TEACHER
+        insertedClarification.getAuthor().getRole() == User.Role.TEACHER
         Doubt.getClarification().equals(insertedClarification)
 
     }
@@ -137,7 +143,7 @@ class CreateClarificationTest extends Specification {
         clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
 
         then: "the owner is a teacher"
-        def insertedClarification = clarificationRepository.findAll.get(0)
+        def insertedClarification = clarificationRepository.findAll().get(0)
         insertedClarification.getAuthor().getRole() == User.Role.TEACHER
 
     }
@@ -179,7 +185,6 @@ class CreateClarificationTest extends Specification {
         def doubt = new Doubt(question, Student, DOUBT_DESCRIPTION)
         doubtRepository.save(doubt)
         and: "a clarificationDto"
-        given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
