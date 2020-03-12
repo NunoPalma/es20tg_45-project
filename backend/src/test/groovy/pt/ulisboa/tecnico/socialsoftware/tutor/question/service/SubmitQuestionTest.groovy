@@ -54,7 +54,6 @@ class SubmitQuestionTest extends Specification {
 
         student = new User(STUDENT_NAME, STUDENT_USERNAME, STUDENT_KEY, User.Role.STUDENT)
         userRepository.save(student)
-
     }
 
     def "submitted question must be pending and created"() {
