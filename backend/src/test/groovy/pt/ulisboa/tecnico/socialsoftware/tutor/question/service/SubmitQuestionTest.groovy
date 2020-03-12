@@ -79,7 +79,7 @@ class SubmitQuestionTest extends Specification {
         questionDto.setOptions(options)
 
         when:
-        questionService.submitQuestion(student.getKey(), course.getId(), questionDto)
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto)
 
         then:
         questionRepository.count() == 1L
@@ -103,7 +103,7 @@ class SubmitQuestionTest extends Specification {
         questionDto.setContent(QUESTION_CONTENT)
 
         when:
-        questionService.submitQuestion(student.getKey(), course.getId(), questionDto)
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto)
 
         then:
         questionRepository.count() == 1L
@@ -120,7 +120,7 @@ class SubmitQuestionTest extends Specification {
         questionDto.setContent(QUESTION_CONTENT)
 
         setup:
-        questionService.submitQuestion(student.getKey(), course.getId(), questionDto)
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto)
         def submittedQuestion = questionRepository.findAll().get(0)
 
         when:

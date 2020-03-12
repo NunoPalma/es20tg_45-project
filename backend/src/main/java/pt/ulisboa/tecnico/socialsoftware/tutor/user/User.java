@@ -158,7 +158,9 @@ public class User implements UserDetails, Importable {
         this.courseExecutions = courseExecutions;
     }
 
-    public Set<Question> getSubmittedQuestions(){return submittedQuestions};
+    public Set<Question> getSubmittedQuestions() { return submittedQuestions; }
+
+    public void addSubmittedQuestion(Question question) { submittedQuestions.add(question); }
 
     public Integer getNumberOfTeacherQuizzes() {
         if (this.numberOfTeacherQuizzes == null)
