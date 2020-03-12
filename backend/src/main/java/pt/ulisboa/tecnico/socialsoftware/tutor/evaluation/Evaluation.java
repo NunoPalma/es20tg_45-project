@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "evaluations")
-
 public class Evaluation {
 
     private boolean approvedEvaluation = false;
@@ -20,23 +19,17 @@ public class Evaluation {
     public Evaluation(){
     }
 
-    public Evaluation(Question question){
+    public Evaluation(Question question) {
         submittedQuestion = question;
     }
 
-    public boolean getEvaluation(){
-        return approvedEvaluation;
-    }
+    public boolean getEvaluation() { return approvedEvaluation; }
 
     public void approveEvaluation() { approvedEvaluation = true; }
 
-    public String getJustification(){
-        return justification;
-    }
+    public String getJustification() { return justification; }
 
     public void setJustification(String justification) { this.justification = justification; }
 
-    public Question getSubmittedQuestion(){
-        return submittedQuestion;
-    }
+    public Question getSubmittedQuestion() { return submittedQuestion; }
 }
