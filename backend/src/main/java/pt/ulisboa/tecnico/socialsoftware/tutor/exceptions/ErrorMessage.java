@@ -52,6 +52,24 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
+    TOURNAMENT_NAME_EMPTY("The tournament name is empty"),
+    TOURNAMENT_START_DATE_EMPTY("The tournament start date is empty"),
+    TOURNAMENT_END_DATE_EMPTY("The tournament end date is empty"),
+    TOURNAMENT_INVALID_END_DATE("The tournament end date is before the start date"),
+    TOURNAMENT_DATES_OVERLAP("The tournament's start and end dates overlap"),
+    TOURNAMENT_NOT_ENOUGH_QUESTIONS("Not enough questions to create a tournament"),
+    NOT_ENOUGH_TOPICS("Not enough topics to create a tournament"),
+    EMPTY_TOURNAMENT_CREATOR("The tournament creator is empty"),
+    TOURNAMENT_CREATOR_IS_NOT_STUDENT("The tournament creator is not a student"),
+    EMPTY_COURSE_EXECUTION("The tournament course execution is empty"),
+
+    INVALID_ENROLLMENT_ATTEMPT_NOT_STUDENT("The user attempting to enroll in the tournament isn't a student"),
+    USER_NOT_DEFINED("User not defined"),
+    TOURNAMENT_NOT_DEFINED("Tournament not defined"),
+    STUDENT_ALREADY_ENROLLED("The student is already enrolled in the tournament"),
+    INVALID_ENROLLMENT_CLOSED_TOURNAMENT("The tournament is already closed"),
+    INVALID_ENROLLMENT_CREATED_TOURNAMENT("The tournament hasn't open yet"),
+    INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
 
     ACCESS_DENIED("You do not have permission to view this resource");
 
