@@ -126,8 +126,8 @@ public class QuestionService {
             questionDto.setKey(maxQuestionNumber + 1);
         }
 
+        questionDto.setStatus(Question.Status.PENDING.name());
         Question question = new Question(course, questionDto);
-        question.setStatus(Question.Status.PENDING);
         student.addSubmittedQuestion(question);
         question.setUser(student);
         Evaluation evaluation = new Evaluation(question);
