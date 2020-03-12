@@ -58,7 +58,6 @@ class CreateEvaluationTest extends Specification {
         given: "An evaluationDto"
         def evaluationDto = new EvaluationDto()
 
-        setup:
         evaluationService.createEvaluation(evaluationDto, pendingQuestion.getKey())
         def evaluation = evaluationRepository.findAll().get(0)
 

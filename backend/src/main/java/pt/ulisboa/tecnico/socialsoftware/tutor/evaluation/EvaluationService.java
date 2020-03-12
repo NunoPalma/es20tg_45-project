@@ -19,7 +19,7 @@ public class EvaluationService {
     EntityManager entityManager;
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public EvaluationDto createEvaluation(EvaluationDto evaluationDto, int questionKey) {
+    public void createEvaluation(EvaluationDto evaluationDto, int questionKey) {
 
     }
 

@@ -129,7 +129,9 @@ public class QuestionService {
         Question question = new Question(course, questionDto);
         question.setStatus(Question.Status.PENDING);
         student.addSubmittedQuestion(question);
+        question.setUser(student);
         Evaluation evaluation = new Evaluation(question);
+        question.setEvaluation(evaluation);
         question.setCreationDate(LocalDateTime.now());
 
         this.entityManager.persist(question);
