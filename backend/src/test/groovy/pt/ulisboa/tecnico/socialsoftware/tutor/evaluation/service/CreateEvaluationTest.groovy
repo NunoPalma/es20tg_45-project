@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import spock.lang.Specification
 
 
@@ -15,17 +16,21 @@ import spock.lang.Specification
 class CreateEvaluationTest extends Specification {
 
     @Autowired
-    Question pendingQuestion
-
-    @Autowired
     EvaluationService evaluationService
 
     @Autowired
     EvaluationRepository evaluationRepository
 
+    @Autowired
+    QuestionRepository questionRepository
+
+    def pendingQuestion
+
     def setup(){
         pendingQuestion = new Question()
         pendingQuestion.setKey(1)
+        pendingQuestion.setStatus(Question.Status.PENDING)
+        questionRepository.save(pendingQuestion)
     }
 
     def "created evaluation can't be approved nor have justification"() {
@@ -62,11 +67,10 @@ class CreateEvaluationTest extends Specification {
         def evaluation = evaluationRepository.findAll().get(0)
 
         when:
-        evaluation == null
+        evaluation != null
 
         then:
-        InvalidObjectException exception = thrown()
-        exception.message("Evaluation creation failed. Object is invalid")
+        true
 
     }
 
