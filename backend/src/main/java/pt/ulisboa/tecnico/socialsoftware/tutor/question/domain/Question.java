@@ -302,7 +302,9 @@ public class Question {
     }
 
     private void checkConsistentQuestion(QuestionDto questionDto) {
-        if (questionDto.getTitle().trim().length() == 0 ||
+        if (questionDto.getTitle() == null ||
+                questionDto.getContent() == null ||
+                questionDto.getTitle().trim().length() == 0 ||
                 questionDto.getContent().trim().length() == 0 ||
                 questionDto.getOptions().stream().anyMatch(optionDto -> optionDto.getContent().trim().length() == 0)) {
             throw new TutorException(QUESTION_MISSING_DATA);
