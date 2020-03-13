@@ -34,7 +34,6 @@ class EnrollStudentServiceSpockTest extends Specification {
     static closedTournamentState = Tournament.State.CLOSED
     static createdTournamentState = Tournament.State.CREATED
     static cancelledTournamentState = Tournament.State.CANCELLED
-    static final int USER_NOT_FOUND_ID = 99
 
     static final user = new User()
 
