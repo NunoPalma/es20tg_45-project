@@ -10,7 +10,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
