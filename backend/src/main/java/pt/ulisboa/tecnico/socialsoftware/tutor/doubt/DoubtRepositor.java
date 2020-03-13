@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 @Transactional
 public interface DoubtRepositor extends JpaRepository<Doubt, Integer> {
-    @Query( value = "SELECT * FROM doubts d WHERE d.user_id = : userid", nativeQuery = true)
+    @Query( value = "SELECT * FROM doubts d WHERE d.user_id = :userid", nativeQuery = true)
     List<Doubt> findUserDoubts(Integer userid);
 }

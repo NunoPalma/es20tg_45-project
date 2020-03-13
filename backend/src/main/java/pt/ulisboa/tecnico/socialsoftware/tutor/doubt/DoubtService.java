@@ -87,5 +87,9 @@ public class DoubtService {
         return new DoubtDto(doubt);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<DoubtDto> findUserDoubts(int userId){
+        return doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
+    }
 
 }
