@@ -5,6 +5,8 @@ public enum ErrorMessage {
     CLARIFICATION_EMPTY("A clarification cannot be empty"),
     CLARIFICATION_INVALID_USER("User is not a teacher"),
     CLARIFICATION_NOT_ALLOWED("This doubt is already solved"),
+    CLARIFICATION_DOUBT_IS_EMPTY("The clarification's question is empty"),
+    CLARIFICATION_USER_IS_EMPTY("The clarification's content is empty"),
 
     QUIZ_NOT_FOUND("Quiz not found with id %d"),
     QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
@@ -67,6 +69,7 @@ public enum ErrorMessage {
     ACCESS_DENIED("You do not have permission to view this resource"),
 
     CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request");
+
 
     public final String label;
 

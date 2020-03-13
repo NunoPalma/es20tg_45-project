@@ -186,8 +186,6 @@ class CreateDoubtTest extends Specification {
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
         doubtdto.setAuthor(student.getName())
-        System.out.println("O id da pergunta é" + question.getId());
-        System.out.println("O id do Utilizador é" + student.getId());
 
         when: "A doubt is created"
         doubtService.createDoubt(doubtdto, questionid, userid)

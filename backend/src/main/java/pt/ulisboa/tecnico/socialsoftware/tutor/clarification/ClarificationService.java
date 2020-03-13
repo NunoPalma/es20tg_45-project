@@ -34,7 +34,16 @@ public class ClarificationService{
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationDto createClarification(ClarificationDto clarificationDto, int userId, int doubtId) {
+    public ClarificationDto createClarification(ClarificationDto clarificationDto, Integer userId, Integer doubtId) {
+
+        if(userId == null){
+            throw new TutorException(ErrorMessage.CLARIFICATION_USER_IS_EMPTY);
+        }
+
+        if(doubtId == null){
+            throw new TutorException(ErrorMessage.CLARIFICATION_DOUBT_IS_EMPTY);
+        }
+
 
         User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND,userId));
         Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(() -> new TutorException(ErrorMessage.DOUBT_NOT_FOUND, doubtId));
