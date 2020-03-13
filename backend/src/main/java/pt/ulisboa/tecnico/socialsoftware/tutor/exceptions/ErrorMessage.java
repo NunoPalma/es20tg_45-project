@@ -1,6 +1,13 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.exceptions;
 
 public enum ErrorMessage {
+
+    CLARIFICATION_EMPTY("A clarification cannot be empty"),
+    CLARIFICATION_INVALID_USER("User is not a teacher"),
+    CLARIFICATION_NOT_ALLOWED("This doubt is already solved"),
+    CLARIFICATION_DOUBT_IS_EMPTY("The clarification's question is empty"),
+    CLARIFICATION_USER_IS_EMPTY("The clarification's content is empty"),
+
     QUIZ_NOT_FOUND("Quiz not found with id %d"),
     QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
     QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
@@ -52,8 +59,17 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
+    DOUBT_USER_IS_EMPTY("The doubt's user is empty"),
+    DOUBT_QUESTION_IS_EMPTY("The doubt's question is empty"),
+    DOUBT_CONTENT_IS_EMPTY("The doubt's content is empty"),
+    DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
+    DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
+    DOUBT_NOT_FOUND("Doubt with id %d is not found"),
 
-    ACCESS_DENIED("You do not have permission to view this resource");
+    ACCESS_DENIED("You do not have permission to view this resource"),
+
+    CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request");
+
 
     public final String label;
 
