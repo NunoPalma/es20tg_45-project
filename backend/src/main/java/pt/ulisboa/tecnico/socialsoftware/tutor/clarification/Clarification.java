@@ -40,7 +40,7 @@ public class Clarification {
     }
 
     private void checkConsistentClarification(ClarificationDto clarificationDto, User author, Doubt doubt) {
-        if(clarificationDto.getDescription().trim().length() == 0) {
+        if(clarificationDto.getDescription() == null || clarificationDto.getDescription().trim().length() == 0) {
             throw new TutorException(ErrorMessage.CLARIFICATION_EMPTY);
         }
 

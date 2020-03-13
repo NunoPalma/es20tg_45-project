@@ -93,7 +93,6 @@ public class User implements UserDetails, Importable {
         this.quizAnswers = quizAnswers;
     }
 
-
     public Set<Clarification> getClarifications() {
         return clarifications;
     }

@@ -9,8 +9,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
-
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
@@ -21,6 +19,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.*
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepositor
+import spock.lang.Unroll
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
 class CreateClarificationTest extends Specification {
@@ -163,19 +163,49 @@ class CreateClarificationTest extends Specification {
     }
 
 
-    def "clarification description is empty"() {
+    @Unroll
+    def "invalid arguments: userid =#userid | questionid =#questionid || errormessage =#errormessage"() {
 
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
-        clarificationDto.setDescription(CLARIFICATION_DESCRIPTION_EMPTY)
+        clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
+
+        when:
+        clarificationService.createClarification(clarificationDto, userid, doubtid)
+
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == errorMessage
+
+        where:
+        userid      | doubtid     || errorMessage
+        null        | 9           || CLARIFICATION_USER_IS_EMPTY
+        13          | null        || CLARIFICATION_DOUBT_IS_EMPTY
+        9000        | 5           || USER_NOT_FOUND
+        13          | 9000        || DOUBT_NOT_FOUND
+
+    }
+
+
+
+    @Unroll
+    def "clarification description is #description"() {
+
+        given: "a clarificationDto"
+        def clarificationDto = new ClarificationDto()
+        clarificationDto.setDescription(description)
 
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
 
         then:
         def exception = thrown(TutorException)
+        exception.errorMessage == errorMessage
 
-        exception.errorMessage == ErrorMessage.CLARIFICATION_EMPTY
+        where:
+        description || errorMessage
+        CLARIFICATION_DESCRIPTION_EMPTY|| CLARIFICATION_EMPTY
+        null || CLARIFICATION_EMPTY
     }
 
 
@@ -190,7 +220,7 @@ class CreateClarificationTest extends Specification {
 
         then:
         def exception = thrown(TutorException)
-        exception.errorMessage == ErrorMessage.CLARIFICATION_INVALID_USER
+        exception.errorMessage == CLARIFICATION_INVALID_USER
     }
 
 
@@ -205,7 +235,7 @@ class CreateClarificationTest extends Specification {
 
         then:
         def exception = thrown(TutorException)
-        exception.errorMessage == ErrorMessage.CLARIFICATION_NOT_ALLOWED
+        exception.errorMessage == CLARIFICATION_NOT_ALLOWED
 
     }
 
@@ -221,7 +251,7 @@ class CreateClarificationTest extends Specification {
 
         then:
         def exception = thrown(TutorException)
-        exception.errorMessage == ErrorMessage.CLARIFICATION_INVALID_COURSE_TEACHER
+        exception.errorMessage == CLARIFICATION_INVALID_COURSE_TEACHER
     }
 
     @TestConfiguration
