@@ -82,6 +82,11 @@ public class UserService {
         courseExecution.addUser(user);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void sortStudentSubmittedQuestions(String username) {
+
+    }
+
     public String exportUsers() {
         UsersXmlExport xmlExporter = new UsersXmlExport();
 
