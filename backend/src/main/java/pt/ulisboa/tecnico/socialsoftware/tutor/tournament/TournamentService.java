@@ -88,10 +88,11 @@ public class TournamentService {
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void enrollStudent(Integer userId, Integer tournamentId) {
-		if (userId == null)
+		if (userId == null) {
 			throw new TutorException(INVALID_USER_ID);
-		else if (tournamentId == null)
+		} else if (tournamentId == null) {
 			throw new TutorException(INVALID_TOURNAMENT_ID);
+		}
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
