@@ -164,10 +164,10 @@ class CreateTournamentServiceSpockTest extends Specification {
 
 	def "create tournament without enough topics"() {
 		given: "a tournament"
-		tournament.setTopics(topicsEmpty)
+		tournamentDto.setTopics(topicsEmpty)
 
 		when:
-		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournament)
+		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
