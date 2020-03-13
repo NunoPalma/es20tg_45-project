@@ -21,7 +21,7 @@ public class Doubt{
     private String content;
 
     @OneToOne
-    private Clarification clarification = null;
+    private Clarification clarification;
 
     @ManyToOne
     private User author;
@@ -32,12 +32,19 @@ public class Doubt{
     public Doubt(){
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Doubt(Question question, User user, String content){
         this.author = user;
         this.content = content;
         this.question = question;
     }
-
 
     public Question getQuestion() {
         return question;
@@ -49,6 +56,10 @@ public class Doubt{
 
     public User getAuthor() {
         return author;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setAuthor(User author) {
