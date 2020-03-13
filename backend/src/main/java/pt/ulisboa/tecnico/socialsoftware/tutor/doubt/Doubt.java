@@ -40,11 +40,13 @@ public class Doubt{
 
     public Doubt(Question question, User user, String content){
         this.author = user;
+        this.author.addDoubt(this);
         if (content == null || content.trim().isEmpty()) {
             throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
         }
         this.content = content;
         this.question = question;
+        this.question.addDoubt(this);
     }
 
 

@@ -89,9 +89,6 @@ class CreateDoubtTest extends Specification {
     def questiondto
     def questiondto2
     def optiondto
-    def date1
-    def date2
-    def date3
     def course
     def course2
     def quiz
@@ -272,6 +269,7 @@ class CreateDoubtTest extends Specification {
         student.getDoubts().size() == 2
 
     }
+
 
     @TestConfiguration
     static class DoubtServiceImplTestContextConfiguration {
