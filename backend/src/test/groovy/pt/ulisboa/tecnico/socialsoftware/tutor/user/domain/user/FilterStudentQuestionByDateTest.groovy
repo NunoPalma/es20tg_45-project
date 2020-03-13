@@ -108,10 +108,9 @@ class FilterStudentQuestionByDateTest extends Specification {
 
 
         when:
-        userService.sortStudentSubmittedQuestions(STUDENT_USERNAME1)
+        def sortedSubmittedQuestions = userService.sortStudentSubmittedQuestions(STUDENT_USERNAME1)
 
         then:
-        def sortedSubmittedQuestions = student.getSubmittedQuestions()
         sortedSubmittedQuestions[0].getTitle() == QUESTION_TITLE_3
         sortedSubmittedQuestions[1].getTitle() == QUESTION_TITLE_2
         sortedSubmittedQuestions[2].getTitle() == QUESTION_TITLE_1

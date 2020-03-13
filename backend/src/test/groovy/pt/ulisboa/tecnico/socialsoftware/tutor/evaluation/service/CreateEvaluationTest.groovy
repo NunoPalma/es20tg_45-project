@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import spock.lang.Specification
 
@@ -25,11 +26,14 @@ class CreateEvaluationTest extends Specification {
     QuestionRepository questionRepository
 
     def pendingQuestion
+    def pendingQuestionDto
 
     def setup(){
         pendingQuestion = new Question()
         pendingQuestion.setKey(1)
         pendingQuestion.setStatus(Question.Status.PENDING)
+        pendingQuestionDto = new QuestionDto(pendingQuestion)
+
         questionRepository.save(pendingQuestion)
     }
 
@@ -38,7 +42,7 @@ class CreateEvaluationTest extends Specification {
         def evaluationDto = new EvaluationDto()
 
         when:
-        evaluationService.createEvaluation(evaluationDto, pendingQuestion.getKey())
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
 
         then: "the correct evaluation is inside the repository"
         evaluationRepository.count() == 1L
@@ -52,7 +56,7 @@ class CreateEvaluationTest extends Specification {
         def evaluationDto = new EvaluationDto()
 
         when:
-        evaluationService.createEvaluation(evaluationDto, pendingQuestion.getKey())
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
 
         then: "associated question must be pending"
         def evaluation = evaluationRepository.findAll().get(0)
@@ -63,7 +67,7 @@ class CreateEvaluationTest extends Specification {
         given: "An evaluationDto"
         def evaluationDto = new EvaluationDto()
 
-        evaluationService.createEvaluation(evaluationDto, pendingQuestion.getKey())
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
         def evaluation = evaluationRepository.findAll().get(0)
 
         when:
