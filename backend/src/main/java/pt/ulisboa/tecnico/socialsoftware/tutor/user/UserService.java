@@ -12,11 +12,15 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlImport;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_EXECUTION_NOT_FOUND;
@@ -29,6 +33,9 @@ public class UserService {
 
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
+
+    @Autowired
+    private QuestionService questionService;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -83,8 +90,13 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void sortStudentSubmittedQuestions(String username) {
+    public List<Question> sortStudentSubmittedQuestions(String username) {
+        User user =  this.userRepository.findByUsername(username);
 
+        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
+        LinkedList<Question> userSubmittedQuestionsList = new LinkedList<Question>(userSubmittedQuestions);
+
+        return questionService.sortQuestionByCreationDate(userSubmittedQuestionsList);
     }
 
     public String exportUsers() {
