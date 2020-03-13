@@ -2,20 +2,23 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.clarification.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
+import spock.lang.Shared
 import spock.lang.Specification
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.*
 
@@ -23,20 +26,38 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.*
 class CreateClarificationTest extends Specification {
 
     public static final String DOUBT_DESCRIPTION = "I don't understand why this option is not correct."
+    public static final Integer DOUBT_ID = 1
+    public static final Integer DOUBT_ID2 = 2
+    public static final Integer DOUBT_ID3 = 3
+    public static final Integer DOUBT_ID4 = 4
+    public static final Integer DOUBT_ID5 = 5
+
+
     public static final String CLARIFICATION_DESCRIPTION = "Your answer isn't correct because you need to watch the videos."
     public static final String CLARIFICATION_DESCRIPTION_EMPTY = " "
 
-    public static final String USER_NAME = "Eduardo"
-    public static final String USER_USERNAME = "Eduardo50"
-    public static final Integer USER_KEY = 10
+    public static final String USER_NAME = "name1"
+    public static final String USER_NAME2 = "name2"
+    public static final String USER_NAME3 = "name3"
+    public static final String USER_USERNAME = "username1"
+    public static final String USER_USERNAME2 = "username2"
+    public static final String USER_USERNAME3 = "username3"
+    public static final Integer USER_KEY = 1
+    public static final Integer USER_KEY2 = 2
+    public static final Integer USER_KEY3 = 3
 
-    public static final String COURSE_ONE = "CourseOne"
-    public static final String COURSE_TWO = "CourseTwo"
-    public static final String ACRONYM_ONE = "C12"
-    public static final String ACADEMIC_TERM_ONE = "1º Semestre"
+    public static final String COURSE = "CourseOne"
+    public static final String COURSE2 = "CourseTwo"
+    public static final String ACRONYM = "C12"
+    public static final String ACADEMIC_TERM = "1º Semestre"
+    public static final String ACRONYM2 = "C13"
+    public static final String ACADEMIC_TERM2 = "2º Semestre"
 
-    public static final String QUESTION_TITLE = 'question title'
-    public static final String QUESTION_CONTENT = 'question content'
+    public static final String QUESTION_TITLE = "question title"
+    public static final String QUESTION_CONTENT = "question content"
+    public static final Integer QUESTION_KEY = 1
+
+    public static final String OPTION_CONTENT = "content"
 
     @Autowired
     ClarificationService clarificationService
@@ -45,19 +66,13 @@ class CreateClarificationTest extends Specification {
     ClarificationRepository clarificationRepository
 
     @Autowired
-    UserService userService
-
-    @Autowired
     UserRepository userRepository
 
     @Autowired
-    DoubtService doubtService
+    QuestionRepository questionRepository
 
     @Autowired
     DoubtRepository doubtRepository
-
-    @Autowired
-    QuestionService questionService
 
     @Autowired
     CourseExecutionRepository courseExecutionRepository
@@ -66,18 +81,58 @@ class CreateClarificationTest extends Specification {
     CourseRepository courseRepository
 
     def Teacher
+    def TeacherTwo
     def Student
-    def Doubt
+    def Question
+    def Course
+    def CourseTwo
+    def CourseExecution
+    def CourseExecutionTwo
     def SolvedDoubt
 
     def setup() {
 
         Teacher = new User(USER_NAME, USER_USERNAME, USER_KEY, User.Role.TEACHER)
         userRepository.save(Teacher)
-        Student = new User(USER_NAME, USER_USERNAME, USER_KEY, User.Role.STUDENT)
+
+        Student = new User(USER_NAME2, USER_USERNAME2, USER_KEY2, User.Role.STUDENT)
         userRepository.save(Student)
-        Doubt = new Doubt(new Question(), Student, DOUBT_DESCRIPTION)
-        SolvedDoubt = new Doubt(new Question(), Student, DOUBT_DESCRIPTION)
+
+        TeacherTwo = new User(USER_NAME3, USER_USERNAME3, USER_KEY3, User.Role.TEACHER)
+        userRepository.save(TeacherTwo)
+
+        Course = new Course(COURSE, Course.Type.TECNICO)
+        courseRepository.save(Course)
+
+        CourseTwo = new Course(COURSE2, Course.Type.TECNICO)
+        courseRepository.save(CourseTwo)
+
+        CourseExecution = new CourseExecution(Course, ACRONYM, ACADEMIC_TERM, Course.Type.TECNICO)
+        CourseExecution.addUser(Teacher)
+        Teacher.addCourse(CourseExecution)
+        courseExecutionRepository.save(CourseExecution)
+
+        CourseExecutionTwo = new CourseExecution(CourseTwo, ACRONYM2, ACADEMIC_TERM2, Course.Type.TECNICO)
+        CourseExecutionTwo.addUser(TeacherTwo)
+        TeacherTwo.addCourse(CourseExecutionTwo)
+        courseExecutionRepository.save(CourseExecutionTwo)
+
+        def questionDto = new QuestionDto()
+        questionDto.setKey(QUESTION_KEY)
+        questionDto.setTitle(QUESTION_TITLE)
+        questionDto.setContent(QUESTION_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+
+        def optionDto = new OptionDto()
+        optionDto.setContent(QUESTION_CONTENT)
+        optionDto.setCorrect(true)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+        questionDto.setOptions(options)
+
+        Question = new Question(Course,questionDto)
+        questionRepository.save(Question)
+
 
     }
 
@@ -87,6 +142,11 @@ class CreateClarificationTest extends Specification {
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
+
+        and: "a doubt"
+        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        Doubt.setId(DOUBT_ID)
+        doubtRepository.save(Doubt)
 
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
@@ -98,10 +158,10 @@ class CreateClarificationTest extends Specification {
         insertedClarification.getId() != null
         insertedClarification.getClarification() == CLARIFICATION_DESCRIPTION
         insertedClarification.getAuthor().getName() == USER_NAME
-        insertedClarification.getDoubt().getDescr() == DOUBT_DESCRIPTION
+        insertedClarification.getDoubt().getContent() == DOUBT_DESCRIPTION
         insertedClarification.getDoubt().getStatus() == Doubt.Status.SOLVED
         insertedClarification.getAuthor().getRole() == User.Role.TEACHER
-        Doubt.getClarification().equals(insertedClarification)
+        insertedClarification.getDoubt().getClarification().equals(insertedClarification)
 
     }
 
@@ -112,11 +172,18 @@ class CreateClarificationTest extends Specification {
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION_EMPTY)
 
+        and: "a doubt"
+        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        Doubt.setId(DOUBT_ID2)
+        doubtRepository.save(Doubt)
+
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
 
         then:
-        thrown(TutorException)
+        def exception = thrown(TutorException)
+
+        exception.errorMessage == ErrorMessage.CLARIFICATION_EMPTY
     }
 
 
@@ -126,27 +193,19 @@ class CreateClarificationTest extends Specification {
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
+        and: "a doubt"
+        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        Doubt.setId(DOUBT_ID3)
+        doubtRepository.save(Doubt)
+
         when:
         clarificationService.createClarification(clarificationDto, Student.getId(), Doubt.getId())
 
         then:
-        thrown(TutorException)
+        def exception = thrown(TutorException)
+        exception.errorMessage == ErrorMessage.CLARIFICATION_INVALID_USER
     }
 
-    def "clarification owner is a teacher"() {
-
-        given: "a clarificationDto"
-        def clarificationDto = new ClarificationDto()
-        clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
-
-        when:
-        clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
-
-        then: "the owner is a teacher"
-        def insertedClarification = clarificationRepository.findAll().get(0)
-        insertedClarification.getAuthor().getRole() == User.Role.TEACHER
-
-    }
 
     def "clarification for a solved clarification request"() {
 
@@ -154,45 +213,49 @@ class CreateClarificationTest extends Specification {
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
+        and: "a doubt"
+        def SolvedDoubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        SolvedDoubt.setId(DOUBT_ID4)
+        SolvedDoubt.setStatus(Doubt.Status.SOLVED)
+        doubtRepository.save(SolvedDoubt)
+
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), SolvedDoubt.getId())
 
         then:
-        thrown(TutorException)
+        def exception = thrown(TutorException)
+        exception.errorMessage == ErrorMessage.CLARIFICATION_NOT_ALLOWED
 
     }
 
 
     def "clarification made by a teacher whose course execution isn't the same as question's course "() {
 
-        given: "two courses"
-        def courseOne = new Course(COURSE_ONE, Course.Type.TECNICO)
-        courseRepository.save(courseOne)
-        def courseTwo = new Course(COURSE_TWO, Course.Type.TECNICO)
-        courseRepository.save(courseTwo)
-        and: "a execution course"
-        def CourseExecution = new CourseExecution(courseOne, ACRONYM_ONE, ACADEMIC_TERM_ONE, Course.Type.TECNICO)
-        CourseExecution.addUser(Teacher)
-        courseExecutionRepository.save(CourseExecution)
-        and: "a questionDto"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle(QUESTION_TITLE)
-        questionDto.setContent(QUESTION_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        def question = questionService.createQuestion(courseTwo.getId(), questionDto)
-        and: "a doubt"
-        def doubt = new Doubt(question, Student, DOUBT_DESCRIPTION)
-        doubtRepository.save(doubt)
-        and: "a clarificationDto"
+        given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
+        and: "a doubt"
+        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        Doubt.setId(DOUBT_ID5)
+        doubtRepository.save(Doubt)
+
         when:
-        clarificationService.createClarification(clarificationDto, Teacher.getId(), doubt.getId())
+        clarificationService.createClarification(clarificationDto, TeacherTwo.getId(), Doubt.getId())
 
         then:
-        thrown(TutorException)
+        def exception = thrown(TutorException)
+        exception.errorMessage == ErrorMessage.CLARIFICATION_INVALID_COURSE_TEACHER
+    }
+
+    @TestConfiguration
+    static class ClarificationServiceImplTestContextConfiguration {
+
+        @Bean
+        ClarificationService clarificationService() {
+            return new ClarificationService()
+        }
+
     }
 
 }

@@ -29,14 +29,12 @@ public class ClarificationService{
     @PersistenceContext
     EntityManager entityManager;
 
-    public ClarificationService(){
-    }
 
     @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationDto createClarification(ClarificationDto clarificationDto, Integer userId, Integer doubtId) {
+    public ClarificationDto createClarification(ClarificationDto clarificationDto, int userId, int doubtId) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND,userId));
         Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(() -> new TutorException(ErrorMessage.DOUBT_NOT_FOUND, doubtId));

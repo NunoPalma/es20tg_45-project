@@ -63,9 +63,11 @@ public enum ErrorMessage {
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
     DOUBT_COURSE_EXECUTION_DOESNT_MATCH("Question's Course Execution doesn't match the User's"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
-    DOUBT_USER_NOT_FOUND("Doubt with id %d is not found"),
+    DOUBT_NOT_FOUND("Doubt with id %d is not found"),
 
-    ACCESS_DENIED("You do not have permission to view this resource");
+    ACCESS_DENIED("You do not have permission to view this resource"),
+
+    CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request");
 
     public final String label;
 

@@ -156,7 +156,7 @@ class CreateDoubtTest extends Specification {
         courseSet.add(courseExecution)
         student.setCourseExecutions(courseSet)
         userRepository.save(student)
-        given: "a DoubtDto"
+        and: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
 
@@ -174,7 +174,7 @@ class CreateDoubtTest extends Specification {
         courseSet.add(courseExecution)
         teacher.setCourseExecutions(courseSet)
         userRepository.save(teacher)
-        given: "a DoubtDto"
+        and: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
 
