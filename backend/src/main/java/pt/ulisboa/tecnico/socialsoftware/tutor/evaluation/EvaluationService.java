@@ -39,9 +39,7 @@ public class EvaluationService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public EvaluationDto createEvaluation(EvaluationDto evaluationDto, QuestionDto questionDto) {
         Question question = questionRepository.findByKey(questionDto.getKey()).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionDto.getKey()));
-        if (question.getStatus() != Question.Status.PENDING){
-            throw new TutorException(QUESTION_NOT_PENDING, question.getKey());
-        }
+        checkIfPending(question);
 
         Evaluation evaluation = new Evaluation(question);
         this.entityManager.persist(evaluation);
@@ -66,10 +64,18 @@ public class EvaluationService {
         else {
             question.setStatus(Question.Status.REJECTED);
             questionDto.setStatus(Question.Status.REJECTED.name());
-            //LANÇAR EXCEÇÃO SE JUSTIFICAÇÃO TIVER VAZIA
+            if (justification == null || justification.length() == 0){
+                throw new TutorException(MUST_HAVE_JUSTIFICATION);
+            }
             evaluation.setJustification(justification);
         }
 
         return new EvaluationDto(evaluation, questionDto);
+    }
+
+    private void checkIfPending(Question question) {
+        if (question.getStatus() != Question.Status.PENDING){
+            throw new TutorException(QUESTION_NOT_PENDING, question.getKey());
+        }
     }
 }

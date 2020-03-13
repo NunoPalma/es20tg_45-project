@@ -228,7 +228,7 @@ public class QuestionService {
         LinkedList<Question> sortedQuestions = userSubmittedQuestionsList;
         sortedQuestions.sort((q1, q2) -> {
             if(q1.getCreationDate().isBefore(q2.getCreationDate())) { return 1; }
-            else { return 0; }
+            else { return -1; }
         });
 
         return sortedQuestions;

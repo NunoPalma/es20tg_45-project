@@ -55,6 +55,7 @@ public enum ErrorMessage {
     QUESTION_NOT_PENDING("Expected Question to be in pending status"),
 
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
+    MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),
 
     ACCESS_DENIED("You do not have permission to view this resource");
 
