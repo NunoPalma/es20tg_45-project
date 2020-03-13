@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,5 +101,22 @@ public class TournamentService {
 		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
 
 		tournament.enrollStudent(user);
+	}
+
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public List<Tournament> showOpenTournaments(Integer userId) {
+		if (userId == null) {
+			throw new TutorException(INVALID_USER_ID);
+		}
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+		List<Tournament> tournaments = new ArrayList<>();
+
+		for (CourseExecution courseExecution : user.getCourseExecutions()) {
+			tournaments.addAll(tournamentRepository.findTournaments(courseExecution.getId()));
+		}
+
+		return tournaments;
 	}
 }
