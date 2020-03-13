@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.user
 
-import jdk.nashorn.internal.runtime.Specialization
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
@@ -8,11 +7,12 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
+import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 @DataJpaTest
-class FilterStudentQuestionByDateTest extends Specialization{
+class FilterStudentQuestionByDateTest extends Specification{
     public static final String QUESTION_TITLE_1 = 'question title1'
     public static final String QUESTION_TITLE_2 = 'question title2'
     public static final String QUESTION_TITLE_3 = 'question title3'
