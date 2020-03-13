@@ -162,6 +162,18 @@ class CreateTournamentServiceSpockTest extends Specification {
 		exception.getErrorMessage() == TOURNAMENT_CREATOR_IS_NOT_STUDENT
 	}
 
+	def "create tournament without enough topics"() {
+		given: "a tournament"
+		tournament.setTopics(topicsEmpty)
+
+		when:
+		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournament)
+
+		then: "an exception is thrown"
+		def exception = thrown(TutorException)
+		exception.getErrorMessage() == NOT_ENOUGH_TOPICS
+	}
+
 	def "all arguments are valid and create tournament"() {
 		given: "a tournamentDto"
 		def tournamentDto = new TournamentDto()

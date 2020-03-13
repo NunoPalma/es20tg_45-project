@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +26,7 @@ public class TournamentDto implements Serializable {
 	private Set<TopicDto> topics = new HashSet<>();
 	private Integer numQuestions;
 	private Quiz quiz;
+	private Tournament.State state;
 
 	@Transient
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -44,6 +44,7 @@ public class TournamentDto implements Serializable {
 		this.creator = tournament.getCreator();
 		this.courseExecution = tournament.getCourseExecution();
 		this.name = tournament.getName();
+		this.state = tournament.getState();
 
 		if (tournament.getStartDate() != null)
 			this.startDate = tournament.getStartDate().format(formatter);
@@ -137,6 +138,14 @@ public class TournamentDto implements Serializable {
 
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
+	}
+
+	public Tournament.State getState() {
+		return state;
+	}
+
+	public void setState(Tournament.State state) {
+		this.state = state;
 	}
 
 	public LocalDateTime getStartDateDate() {

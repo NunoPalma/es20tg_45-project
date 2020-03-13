@@ -3,7 +3,10 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
+<<<<<<< HEAD
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
+=======
+>>>>>>> 2d7d902842d2351270ab688f77335959d39150a8
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -64,9 +67,26 @@ public class Tournament {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    public Tournament() {}
+    @ManyToMany
+    @JoinTable(
+            name = "participants_of_tournament",
+            joinColumns = @JoinColumn(name = "tournament_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> participants;
+
+    private State state = State.CREATED;
+
+    public enum State {
+        CREATED, OPEN, CLOSED, CANCELLED
+    }
+
+    public Tournament() {
+        this.participants = new HashSet<>();
+    }
 
     public Tournament(User creator, CourseExecution courseExecution) {
+        this.participants = new HashSet<>();
         this.creator = creator;
         this.courseExecution = courseExecution;
     }
@@ -75,6 +95,8 @@ public class Tournament {
         this.key = tournamentDto.getKey();
         this.creator = tournamentDto.getCreator();
         this.courseExecution = tournamentDto.getCourseExecution();
+        this.state = tournamentDto.getState();
+        this.participants = new HashSet<>();
         setName(tournamentDto.getName());
         setStartDate(tournamentDto.getStartDateDate());
         setEndDate(tournamentDto.getEndDateDate());
@@ -166,6 +188,14 @@ public class Tournament {
         this.quiz = quiz;
     }
 
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public State getState() {
+        return state;
+    }
+
     private void checkName(String name) {
         if (name == null || name.trim().length() == 0) {
             throw new TutorException(TOURNAMENT_NAME_EMPTY);
@@ -196,6 +226,30 @@ public class Tournament {
     private void checkNumQuestions(int numQuestions) {
         if (numQuestions < 1) {
             throw new TutorException(TOURNAMENT_NOT_ENOUGH_QUESTIONS);
+        }
+    }
+
+    public void addParticipant(User user) {
+        if (participants.contains(user))
+            throw new TutorException(STUDENT_ALREADY_ENROLLED);
+        participants.add(user);
+    }
+
+    public Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void enrollStudent(User user) {
+        switch (state) {
+            case CREATED:
+                throw new TutorException(INVALID_ENROLLMENT_CREATED_TOURNAMENT);
+            case OPEN:
+               addParticipant(user);
+               break;
+            case CLOSED:
+                throw new TutorException(INVALID_ENROLLMENT_CLOSED_TOURNAMENT);
+            case CANCELLED:
+                throw new TutorException(INVALID_ENROLLMENT_CANCELLED_TOURNAMENT);
         }
     }
 }

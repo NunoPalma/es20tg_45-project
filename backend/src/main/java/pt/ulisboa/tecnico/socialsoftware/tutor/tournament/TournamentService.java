@@ -85,4 +85,21 @@ public class TournamentService {
 
 		return new TournamentDto(tournament, true);
 	}
+
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public void enrollStudent(Integer userId, Integer tournamentId) {
+		if (userId == null)
+			throw new TutorException(INVALID_USER_ID);
+		else if (tournamentId == null)
+			throw new TutorException(INVALID_TOURNAMENT_ID);
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+		if (user.getRole() != User.Role.STUDENT)
+			throw new TutorException(INVALID_ENROLLMENT_ATTEMPT_NOT_STUDENT);
+
+		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
+
+		tournament.enrollStudent(user);
+	}
 }
