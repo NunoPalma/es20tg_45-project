@@ -52,14 +52,14 @@ public class User implements UserDetails, Importable {
     @Column(name = "last_access")
     private LocalDateTime lastAccess;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
     @ManyToMany
     private Set<CourseExecution> courseExecutions = new HashSet<>();
 
-    @OneToMany
-    private Set<Doubt> doubts = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
 
     public User() {
     }
@@ -185,7 +185,7 @@ public class User implements UserDetails, Importable {
         this.numberOfStudentQuizzes = numberOfStudentQuizzes;
     }
 
-    public Set<Doubt> getDoubts() {
+    public List<Doubt> getDoubts() {
         return doubts;
     }
 

@@ -9,7 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
-import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepository
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
@@ -18,9 +18,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
-import spock.lang.Shared
 import spock.lang.Specification
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.*
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepositor
 
 @DataJpaTest
 class CreateClarificationTest extends Specification {
@@ -72,7 +72,7 @@ class CreateClarificationTest extends Specification {
     QuestionRepository questionRepository
 
     @Autowired
-    DoubtRepository doubtRepository
+    DoubtRepositor doubtRepository
 
     @Autowired
     CourseExecutionRepository courseExecutionRepository

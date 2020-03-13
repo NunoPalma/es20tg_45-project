@@ -61,7 +61,6 @@ public enum ErrorMessage {
     DOUBT_QUESTION_IS_EMPTY("The doubt's question is empty"),
     DOUBT_CONTENT_IS_EMPTY("The doubt's content is empty"),
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
-    DOUBT_COURSE_EXECUTION_DOESNT_MATCH("Question's Course Execution doesn't match the User's"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
     DOUBT_NOT_FOUND("Doubt with id %d is not found"),
 

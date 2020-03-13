@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
-import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepositor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,7 +24,7 @@ public class ClarificationService{
     private UserRepository userRepository;
 
     @Autowired
-    private DoubtRepository doubtRepository;
+    private DoubtRepositor doubtRepository;
 
     @PersistenceContext
     EntityManager entityManager;

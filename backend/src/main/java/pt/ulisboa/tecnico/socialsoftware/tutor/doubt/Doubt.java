@@ -1,10 +1,15 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
+import org.hibernate.annotations.JoinColumnOrFormula;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
+
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_NAME_IS_EMPTY;
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DOUBT_CONTENT_IS_EMPTY;
 
 @Entity
 @Table(name = "Doubts")
@@ -20,31 +25,28 @@ public class Doubt{
 
     private String content;
 
-    @OneToOne
-    private Clarification clarification;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt")
+    private Clarification clarification = null;
 
-    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User author;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Question question;
 
     public Doubt(){
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public Doubt(Question question, User user, String content){
         this.author = user;
+        if (content == null || content.trim().isEmpty()) {
+            throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
+        }
         this.content = content;
         this.question = question;
     }
+
 
     public Question getQuestion() {
         return question;
@@ -56,10 +58,6 @@ public class Doubt{
 
     public User getAuthor() {
         return author;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public void setAuthor(User author) {
@@ -92,6 +90,10 @@ public class Doubt{
 
     public Status getStatus() {
         return status;
+    }
+
+    public void setStatus(Status status){
+        this.status = status;
     }
 }
 

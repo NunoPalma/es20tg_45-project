@@ -26,7 +26,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
                 @Index(name = "question_indx_0", columnList = "key")
         })
 public class Question {
-    @SuppressWarnings("unused")
+
     public enum Status {
         DISABLED, REMOVED, AVAILABLE
     }
@@ -61,7 +61,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private List<Option> options = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -71,8 +71,8 @@ public class Question {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToMany
-    private Set<Doubt> doubts = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
 
 
     public Question() {
@@ -146,6 +146,10 @@ public class Question {
     public void setImage(Image image) {
         this.image = image;
         image.setQuestion(this);
+    }
+
+    public List<Doubt> getDoubts() {
+        return doubts;
     }
 
     public String getTitle() {
