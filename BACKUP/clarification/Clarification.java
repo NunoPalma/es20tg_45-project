@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.clarification;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -17,10 +16,9 @@ public class Clarification {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "doubt_id")
     private Doubt doubt;
 
@@ -33,10 +31,6 @@ public class Clarification {
         this.author = author;
         this.doubt = doubt;
         this.clarification = clarificationDto.getDescription();
-        doubt.setStatus(Doubt.Status.SOLVED);
-        doubt.setClarification(this);
-        author.addClarification(this);
-
     }
 
     private void checkConsistentClarification(ClarificationDto clarificationDto, User author, Doubt doubt) {
@@ -44,17 +38,12 @@ public class Clarification {
             throw new TutorException(ErrorMessage.CLARIFICATION_EMPTY);
         }
 
-        if(author.getRole().compareTo(User.Role.TEACHER) != 0) {
+        if(author.getRole().compareTo(User.Role.TEACHER) == 0) {
             throw  new TutorException(ErrorMessage.CLARIFICATION_INVALID_USER);
         }
 
-        if(doubt.getStatus().compareTo(Doubt.Status.UNSOLVED) != 0) {
+        if(doubt.getStatus().compareTo(Doubt.Status.SOLVED) == 0) {
             throw  new TutorException(ErrorMessage.CLARIFICATION_NOT_ALLOWED);
-        }
-
-        if(author.getCourseExecutions().stream()
-                .noneMatch(courseExecution -> courseExecution.getCourse().equals(doubt.getQuestion().getCourse()))) {
-            throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_COURSE_TEACHER);
         }
     }
 
