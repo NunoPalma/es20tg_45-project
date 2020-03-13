@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.evaluation;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "evaluations")
