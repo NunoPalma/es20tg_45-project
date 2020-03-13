@@ -15,7 +15,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import spock.lang.Specification
+import spock.lang.Unroll
+
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @DataJpaTest
 class SubmitQuestionTest extends Specification {
@@ -23,9 +27,11 @@ class SubmitQuestionTest extends Specification {
     public static final String COURSE_NAME = "Software Architecture"
     public static final String ACRONYM = "AS1"
     public static final String ACADEMIC_TERM = "1 SEM"
+
     public static final String QUESTION_TITLE = 'question title'
     public static final String QUESTION_CONTENT = 'question content'
-    public static final String OPTION_CONTENT = "optionId content"
+    public static final String OPTION_CONTENT = "optionId content1"
+
     public static final String STUDENT_NAME = "Student Name"
     public static final String STUDENT_USERNAME = "StudentUsername"
     public static final Integer STUDENT_KEY = 1
@@ -138,6 +144,38 @@ class SubmitQuestionTest extends Specification {
         true
     }
 
+    @Unroll("invalid arguments: #questionTitle | #questionContent | #optionContent1 | #correctOption1 || errorMessage ")
+    def "invalid input values"() {
+        given: "a questionDto"
+        def questionDto = new QuestionDto()
+        questionDto.setKey(1)
+        questionDto.setTitle(questionTitle)
+        questionDto.setContent(questionContent)
+
+        and: 'an option'
+        def optionDto1 = new OptionDto()
+        optionDto1.setContent(optionContent1)
+        optionDto1.setCorrect(correctOption1)
+        def options1 = new ArrayList<OptionDto>()
+        options1.add(optionDto1)
+        questionDto.setOptions(options1)
+
+        when:
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto)
+
+        then: "a TutorException is thrown"
+        def error = thrown(TutorException)
+        error.errorMessage == errorMessage
+
+        where:
+        questionTitle  | questionContent  | optionContent1 | correctOption1 || errorMessage
+             null      | QUESTION_CONTENT | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
+              ""       | QUESTION_CONTENT | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
+        QUESTION_TITLE |       null       | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
+        QUESTION_TITLE |        ""        | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
+        QUESTION_TITLE | QUESTION_CONTENT |       ""       |      true      || QUESTION_MISSING_DATA
+        QUESTION_TITLE | QUESTION_CONTENT | OPTION_CONTENT |      false     || QUESTION_MULTIPLE_CORRECT_OPTIONS
+    }
 
     @TestConfiguration
     static class QuestionServiceImplTestContextConfiguration {

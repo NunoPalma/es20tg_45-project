@@ -84,7 +84,10 @@ public class QuestionService {
       backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<QuestionDto> findQuestions(int courseId) {
-        return questionRepository.findQuestions(courseId).stream().map(QuestionDto::new).collect(Collectors.toList());
+        return questionRepository.findQuestions(courseId).stream()
+                .filter(question -> question.getStatus() != Question.Status.PENDING
+                        && question.getStatus() != Question.Status.REJECTED)
+                .map(QuestionDto::new).collect(Collectors.toList());
     }
 
     @Retryable(
@@ -119,8 +122,8 @@ public class QuestionService {
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public QuestionDto submitQuestion(int studentId, int courseId, QuestionDto questionDto){
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new TutorException(COURSE_NOT_FOUND, courseId));
         User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new TutorException(COURSE_NOT_FOUND, courseId));
 
         if (questionDto.getKey() == null) {
             int maxQuestionNumber = questionRepository.getMaxQuestionNumber() != null ?
