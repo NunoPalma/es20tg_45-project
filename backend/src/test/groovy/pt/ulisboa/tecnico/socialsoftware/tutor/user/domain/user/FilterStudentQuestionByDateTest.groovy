@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
@@ -15,8 +16,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import spock.lang.Specification
+import spock.lang.Unroll
 
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @DataJpaTest
 class FilterStudentQuestionByDateTest extends Specification {
@@ -128,6 +132,25 @@ class FilterStudentQuestionByDateTest extends Specification {
         then: "the returned data are correct"
         def sortedSubmittedQuestions = user.getSubmittedQuestions()
         sortedSubmittedQuestions.size() == 0
+    }
+
+    @Unroll("invalid arguments: #username || errorMessage")
+    def "invalid arguments"() {
+        given: "an username"
+        def userName = username
+
+        when:
+        userService.sortStudentSubmittedQuestions(userName)
+
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == errorMessage
+
+        where:
+        username || errorMessage
+        null     || USERNAME_NOT_FOUND
+        ""       || USERNAME_NOT_FOUND
+
     }
 
     @TestConfiguration
