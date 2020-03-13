@@ -89,9 +89,6 @@ class CreateDoubtTest extends Specification {
     def questiondto
     def questiondto2
     def optiondto
-    def date1
-    def date2
-    def date3
     def course
     def course2
     def quiz
@@ -186,8 +183,6 @@ class CreateDoubtTest extends Specification {
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
         doubtdto.setAuthor(student.getName())
-        System.out.println("O id da pergunta é" + question.getId());
-        System.out.println("O id do Utilizador é" + student.getId());
 
         when: "A doubt is created"
         doubtService.createDoubt(doubtdto, questionid, userid)
@@ -274,6 +269,7 @@ class CreateDoubtTest extends Specification {
         student.getDoubts().size() == 2
 
     }
+
 
     @TestConfiguration
     static class DoubtServiceImplTestContextConfiguration {
