@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
@@ -25,7 +26,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
                 @Index(name = "question_indx_0", columnList = "key")
         })
 public class Question {
-    @SuppressWarnings("unused")
+
     public enum Status {
         DISABLED, REMOVED, AVAILABLE
     }
@@ -60,7 +61,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private List<Option> options = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -69,6 +70,10 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
+
 
     public Question() {
     }
@@ -143,6 +148,10 @@ public class Question {
         image.setQuestion(this);
     }
 
+    public List<Doubt> getDoubts() {
+        return doubts;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -209,6 +218,10 @@ public class Question {
         course = null;
         getTopics().forEach(topic -> topic.getQuestions().remove(this));
         getTopics().clear();
+    }
+
+    public void addDoubt(Doubt doubt){
+        this.doubts.add(doubt);
     }
 
     @Override

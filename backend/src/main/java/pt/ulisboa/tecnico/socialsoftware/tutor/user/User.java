@@ -4,7 +4,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
@@ -52,7 +54,7 @@ public class User implements UserDetails, Importable {
     @Column(name = "last_access")
     private LocalDateTime lastAccess;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
     @ManyToMany
@@ -63,6 +65,12 @@ public class User implements UserDetails, Importable {
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "participants", fetch=FetchType.EAGER)
     private Set<Tournament> enrolledTournaments = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Clarification> clarifications = new HashSet<>();
 
     public User() {
     }
@@ -82,6 +90,22 @@ public class User implements UserDetails, Importable {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+    }
+
+    public void addClarification(Clarification clarification) {
+        this.clarifications.add(clarification);
+    }
+
+    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
+        this.quizAnswers = quizAnswers;
+    }
+
+    public Set<Clarification> getClarifications() {
+        return clarifications;
+    }
+
+    public void setClarifications(Set<Clarification> clarifications) {
+        this.clarifications = clarifications;
     }
 
     public Integer getId() {
@@ -163,8 +187,7 @@ public class User implements UserDetails, Importable {
 
     public Integer getNumberOfTeacherQuizzes() {
         if (this.numberOfTeacherQuizzes == null)
-            this.numberOfTeacherQuizzes = (int) getQuizAnswers().stream()
-                    .filter(quizAnswer -> quizAnswer.getCompleted())
+            this.numberOfTeacherQuizzes = (int) getQuizAnswers().stream().filter(quizAnswer -> quizAnswer.getCompleted())
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.PROPOSED))
                     .count();
 
@@ -187,6 +210,10 @@ public class User implements UserDetails, Importable {
 
     public void setNumberOfStudentQuizzes(Integer numberOfStudentQuizzes) {
         this.numberOfStudentQuizzes = numberOfStudentQuizzes;
+    }
+
+    public List<Doubt> getDoubts() {
+        return doubts;
     }
 
     public Integer getNumberOfInClassQuizzes() {
@@ -231,6 +258,11 @@ public class User implements UserDetails, Importable {
     public void setNumberOfInClassAnswers(Integer numberOfInClassAnswers) {
         this.numberOfInClassAnswers = numberOfInClassAnswers;
     }
+
+    public void addDoubt(Doubt doubt){
+        this.doubts.add(doubt);
+    }
+
 
     public Integer getNumberOfStudentAnswers() {
         if (this.numberOfStudentAnswers == null) {
