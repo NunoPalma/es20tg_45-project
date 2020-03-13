@@ -17,9 +17,10 @@ public class Clarification {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "doubt_id")
     private Doubt doubt;
 
@@ -34,6 +35,7 @@ public class Clarification {
         this.clarification = clarificationDto.getDescription();
         doubt.setStatus(Doubt.Status.SOLVED);
         doubt.setClarification(this);
+        author.addClarification(this);
 
     }
 

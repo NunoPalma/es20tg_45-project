@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
@@ -61,6 +62,9 @@ public class User implements UserDetails, Importable {
     @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Doubt> doubts = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Clarification> clarifications = new HashSet<>();
+
     public User() {
     }
 
@@ -79,6 +83,26 @@ public class User implements UserDetails, Importable {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+    }
+
+    public void addClarification(Clarification clarification) {
+        this.clarifications.add(clarification);
+    }
+
+    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
+        this.quizAnswers = quizAnswers;
+    }
+
+    public void setDoubts(Set<Doubt> doubts) {
+        this.doubts = doubts;
+    }
+
+    public Set<Clarification> getClarifications() {
+        return clarifications;
+    }
+
+    public void setClarifications(Set<Clarification> clarifications) {
+        this.clarifications = clarifications;
     }
 
     public Integer getId() {

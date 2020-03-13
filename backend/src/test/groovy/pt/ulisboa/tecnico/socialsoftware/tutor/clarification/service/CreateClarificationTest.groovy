@@ -26,12 +26,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepositor
 class CreateClarificationTest extends Specification {
 
     public static final String DOUBT_DESCRIPTION = "I don't understand why this option is not correct."
-    public static final Integer DOUBT_ID = 1
-    public static final Integer DOUBT_ID2 = 2
-    public static final Integer DOUBT_ID3 = 3
-    public static final Integer DOUBT_ID4 = 4
-    public static final Integer DOUBT_ID5 = 5
-
 
     public static final String CLARIFICATION_DESCRIPTION = "Your answer isn't correct because you need to watch the videos."
     public static final String CLARIFICATION_DESCRIPTION_EMPTY = " "
@@ -89,6 +83,7 @@ class CreateClarificationTest extends Specification {
     def CourseExecution
     def CourseExecutionTwo
     def SolvedDoubt
+    def Doubt
 
     def setup() {
 
@@ -133,6 +128,12 @@ class CreateClarificationTest extends Specification {
         Question = new Question(Course,questionDto)
         questionRepository.save(Question)
 
+        Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        doubtRepository.save(Doubt)
+
+        SolvedDoubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        SolvedDoubt.setStatus(Doubt.Status.SOLVED)
+        doubtRepository.save(SolvedDoubt)
 
     }
 
@@ -142,11 +143,6 @@ class CreateClarificationTest extends Specification {
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
-
-        and: "a doubt"
-        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
-        Doubt.setId(DOUBT_ID)
-        doubtRepository.save(Doubt)
 
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
@@ -158,10 +154,11 @@ class CreateClarificationTest extends Specification {
         insertedClarification.getId() != null
         insertedClarification.getClarification() == CLARIFICATION_DESCRIPTION
         insertedClarification.getAuthor().getName() == USER_NAME
+        insertedClarification.getAuthor().getRole() == User.Role.TEACHER
+        insertedClarification.getAuthor().getClarifications().contains(insertedClarification)
         insertedClarification.getDoubt().getContent() == DOUBT_DESCRIPTION
         insertedClarification.getDoubt().getStatus() == Doubt.Status.SOLVED
-        insertedClarification.getAuthor().getRole() == User.Role.TEACHER
-        insertedClarification.getDoubt().getClarification().equals(insertedClarification)
+        insertedClarification.getDoubt().getClarification() == insertedClarification
 
     }
 
@@ -171,11 +168,6 @@ class CreateClarificationTest extends Specification {
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION_EMPTY)
-
-        and: "a doubt"
-        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
-        Doubt.setId(DOUBT_ID2)
-        doubtRepository.save(Doubt)
 
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
@@ -193,11 +185,6 @@ class CreateClarificationTest extends Specification {
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
-        and: "a doubt"
-        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
-        Doubt.setId(DOUBT_ID3)
-        doubtRepository.save(Doubt)
-
         when:
         clarificationService.createClarification(clarificationDto, Student.getId(), Doubt.getId())
 
@@ -212,12 +199,6 @@ class CreateClarificationTest extends Specification {
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
-
-        and: "a doubt"
-        def SolvedDoubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
-        SolvedDoubt.setId(DOUBT_ID4)
-        SolvedDoubt.setStatus(Doubt.Status.SOLVED)
-        doubtRepository.save(SolvedDoubt)
 
         when:
         clarificationService.createClarification(clarificationDto, Teacher.getId(), SolvedDoubt.getId())
@@ -234,11 +215,6 @@ class CreateClarificationTest extends Specification {
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
-
-        and: "a doubt"
-        def Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
-        Doubt.setId(DOUBT_ID5)
-        doubtRepository.save(Doubt)
 
         when:
         clarificationService.createClarification(clarificationDto, TeacherTwo.getId(), Doubt.getId())
