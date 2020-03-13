@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
@@ -18,6 +19,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
@@ -89,6 +91,17 @@ class GetUserDoubtsListTest extends Specification {
         result.size() == 0
     }
 
+    def "Get the doubt list of a null user"(){
+
+        when:
+        def result = doubtService.findUserDoubts(null)
+
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == DOUBT_USER_IS_EMPTY
+
+    }
+
     def "Get the doubt list of a user"(){
 
         given: "A doubt"
@@ -104,6 +117,8 @@ class GetUserDoubtsListTest extends Specification {
         newDoubt.getAuthor() == student.getName()
         newDoubt.getContent() == DOUBT_CONTENT
     }
+
+
 
     @TestConfiguration
     static class DoubtServiceImplTestContextConfiguration {

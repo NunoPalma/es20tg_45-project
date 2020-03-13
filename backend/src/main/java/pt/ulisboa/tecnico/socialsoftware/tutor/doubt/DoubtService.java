@@ -81,14 +81,15 @@ public class DoubtService {
 
         Doubt doubt = new Doubt(question, student, content);
         this.entityManager.persist(doubt);
-        question.addDoubt(doubt);
-        student.addDoubt(doubt);
 
         return new DoubtDto(doubt);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<DoubtDto> findUserDoubts(int userId){
+    public List<DoubtDto> findUserDoubts(Integer userId){
+        if (userId == null){
+            throw new TutorException(DOUBT_USER_IS_EMPTY);
+        }
         return doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
     }
 
