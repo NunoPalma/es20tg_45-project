@@ -28,6 +28,8 @@ import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -216,6 +218,20 @@ public class QuestionService {
         QuestionsXmlImport xmlImporter = new QuestionsXmlImport();
 
         xmlImporter.importQuestions(questionsXML, this, courseRepository);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<Question> sortQuestionByCreationDate(LinkedList<Question> userSubmittedQuestionsList) {
+        LinkedList<Question> sortedQuestions = userSubmittedQuestionsList;
+        sortedQuestions.sort((q1, q2) -> {
+            if(q1.getCreationDate().isBefore(q2.getCreationDate())) { return 1; }
+            else { return 0; }
+        });
+
+        return sortedQuestions;
     }
 }
 
