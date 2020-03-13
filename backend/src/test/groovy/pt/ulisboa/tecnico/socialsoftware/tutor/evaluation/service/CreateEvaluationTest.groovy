@@ -75,7 +75,6 @@ class CreateEvaluationTest extends Specification {
 
         then:
         true
-
     }
 
     @TestConfiguration

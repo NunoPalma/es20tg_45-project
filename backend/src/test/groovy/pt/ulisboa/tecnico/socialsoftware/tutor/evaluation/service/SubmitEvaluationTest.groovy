@@ -7,10 +7,14 @@ import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.EvaluationService
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
 import spock.lang.Specification
+import spock.lang.Unroll
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
+
 
 @DataJpaTest
 class SubmitEvaluationTest extends Specification {
@@ -73,6 +77,36 @@ class SubmitEvaluationTest extends Specification {
         def evaluation = evaluationRepository.findAll().get(0)
         evaluation.getSubmittedQuestion().getStatus() == Question.Status.AVAILABLE
     }
+
+    @Unroll("invalid arguments: #isApproved | #justification | errorMessage")
+    def "invalid input values"(){
+        given: "an evaluationDto"
+        def evaluationDto = new EvaluationDto()
+        and: "a question"
+        def pendingQuestion = new Question()
+        pendingQuestion.setStatus(Question.Status.PENDING)
+        pendingQuestion.setKey(1)
+        questionRepository.save(pendingQuestion)
+        and: "a questionDto"
+        def pendingQuestionDto = new QuestionDto(pendingQuestion)
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+
+        def approved = isApproved
+        def eval_justification = justification
+
+        when:
+        evaluationService.submitEvaluation(pendingQuestionDto, approved, eval_justification)
+
+        then:
+        def error = thrown(TutorException)
+        error.errorMessage == errorMessage
+
+        where:
+            isApproved      |  justification    || errorMessage
+            false           |   null            || MUST_HAVE_JUSTIFICATION
+            false           |   ""              || MUST_HAVE_JUSTIFICATION
+    }
+
 
     @TestConfiguration
     static class EvaluationServiceImplTestContextConfiguration {
