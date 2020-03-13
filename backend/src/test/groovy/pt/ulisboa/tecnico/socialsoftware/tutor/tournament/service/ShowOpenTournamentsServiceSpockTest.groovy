@@ -28,13 +28,31 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 @DataJpaTest
 class ShowOpenTournamentServiceSpockTest extends Specification {
 
+	@Autowired
+	TournamentService tournamentService
+
+	@Autowired
+	TournamentRepository tournamentRepository
+
+	def setup() {
+
+	}
+
 	def "show tournaments in whose course execution the user is not enrolled"() {
-		// throw exception
-		expect: false
+		def tournament = new TournamentDto()
 	}
 
 	def "show tournaments associated with the user's course execution"() {
 		// throw exception
 		expect: false
+	}
+
+	@TestConfiguration
+	static class QuizServiceImplTestContextConfiguration {
+
+		@Bean
+		TournamentService tournamentService() {
+			return new TournamentService()
+		}
 	}
 }
