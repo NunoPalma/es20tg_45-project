@@ -6,9 +6,12 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -18,6 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -36,6 +42,9 @@ public class TournamentService {
 	@Autowired
 	private TournamentRepository tournamentRepository;
 
+	@Autowired
+	private TopicRepository topicRepository;
+
 	@PersistenceContext
 	EntityManager entityManager;
 
@@ -50,8 +59,20 @@ public class TournamentService {
 			value = { SQLException.class },
 			backoff = @Backoff(delay = 5000))
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public TournamentDto createTournament(int userId, int courseExecutionId, TournamentDto tournamentDto) {
+	public TournamentDto createTournament(int userId, int courseExecutionId, List<String> topicNames, TournamentDto tournamentDto) {
 		CourseExecution courseExecution = courseExecutionRepository.findById(courseExecutionId).orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, courseExecutionId));
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+		Set<Topic> topics = new HashSet<>();
+		for (String topicName : topicNames) {
+			Course c = courseExecution.getCourse();
+			Integer id = c.getId();
+			topics.add(topicRepository.findTopicByName(id, topicName));
+		}
+
+		if (user.getRole() != User.Role.STUDENT)
+			throw new TutorException(TOURNAMENT_CREATOR_IS_NOT_STUDENT);
 
 		if (tournamentDto.getKey() == null) {
 			tournamentDto.setKey(getMaxTournamentKey() + 1);
@@ -59,6 +80,8 @@ public class TournamentService {
 
 		Tournament tournament = new Tournament(tournamentDto);
 		tournament.setCourseExecution(courseExecution);
+		tournament.setCreator(user);
+		tournament.setTopics(topics);
 
 		return new TournamentDto(tournament, true);
 	}

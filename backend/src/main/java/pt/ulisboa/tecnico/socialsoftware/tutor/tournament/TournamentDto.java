@@ -10,8 +10,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TournamentDto implements Serializable {
 
@@ -22,11 +23,10 @@ public class TournamentDto implements Serializable {
 	private String name;
 	private String startDate;
 	private String endDate;
-	private Set<TopicDto> topics = new LinkedHashSet<>();
+	private Set<TopicDto> topics = new HashSet<>();
 	private Integer numQuestions;
 	private Quiz quiz;
 	private Tournament.State state;
-
 
 	@Transient
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -41,8 +41,8 @@ public class TournamentDto implements Serializable {
 	public TournamentDto(Tournament tournament, boolean deepCopy) {
 		this.id = tournament.getId();
 		this.key = tournament.getKey();
-		//this.creator = tournament.getCreator();
-		//this.courseExecution = tournament.getCourseExecution();
+		this.creator = tournament.getCreator();
+		this.courseExecution = tournament.getCourseExecution();
 		this.name = tournament.getName();
 		this.state = tournament.getState();
 
@@ -51,14 +51,13 @@ public class TournamentDto implements Serializable {
 		if (tournament.getEndDate() != null)
 			this.endDate = tournament.getEndDate().format(formatter);
 
-		/*
+		this.numQuestions = tournament.getNumQuestions();
+
 		if (deepCopy) {
 			this.topics = tournament.getTopics().stream()
 					.map(TopicDto::new)
 					.collect(Collectors.toSet());
 		}
-
-		 */
 	}
 
 	public Integer getId() {

@@ -3,6 +3,10 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
+<<<<<<< HEAD
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
+=======
+>>>>>>> 2d7d902842d2351270ab688f77335959d39150a8
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -11,6 +15,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -96,6 +101,7 @@ public class Tournament {
         setStartDate(tournamentDto.getStartDateDate());
         setEndDate(tournamentDto.getEndDateDate());
         setNumQuestions(tournamentDto.getNumQuestions());
+        this.topics = new HashSet<>();
     }
 
     public Integer getId() {
@@ -185,6 +191,7 @@ public class Tournament {
     public void setState(State state) {
         this.state = state;
     }
+
     public State getState() {
         return state;
     }
