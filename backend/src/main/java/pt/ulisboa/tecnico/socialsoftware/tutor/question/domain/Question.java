@@ -2,11 +2,14 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
+import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.Evaluation;
+
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,9 +28,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
                 @Index(name = "question_indx_0", columnList = "key")
         })
 public class Question {
-    @SuppressWarnings("unused")
+
     public enum Status {
-        DISABLED, REMOVED, AVAILABLE
+        DISABLED, REMOVED, AVAILABLE, PENDING, REJECTED
     }
 
     @Id
@@ -60,7 +63,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private List<Option> options = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -69,6 +72,19 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "evaluation_id")
+    private Evaluation evaluation;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
+
 
     public Question() {
     }
@@ -143,6 +159,10 @@ public class Question {
         image.setQuestion(this);
     }
 
+    public List<Doubt> getDoubts() {
+        return doubts;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -191,6 +211,14 @@ public class Question {
         this.course = course;
     }
 
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
+
+    public Evaluation getEvaluation() { return evaluation; }
+
+    public void setEvaluation(Evaluation evaluation) { this.evaluation = evaluation; }
+
     public void addOption(Option option) {
         options.add(option);
     }
@@ -209,6 +237,10 @@ public class Question {
         course = null;
         getTopics().forEach(topic -> topic.getQuestions().remove(this));
         getTopics().clear();
+    }
+
+    public void addDoubt(Doubt doubt){
+        this.doubts.add(doubt);
     }
 
     @Override
@@ -284,7 +316,9 @@ public class Question {
     }
 
     private void checkConsistentQuestion(QuestionDto questionDto) {
-        if (questionDto.getTitle().trim().length() == 0 ||
+        if (questionDto.getTitle() == null ||
+                questionDto.getContent() == null ||
+                questionDto.getTitle().trim().length() == 0 ||
                 questionDto.getContent().trim().length() == 0 ||
                 questionDto.getOptions().stream().anyMatch(optionDto -> optionDto.getContent().trim().length() == 0)) {
             throw new TutorException(QUESTION_MISSING_DATA);
