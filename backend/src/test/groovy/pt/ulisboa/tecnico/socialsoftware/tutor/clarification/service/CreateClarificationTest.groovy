@@ -164,7 +164,7 @@ class CreateClarificationTest extends Specification {
 
 
     @Unroll
-    def "invalid arguments: userid =#userid | questionid =#questionid || errormessage =#errormessage"() {
+    def "invalid arguments: userid =#userid | doubtid =#doubtid || errormessage =#errormessage"() {
 
         given: "a clarificationDto"
         def clarificationDto = new ClarificationDto()
