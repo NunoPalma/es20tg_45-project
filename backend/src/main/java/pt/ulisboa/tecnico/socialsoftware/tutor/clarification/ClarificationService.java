@@ -34,12 +34,14 @@ public class ClarificationService{
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ClarificationDto createClarification(ClarificationDto clarificationDto, Integer userId, Integer doubtId) {
+    public ClarificationDto createClarification(ClarificationDto clarificationDto, Integer doubtId, Integer userId) {
+
 
         if(userId == null){
             throw new TutorException(ErrorMessage.CLARIFICATION_USER_IS_EMPTY);
         }
 
+        
         if(doubtId == null){
             throw new TutorException(ErrorMessage.CLARIFICATION_DOUBT_IS_EMPTY);
         }
