@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.Evaluation;
+
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
@@ -26,7 +28,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
                 @Index(name = "question_indx_0", columnList = "key")
         })
 public class Question {
-    @SuppressWarnings("unused")
+
     public enum Status {
         DISABLED, REMOVED, AVAILABLE, PENDING, REJECTED
     }
@@ -61,7 +63,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private List<Option> options = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -71,6 +73,7 @@ public class Question {
     @JoinColumn(name = "course_id")
     private Course course;
 
+
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -78,6 +81,10 @@ public class Question {
     @OneToOne
     @JoinColumn(name = "evaluation_id")
     private Evaluation evaluation;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
+
 
     public Question() {
     }
@@ -150,6 +157,10 @@ public class Question {
     public void setImage(Image image) {
         this.image = image;
         image.setQuestion(this);
+    }
+
+    public List<Doubt> getDoubts() {
+        return doubts;
     }
 
     public String getTitle() {
@@ -226,6 +237,10 @@ public class Question {
         course = null;
         getTopics().forEach(topic -> topic.getQuestions().remove(this));
         getTopics().clear();
+    }
+
+    public void addDoubt(Doubt doubt){
+        this.doubts.add(doubt);
     }
 
     @Override
