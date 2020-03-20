@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.Evaluation;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.QuestionsXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.QuestionsXmlImport;
@@ -18,12 +19,15 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,9 @@ public class QuestionService {
 
     @Autowired
     private TopicRepository topicRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -75,7 +82,10 @@ public class QuestionService {
       backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<QuestionDto> findQuestions(int courseId) {
-        return questionRepository.findQuestions(courseId).stream().map(QuestionDto::new).collect(Collectors.toList());
+        return questionRepository.findQuestions(courseId).stream()
+                .filter(question -> question.getStatus() != Question.Status.PENDING
+                        && question.getStatus() != Question.Status.REJECTED)
+                .map(QuestionDto::new).collect(Collectors.toList());
     }
 
     @Retryable(
@@ -102,6 +112,33 @@ public class QuestionService {
         Question question = new Question(course, questionDto);
         question.setCreationDate(LocalDateTime.now());
         this.entityManager.persist(question);
+        return new QuestionDto(question);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public QuestionDto submitQuestion(int studentId, int courseId, QuestionDto questionDto){
+        User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new TutorException(COURSE_NOT_FOUND, courseId));
+
+        if (questionDto.getKey() == null) {
+            int maxQuestionNumber = questionRepository.getMaxQuestionNumber() != null ?
+                    questionRepository.getMaxQuestionNumber() : 0;
+            questionDto.setKey(maxQuestionNumber + 1);
+        }
+
+        questionDto.setStatus(Question.Status.PENDING.name());
+        Question question = new Question(course, questionDto);
+        student.addSubmittedQuestion(question);
+        question.setUser(student);
+        Evaluation evaluation = new Evaluation(question);
+        question.setEvaluation(evaluation);
+        question.setCreationDate(LocalDateTime.now());
+
+        this.entityManager.persist(question);
+        this.entityManager.persist(evaluation);
         return new QuestionDto(question);
     }
 
@@ -182,6 +219,20 @@ public class QuestionService {
         QuestionsXmlImport xmlImporter = new QuestionsXmlImport();
 
         xmlImporter.importQuestions(questionsXML, this, courseRepository);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<Question> sortQuestionByCreationDate(LinkedList<Question> userSubmittedQuestionsList) {
+        LinkedList<Question> sortedQuestions = userSubmittedQuestionsList;
+        sortedQuestions.sort((q1, q2) -> {
+            if(q1.getCreationDate().isBefore(q2.getCreationDate())) { return 1; }
+            else { return -1; }
+        });
+
+        return sortedQuestions;
     }
 }
 
