@@ -1,6 +1,13 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.exceptions;
 
 public enum ErrorMessage {
+
+    CLARIFICATION_EMPTY("A clarification cannot be empty"),
+    CLARIFICATION_INVALID_USER("User is not a teacher"),
+    CLARIFICATION_NOT_ALLOWED("This doubt is already solved"),
+    CLARIFICATION_DOUBT_IS_EMPTY("The clarification's question is empty"),
+    CLARIFICATION_USER_IS_EMPTY("The clarification's content is empty"),
+
     QUIZ_NOT_FOUND("Quiz not found with id %d"),
     QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
     QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
@@ -52,12 +59,43 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
+
     QUESTION_NOT_PENDING("Expected Question to be in pending status"),
 
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
     MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),
 
-    ACCESS_DENIED("You do not have permission to view this resource");
+    TOURNAMENT_NAME_EMPTY("The tournament name is empty"),
+    TOURNAMENT_START_DATE_EMPTY("The tournament start date is empty"),
+    TOURNAMENT_END_DATE_EMPTY("The tournament end date is empty"),
+    TOURNAMENT_INVALID_END_DATE("The tournament end date is before the start date"),
+    TOURNAMENT_DATES_OVERLAP("The tournament's start and end dates overlap"),
+    TOURNAMENT_NOT_ENOUGH_QUESTIONS("Not enough questions to create a tournament"),
+    NOT_ENOUGH_TOPICS("Not enough topics to create a tournament"),
+    EMPTY_TOURNAMENT_CREATOR("The tournament creator is empty"),
+    TOURNAMENT_CREATOR_IS_NOT_STUDENT("The tournament creator is not a student"),
+    EMPTY_COURSE_EXECUTION("The tournament course execution is empty"),
+    INVALID_ENROLLMENT_CLOSED_TOURNAMENT("The tournament is closed"),
+    INVALID_ENROLLMENT_CREATED_TOURNAMENT("The tournament hasn't been open yet"),
+    INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
+    TOURNAMENT_NOT_FOUND("Tournament with id %d wasn't found"),
+
+    INVALID_USER_ID("Invalid user ID"),
+    INVALID_TOURNAMENT_ID("Invalid tournament ID"),
+    INVALID_ENROLLMENT_ATTEMPT_NOT_STUDENT("Invalid user role"),
+    STUDENT_ALREADY_ENROLLED("The student is already enrolled in the tournament"),
+    DOUBT_USER_IS_EMPTY("The doubt's user is empty"),
+    DOUBT_QUESTION_IS_EMPTY("The doubt's question is empty"),
+    DOUBT_CONTENT_IS_EMPTY("The doubt's content is empty"),
+    DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
+    DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
+    DOUBT_NOT_FOUND("Doubt with id %d is not found"),
+
+    ACCESS_DENIED("You do not have permission to view this resource"),
+
+    CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request");
+
+
 
     public final String label;
 
