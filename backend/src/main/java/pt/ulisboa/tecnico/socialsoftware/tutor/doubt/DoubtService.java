@@ -93,4 +93,9 @@ public class DoubtService {
         return doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Question getDoubtQuestion(Integer doubtId) {
+        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
+        return doubt.getQuestion();
+    }
 }

@@ -35,7 +35,7 @@ public class Clarification {
         this.clarification = clarificationDto.getDescription();
         doubt.setStatus(Doubt.Status.SOLVED);
         doubt.setClarification(this);
-        author.addClarification(this);
+        //author.addClarification(this);
 
     }
 
