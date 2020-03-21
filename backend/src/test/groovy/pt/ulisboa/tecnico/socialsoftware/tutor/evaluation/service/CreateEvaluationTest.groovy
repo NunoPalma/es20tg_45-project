@@ -71,10 +71,10 @@ class CreateEvaluationTest extends Specification {
         def evaluation = evaluationRepository.findAll().get(0)
 
         when:
-        evaluation != null
+        evaluation == null
 
         then:
-        true
+        true // this test is useless, it will always pass even if I change it as seen above
     }
 
     @TestConfiguration

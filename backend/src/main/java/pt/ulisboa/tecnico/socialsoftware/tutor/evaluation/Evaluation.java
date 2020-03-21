@@ -22,6 +22,8 @@ public class Evaluation {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "evaluation")
     private Question submittedQuestion;
 
+    // Who reviewed the question? Is that user a professor? A professor for the course the question is part of?
+
     public Evaluation(){
     }
 
