@@ -149,6 +149,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 		exception.getErrorMessage() == TOURNAMENT_NAME_EMPTY
 	}
 
+	// name of the test != test itself
 	def "tournament creator is a student"() {
 		given: "a user that is not a student"
 		tournamentDto.setName("HelloTournament")
@@ -187,6 +188,8 @@ class CreateTournamentServiceSpockTest extends Specification {
 		def result = tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
 
 		then: "the returned data are correct"
+        // you are checking the returned dto, not if the db has the tournament
+		// the service doesn't persist/save so in wouldn't be there
 		result.name == TOURNAMENT_NAME
 		result.startDate == START_DATE.format(formatter)
 		result.endDate == END_DATE.format(formatter)

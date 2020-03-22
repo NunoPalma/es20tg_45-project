@@ -73,6 +73,7 @@ public class TournamentService {
 
 		if (user.getRole() != User.Role.STUDENT)
 			throw new TutorException(TOURNAMENT_CREATOR_IS_NOT_STUDENT);
+		// This student should be enrolled in courseExecutionId
 
 		if (tournamentDto.getKey() == null) {
 			tournamentDto.setKey(getMaxTournamentKey() + 1);
@@ -82,7 +83,9 @@ public class TournamentService {
 		tournament.setCourseExecution(courseExecution);
 		tournament.setCreator(user);
 		tournament.setTopics(topics);
+		// where are the tournaments saved? missing repository.save()
 
+		// It would make sense for the creator to be already enrolled
 		return new TournamentDto(tournament, true);
 	}
 
@@ -98,7 +101,9 @@ public class TournamentService {
 
 		if (user.getRole() != User.Role.STUDENT)
 			throw new TutorException(INVALID_ENROLLMENT_ATTEMPT_NOT_STUDENT);
+		// students who participate should be enrolled in the same courseExecution
 
+		// this only works because you do the repo.save in the tests, why isn't it in the tournament creation?
 		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
 
 		tournament.enrollStudent(user);
