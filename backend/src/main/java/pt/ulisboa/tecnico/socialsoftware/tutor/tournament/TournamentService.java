@@ -20,10 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -90,11 +88,10 @@ public class TournamentService {
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void enrollStudent(Integer userId, Integer tournamentId) {
-		if (userId == null) {
+		if (userId == null)
 			throw new TutorException(INVALID_USER_ID);
-		} else if (tournamentId == null) {
+		else if (tournamentId == null)
 			throw new TutorException(INVALID_TOURNAMENT_ID);
-		}
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
@@ -107,19 +104,26 @@ public class TournamentService {
 	}
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public List<Tournament> showOpenTournaments(Integer userId) {
-		if (userId == null) {
+	public List<TournamentDto> getOpenTournaments(Integer userId) {
+		if (userId == null)
 			throw new TutorException(INVALID_USER_ID);
-		}
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
 		List<Tournament> tournaments = new ArrayList<>();
 
-		for (CourseExecution courseExecution : user.getCourseExecutions()) {
+		for (CourseExecution courseExecution : user.getCourseExecutions())
 			tournaments.addAll(tournamentRepository.findTournaments(courseExecution.getId()));
-		}
 
-		return tournaments;
+		List<TournamentDto> tournamentDtos = new ArrayList<>();
+
+		for (Tournament tournament: tournaments)
+			tournamentDtos.add(new TournamentDto(tournament, true));
+
+
+		return tournamentDtos.stream()
+				.sorted(Comparator
+						.comparing(TournamentDto::getName))
+				.collect(Collectors.toList());
 	}
 }

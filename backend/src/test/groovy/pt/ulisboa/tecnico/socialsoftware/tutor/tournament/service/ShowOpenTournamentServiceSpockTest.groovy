@@ -28,6 +28,18 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
 class ShowOpenTournamentServiceSpockTest extends Specification {
+	static final int TOURNAMENT_ID_1 = 1
+	static final int TOURNAMENT_ID_2 = 2
+	static final String TOURNAMENT_NAME_ONE = "Tournament_A"
+	static final String TOURNAMENT_NAME_TWO = "Tournament_B"
+	static final LocalDateTime START_DATE = LocalDateTime.now()
+	static final LocalDateTime END_DATE = START_DATE.plusDays(20)
+	static final Integer ONE_QUESTION = 1
+	static final Integer USER_KEY = 1
+	static final String COURSE_NAME = "LEIC-T"
+	static final String COURSE_EXECUTION_ACRONYM = "CS101"
+	static final String COURSE_EXECUTION_ACADEMIC_TERM = "1º Semestre"
+	static final String TOPIC_NAME = "InterestingTopic"
 
 	@Autowired
 	TournamentService tournamentService
@@ -35,18 +47,78 @@ class ShowOpenTournamentServiceSpockTest extends Specification {
 	@Autowired
 	TournamentRepository tournamentRepository
 
+	@Autowired
+	CourseRepository courseRepository
+
+	@Autowired
+	CourseExecutionRepository courseExecutionRepository
+
+	@Autowired
+	UserRepository userRepository
+
+	@Autowired
+	TopicRepository topicRepository
+
 	def courseExecution
 
 	def setup() {
 		courseExecution = new CourseExecution()
 	}
 
-	def "show tournaments in whose course execution the user is not enrolled"() {
-		expect: false
-	}
-
 	def "show tournaments associated with the user's course execution"() {
-		expect: false
+		given: "a course and a course executions"
+		def course = new Course()
+		course.setName(COURSE_NAME)
+		courseRepository.save(course)
+		courseExecution.setAcronym(COURSE_EXECUTION_ACRONYM)
+		courseExecution.setAcademicTerm(COURSE_EXECUTION_ACADEMIC_TERM)
+		courseExecution.setCourse(course)
+		courseExecutionRepository.save(courseExecution)
+
+		and: "a student"
+		def student = new User()
+		student.setRole(User.Role.STUDENT)
+		student.setKey(USER_KEY)
+		student.addCourse(courseExecution)
+		userRepository.save(student)
+
+		and: "a topic"
+		def topic = new Topic()
+		topic.setName(TOPIC_NAME)
+		topicRepository.save(topic)
+
+		and: "two tournaments"
+		def tournamentOne = new Tournament()
+		tournamentOne.setName(TOURNAMENT_NAME_TWO)
+		tournamentOne.setStartDate(START_DATE)
+		tournamentOne.setEndDate(END_DATE)
+		tournamentOne.setNumQuestions(ONE_QUESTION)
+		tournamentOne.setKey(TOURNAMENT_ID_1)
+		tournamentOne.setState(Tournament.State.OPEN)
+		tournamentOne.setCourseExecution(courseExecution)
+		tournamentOne.addTopic(topic)
+		tournamentRepository.save(tournamentOne)
+		tournamentService.enrollStudent(student.getId(), tournamentOne.getId())
+		def tournamentTwo = new Tournament()
+		tournamentTwo.setName(TOURNAMENT_NAME_ONE)
+		tournamentTwo.setStartDate(START_DATE)
+		tournamentTwo.setEndDate(END_DATE)
+		tournamentTwo.setNumQuestions(ONE_QUESTION)
+		tournamentTwo.setKey(TOURNAMENT_ID_2)
+		tournamentTwo.setState(Tournament.State.OPEN)
+		tournamentTwo.setCourseExecution(courseExecution)
+		tournamentTwo.addTopic(topic)
+		tournamentRepository.save(tournamentTwo)
+		tournamentService.enrollStudent(student.getId(), tournamentTwo.getId())
+
+		when:
+		def result = tournamentService.getOpenTournaments(student.getId())
+
+		then:
+		def tournament_one = result.get(0)
+		tournament_one.getName() == TOURNAMENT_NAME_ONE
+		def tournament_two = result.get(1)
+		tournament_two.getName() == TOURNAMENT_NAME_TWO
 	}
 
 	@TestConfiguration
