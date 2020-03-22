@@ -64,11 +64,11 @@ public class TournamentService {
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
+		if (topicNames.isEmpty())
+			throw new TutorException(NOT_ENOUGH_TOPICS);
 		Set<Topic> topics = new HashSet<>();
 		for (String topicName : topicNames) {
-			Course c = courseExecution.getCourse();
-			Integer id = c.getId();
-			topics.add(topicRepository.findTopicByName(id, topicName));
+			topics.add(topicRepository.findTopicByName(courseExecution.getCourse().getId(), topicName));
 		}
 
 		if (user.getRole() != User.Role.STUDENT)
@@ -82,6 +82,8 @@ public class TournamentService {
 		tournament.setCourseExecution(courseExecution);
 		tournament.setCreator(user);
 		tournament.setTopics(topics);
+
+		tournamentRepository.save(tournament);
 
 		return new TournamentDto(tournament, true);
 	}

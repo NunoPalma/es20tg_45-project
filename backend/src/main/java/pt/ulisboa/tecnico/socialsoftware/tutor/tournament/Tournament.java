@@ -166,6 +166,10 @@ public class Tournament {
         this.topics = topics;
     }
 
+    public void addTopic(Topic topic) {
+        topics.add(topic);
+    }
+
     public Integer getNumQuestions() {
         return numQuestions;
     }
@@ -198,6 +202,8 @@ public class Tournament {
     }
 
     private void checkStartDate(LocalDateTime startDate) {
+
+        System.out.println(startDate);
         if (startDate == null) {
             throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
         }
