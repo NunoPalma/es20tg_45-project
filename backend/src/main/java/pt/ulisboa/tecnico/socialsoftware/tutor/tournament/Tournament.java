@@ -78,6 +78,7 @@ public class Tournament {
 
     public Tournament() {
         this.participants = new HashSet<>();
+        this.topics = new HashSet<>();
     }
 
     public Tournament(User creator, CourseExecution courseExecution) {
