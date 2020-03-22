@@ -69,7 +69,7 @@ public class User implements UserDetails, Importable {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "participants", fetch=FetchType.EAGER)
     private Set<Tournament> enrolledTournaments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "author", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Doubt> doubts = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -339,9 +339,6 @@ public class User implements UserDetails, Importable {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
-    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
-        this.quizAnswers = quizAnswers;
-    }
 
     public Set<Tournament> getTournaments() {
         return tournaments;

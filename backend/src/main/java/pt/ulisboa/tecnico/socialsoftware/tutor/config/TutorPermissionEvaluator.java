@@ -17,6 +17,7 @@ import java.io.Serializable;
 
 @Component
 public class TutorPermissionEvaluator implements PermissionEvaluator {
+
     @Autowired
     private UserService userService;
 
@@ -78,9 +79,10 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean userHasAnExecutionOfTheCourse(String username, int id) {
-        return userService.getCourseExecutions(username).stream()
-                .anyMatch(course -> course.getCourseId() == id);
+        return userService.getCourseExecutions(username).stream().anyMatch(course -> course.getCourseId() == id);
     }
+
+
 
     private boolean userHasThisExecution(String username, int id) {
         return userService.getCourseExecutions(username).stream()
