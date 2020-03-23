@@ -54,7 +54,7 @@ public class User implements UserDetails, Importable {
     @Column(name = "last_access")
     private LocalDateTime lastAccess;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
     @ManyToMany

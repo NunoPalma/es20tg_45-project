@@ -65,20 +65,6 @@ public class DoubtService {
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
 
-        Set<QuizAnswer> quizAnswers = student.getQuizAnswers();
-        if(quizAnswers.isEmpty()){
-            throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
-        }
-
-        List<Quiz> quizList = quizAnswers.stream().map(QuizAnswer::getQuiz).collect(Collectors.toList());
-        Set<QuizQuestion> quizQuestions = new HashSet<>();
-        for(Quiz quiz: quizList){
-            quizQuestions.addAll(quiz.getQuizQuestions());
-        }
-        if (!quizQuestions.stream().map(QuizQuestion::getQuestion).collect(Collectors.toSet()).contains(question)) {
-            throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
-        }
-
         Doubt doubt = new Doubt(question, student, content);
         this.entityManager.persist(doubt);
 

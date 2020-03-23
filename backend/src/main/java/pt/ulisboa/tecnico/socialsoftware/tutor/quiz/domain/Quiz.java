@@ -18,6 +18,7 @@ import java.util.stream.IntStream;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUIZ_HAS_ANSWERS;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUIZ_NOT_CONSISTENT;
 
+
 @Entity
 @Table(
         name = "quizzes",

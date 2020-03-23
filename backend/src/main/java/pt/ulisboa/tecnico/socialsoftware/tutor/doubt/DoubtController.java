@@ -37,7 +37,7 @@ public class DoubtController {
     }
 
     @PostMapping(value = "question/{questionId}/doubts")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ANSWERED')")
     public DoubtDto createDoubt(Principal principal, @RequestBody DoubtDto doubtDto, @PathVariable int questionId){
         logger.info(Integer.toString(questionId));
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
