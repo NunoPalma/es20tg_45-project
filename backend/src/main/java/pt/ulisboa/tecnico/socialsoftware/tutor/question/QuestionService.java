@@ -78,13 +78,23 @@ public class QuestionService {
     }
 
     @Retryable(
-      value = { SQLException.class },
-      backoff = @Backoff(delay = 5000))
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<QuestionDto> findQuestions(int courseId) {
         return questionRepository.findQuestions(courseId).stream()
                 .filter(question -> question.getStatus() != Question.Status.PENDING
                         && question.getStatus() != Question.Status.REJECTED)
+                .map(QuestionDto::new).collect(Collectors.toList());
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<QuestionDto> findPendingQuestions(int courseId) {
+        return questionRepository.findQuestions(courseId).stream()
+                .filter(question -> question.getStatus() == Question.Status.PENDING)
                 .map(QuestionDto::new).collect(Collectors.toList());
     }
 

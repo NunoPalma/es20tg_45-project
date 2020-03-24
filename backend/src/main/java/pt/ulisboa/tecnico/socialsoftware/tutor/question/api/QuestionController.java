@@ -55,6 +55,12 @@ public class QuestionController {
         return this.questionService.findAvailableQuestions(courseId);
     }
 
+    @GetMapping("/courses/{courseId}/questions/pending")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public List<QuestionDto> getPendingQuestions(@PathVariable int courseId){
+        return this.questionService.findPendingQuestions(courseId);
+    }
+
     @PostMapping("/courses/{courseId}/questions")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public QuestionDto createQuestion(@PathVariable int courseId, @Valid @RequestBody QuestionDto question) {
