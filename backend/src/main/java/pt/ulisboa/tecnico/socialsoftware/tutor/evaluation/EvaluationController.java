@@ -13,7 +13,7 @@ public class EvaluationController {
 
     EvaluationController(EvaluationService evaluationService){ this.evaluationService = evaluationService;}
 
-    @PutMapping("/evaluations/{courseId}")
+    @PutMapping("/evaluations/{questionId}")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public EvaluationDto submitEvaluation(@Valid @RequestBody QuestionDto question, @RequestParam boolean approved, @RequestParam String justification){
         return this.evaluationService.submitEvaluation(question, approved, justification);
