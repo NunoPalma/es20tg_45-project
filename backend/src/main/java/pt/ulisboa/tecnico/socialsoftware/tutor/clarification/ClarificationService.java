@@ -46,6 +46,7 @@ public class ClarificationService{
 
 
         User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(ErrorMessage.USER_NOT_FOUND,userId));
+
         Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(() -> new TutorException(ErrorMessage.DOUBT_NOT_FOUND, doubtId));
 
         Clarification clarification = new Clarification(user, doubt, clarificationDto);

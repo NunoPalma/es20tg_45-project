@@ -24,7 +24,8 @@ import spock.lang.Unroll
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
-class GetUserDoubtsListTest extends Specification {
+// files should have the same name as the class
+class GetDoubtsListTest extends Specification {
     public static final String COURSE_NAME = "Software Architecture"
     public static final String USER_NAME = "user"
     public static final String USERNAME_NAME = "username"
@@ -98,7 +99,7 @@ class GetUserDoubtsListTest extends Specification {
 
         then:
         def error = thrown(TutorException)
-        error.errorMessage == DOUBT_USER_IS_EMPTY
+        error.errorMessage == DOUBT_USER_IS_EMPTY // this error could be named better? why not invalid user?
 
     }
 

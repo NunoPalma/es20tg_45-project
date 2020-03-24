@@ -30,6 +30,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Service
 public class DoubtService {
+    // Doubt and Clarification could be the same service
 
     @Autowired
     private UserRepository userRepository;
@@ -70,6 +71,9 @@ public class DoubtService {
             throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
         }
 
+        // who should associate the doubt with a questionAnswer instead of a question
+        // questionAnswer has the user that responded
+        // you are creating a set containing possibly hundreds of quizQuestions to verify if the user has responded
         List<Quiz> quizList = quizAnswers.stream().map(QuizAnswer::getQuiz).collect(Collectors.toList());
         Set<QuizQuestion> quizQuestions = new HashSet<>();
         for(Quiz quiz: quizList){
