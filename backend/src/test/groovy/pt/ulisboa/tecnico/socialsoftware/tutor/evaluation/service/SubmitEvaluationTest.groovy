@@ -41,11 +41,12 @@ class SubmitEvaluationTest extends Specification {
         questionRepository.save(pendingQuestion)
         and: "a questionDto"
         def pendingQuestionDto = new QuestionDto(pendingQuestion)
-
-        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+        def evaluationDto1 = evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+        evaluationDto1.setJustification(JUSTIFICATION)
+        def questionId = pendingQuestion.getId()
 
         when:
-        evaluationService.submitEvaluation(pendingQuestionDto, false, JUSTIFICATION)
+        evaluationService.submitEvaluation(evaluationDto1, questionId)
 
         then:
         evaluationRepository.count() == 1L
@@ -67,11 +68,12 @@ class SubmitEvaluationTest extends Specification {
         questionRepository.save(pendingQuestion)
         and: "a questionDto"
         def pendingQuestionDto = new QuestionDto(pendingQuestion)
-
-        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+        def evaluationDto1 = evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+        evaluationDto1.approveEvaluationDto()
+        def questionId = pendingQuestion.getId()
 
         when:
-        evaluationService.submitEvaluation(pendingQuestionDto, true, JUSTIFICATION)
+        evaluationService.submitEvaluation(evaluationDto1, questionId)
 
         then:
         evaluationRepository.count() == 1L
@@ -90,13 +92,13 @@ class SubmitEvaluationTest extends Specification {
         questionRepository.save(pendingQuestion)
         and: "a questionDto"
         def pendingQuestionDto = new QuestionDto(pendingQuestion)
-        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+        def evaluationDto1 = evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
+        evaluationDto1.setJustification(justification)
+        def questionId = pendingQuestion.getId()
 
-        def approved = isApproved
-        def eval_justification = justification
 
         when:
-        evaluationService.submitEvaluation(pendingQuestionDto, approved, eval_justification)
+        evaluationService.submitEvaluation(evaluationDto1, questionId)
 
         then:
         def error = thrown(TutorException)
