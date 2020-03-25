@@ -87,7 +87,7 @@ public class TournamentService {
 	}
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void enrollStudent(Integer userId, Integer tournamentId) {
+	public TournamentDto enrollStudent(Integer userId, Integer tournamentId) {
 		if (userId == null)
 			throw new TutorException(INVALID_USER_ID);
 		else if (tournamentId == null)
@@ -101,6 +101,8 @@ public class TournamentService {
 		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
 
 		tournament.enrollStudent(user);
+
+		return new TournamentDto(tournament, true);
 	}
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
