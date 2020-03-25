@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.socialsoftware.tutor.user.service
+package pt.ulisboa.tecnico.socialsoftware.tutor.question.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -15,11 +15,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USERNAME_NOT_FOUND;
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USERNAME_NOT_FOUND
 
 @DataJpaTest
 class FilterStudentQuestionByDateTest extends Specification {
@@ -38,9 +37,6 @@ class FilterStudentQuestionByDateTest extends Specification {
 
     @Autowired
     QuestionService questionService
-
-    @Autowired
-    UserService userService
 
     @Autowired
     UserRepository userRepository
@@ -111,7 +107,7 @@ class FilterStudentQuestionByDateTest extends Specification {
 
 
         when:
-        def sortedSubmittedQuestions = userService.sortStudentSubmittedQuestions(STUDENT_USERNAME1)
+        def sortedSubmittedQuestions = questionService.sortStudentSubmittedQuestionsByCreationDate(STUDENT_USERNAME1)
 
         then:
         sortedSubmittedQuestions[0].getTitle() == QUESTION_TITLE_3
@@ -126,7 +122,7 @@ class FilterStudentQuestionByDateTest extends Specification {
         userRepository.save(user)
 
         when:
-        userService.sortStudentSubmittedQuestions(STUDENT_USERNAME2)
+        questionService.sortStudentSubmittedQuestionsByCreationDate(STUDENT_USERNAME2)
 
         then: "the returned data are correct"
         def sortedSubmittedQuestions = user.getSubmittedQuestions()
@@ -139,7 +135,7 @@ class FilterStudentQuestionByDateTest extends Specification {
         def userName = username
 
         when:
-        userService.sortStudentSubmittedQuestions(userName)
+        questionService.sortStudentSubmittedQuestionsByCreationDate(userName)
 
         then:
         def error = thrown(TutorException)
@@ -153,15 +149,11 @@ class FilterStudentQuestionByDateTest extends Specification {
     }
 
     @TestConfiguration
-    static class QuizServiceImplTestContextConfiguration {
-        @Bean
-        UserService userService() {
-            return new UserService();
-        }
+    static class QuestionServiceImplTestContextConfiguration {
 
         @Bean
         QuestionService questionService() {
-            return new QuestionService();
+            return new QuestionService()
         }
     }
 }
