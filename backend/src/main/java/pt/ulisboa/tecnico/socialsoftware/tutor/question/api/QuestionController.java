@@ -158,9 +158,20 @@ public class QuestionController {
         return questionService.submitQuestion(user.getId(), courseId, question);
     }
 
+    @GetMapping("/student/{studentId}/questions")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public List<QuestionDto> sortStudentSubmittedQuestionsByCreationDate(Principal principal){
+        User user = (User) ((Authentication) principal).getPrincipal();
+
+        if (user == null) {
+            throw new TutorException(AUTHENTICATION_ERROR);
+        }
+
+        return questionService.sortStudentSubmittedQuestionsByCreationDate(user.getUsername());
+    }
+
     private Path getTargetLocation(String url) {
         String fileLocation = figuresDir + url;
         return Paths.get(fileLocation);
     }
-
 }
