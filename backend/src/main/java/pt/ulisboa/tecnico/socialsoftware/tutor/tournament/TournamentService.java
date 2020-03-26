@@ -118,6 +118,8 @@ public class TournamentService {
 
 		tournament.enrollStudent(user);
 
+		tournamentRepository.save(tournament);
+
 		return new TournamentDto(tournament, true);
 	}
 

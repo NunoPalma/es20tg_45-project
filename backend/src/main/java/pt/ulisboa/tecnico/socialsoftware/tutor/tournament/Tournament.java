@@ -70,6 +70,7 @@ public class Tournament {
     )
     private Set<User> participants;
 
+    @Enumerated(EnumType.STRING)
     private State state = State.CREATED;
 
     public enum State {
