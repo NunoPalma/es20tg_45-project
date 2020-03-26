@@ -100,10 +100,6 @@ public class User implements UserDetails, Importable {
         this.clarifications.add(clarification);
     }
 
-    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
-        this.quizAnswers = quizAnswers;
-    }
-
     public Set<Clarification> getClarifications() {
         return clarifications;
     }

@@ -12,7 +12,7 @@ public class ClarificationDto implements Serializable {
 
     public ClarificationDto(Clarification clarification) {
         this.description = clarification.getClarification();
-        this.author = clarification.getAuthor().getUsername();
+        this.author = clarification.getAuthor().getName();
     }
 
     public void setDescription(String description) {

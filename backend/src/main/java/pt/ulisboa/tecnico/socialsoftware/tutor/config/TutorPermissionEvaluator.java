@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationController;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtController;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService;
@@ -72,6 +75,18 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
             }
         }
 
+        if (targetDomainObject instanceof ClarificationDto) {
+            ClarificationDto clarificationDto = (ClarificationDto) targetDomainObject;
+            String permissionVal = (String) permission;
+            switch (permissionVal) {
+                case "CLARIFICATION.DEMO":
+                    return clarificationDto.getDescription().equals("clarification description");
+                default:
+                    return false;
+            }
+        }
+
+
         if (targetDomainObject instanceof Integer) {
             int id = (int) targetDomainObject;
             String permissionValue = (String) permission;
@@ -91,7 +106,7 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 case "QUIZ.ACCESS":
                     return userHasThisExecution(username, quizService.findQuizCourseExecution(id).getCourseExecutionId());
                 case "CLARIFICATION.CREATE":
-                    return userHasThisExecution(username, questionService.findQuestionCourse(doubtService.getDoubtQuestion(id).getId()).getCourseExecutionId());
+                    return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(doubtService.getDoubtQuestion(id).getId()).getCourseId());
                 default: return false;
             }
         }
