@@ -87,19 +87,6 @@ public class Tournament {
         this.courseExecution = courseExecution;
     }
 
-    public Tournament(TournamentDto tournamentDto) {
-        this.key = tournamentDto.getKey();
-        this.creator = tournamentDto.getCreator();
-        this.courseExecution = tournamentDto.getCourseExecution();
-        this.state = tournamentDto.getState();
-        this.participants = new HashSet<>();
-        setName(tournamentDto.getName());
-        setStartDate(tournamentDto.getStartDateDate());
-        setEndDate(tournamentDto.getEndDateDate());
-        setNumQuestions(tournamentDto.getNumQuestions());
-        this.topics = new HashSet<>();
-    }
-
     public Integer getId() {
         return id;
     }
