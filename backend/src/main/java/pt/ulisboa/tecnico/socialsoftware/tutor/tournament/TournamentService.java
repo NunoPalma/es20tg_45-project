@@ -122,7 +122,7 @@ public class TournamentService {
 	}
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public List<TournamentDto> getOpenTournaments(Integer userId) {
+	public List<TournamentDto> getTournaments(Integer userId) {
 		if (userId == null)
 			throw new TutorException(INVALID_USER_ID);
 
@@ -138,10 +138,8 @@ public class TournamentService {
 		for (Tournament tournament: tournaments)
 			tournamentDtos.add(new TournamentDto(tournament, true));
 
-
 		return tournamentDtos.stream()
-				.sorted(Comparator
-						.comparing(TournamentDto::getName))
+				.sorted(Comparator.comparing(TournamentDto::getName))
 				.collect(Collectors.toList());
 	}
 }
