@@ -23,7 +23,7 @@ public class TournamentDto implements Serializable {
 	private String startDate;
 	private String endDate;
 	private Set<TopicDto> topics = new HashSet<>();
-	private Integer numQuestions;
+	private int numQuestions;
 	private Quiz quiz;
 	private Tournament.State state;
 
@@ -115,11 +115,11 @@ public class TournamentDto implements Serializable {
 		this.topics = topics;
 	}
 
-	public Integer getNumQuestions() {
+	public int getNumQuestions() {
 		return numQuestions;
 	}
 
-	public void setNumQuestions(Integer numQuestions) {
+	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
 

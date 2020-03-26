@@ -58,7 +58,7 @@ public class Tournament {
     @Column(name = "num_questions")
     private Integer numQuestions;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
@@ -203,8 +203,6 @@ public class Tournament {
     }
 
     private void checkStartDate(LocalDateTime startDate) {
-
-        System.out.println(startDate);
         if (startDate == null) {
             throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
         }
@@ -225,7 +223,7 @@ public class Tournament {
         }
     }
 
-    private void checkNumQuestions(int numQuestions) {
+    private void checkNumQuestions(Integer numQuestions) {
         if (numQuestions < 1) {
             throw new TutorException(TOURNAMENT_NOT_ENOUGH_QUESTIONS);
         }

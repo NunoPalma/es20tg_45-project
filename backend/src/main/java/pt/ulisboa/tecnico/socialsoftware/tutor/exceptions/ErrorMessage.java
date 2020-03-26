@@ -63,7 +63,8 @@ public enum ErrorMessage {
     INVALID_ENROLLMENT_CLOSED_TOURNAMENT("The tournament is closed"),
     INVALID_ENROLLMENT_CREATED_TOURNAMENT("The tournament hasn't been open yet"),
     INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
-    TOURNAMENT_NOT_FOUND("Tournament with id %d wasn't found"),
+    TOURNAMENT_NOT_FOUND("Tournament with id %d not found"),
+    TOPIC_WITH_NAME_NOT_FOUND("Topic with name %s not found"),
 
     INVALID_USER_ID("Invalid user ID"),
     INVALID_TOURNAMENT_ID("Invalid tournament ID"),

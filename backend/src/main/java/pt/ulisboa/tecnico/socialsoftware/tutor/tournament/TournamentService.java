@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -18,8 +19,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.constraints.Null;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,29 +61,41 @@ public class TournamentService {
 			value = { SQLException.class },
 			backoff = @Backoff(delay = 5000))
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public TournamentDto createTournament(int userId, int courseExecutionId, List<String> topicNames, TournamentDto tournamentDto) {
+	public TournamentDto createTournament(int userId, int courseExecutionId, TournamentDto tournamentDto) {
 		CourseExecution courseExecution = courseExecutionRepository.findById(courseExecutionId).orElseThrow(() -> new TutorException(COURSE_EXECUTION_NOT_FOUND, courseExecutionId));
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
-		if (topicNames.isEmpty())
+		Set<TopicDto> topicDtos = tournamentDto.getTopics();
+
+		if (topicDtos.isEmpty())
 			throw new TutorException(NOT_ENOUGH_TOPICS);
+
 		Set<Topic> topics = new HashSet<>();
-		for (String topicName : topicNames) {
-			topics.add(topicRepository.findTopicByName(courseExecution.getCourse().getId(), topicName));
+		for (TopicDto topicDto : topicDtos) {
+			Topic topic = topicRepository.findTopicByName(courseExecution.getCourse().getId(), topicDto.getName());
+			if (topic == null) {
+				throw new TutorException(TOPIC_WITH_NAME_NOT_FOUND, topicDto.getName());
+			}
+			topics.add(topic);
 		}
 
 		if (user.getRole() != User.Role.STUDENT)
 			throw new TutorException(TOURNAMENT_CREATOR_IS_NOT_STUDENT);
 
-		if (tournamentDto.getKey() == null) {
-			tournamentDto.setKey(getMaxTournamentKey() + 1);
+		Tournament tournament = new Tournament(user, courseExecution);
+
+		if (tournament.getKey() == null) {
+			tournament.setKey(getMaxTournamentKey() + 1);
 		}
 
-		Tournament tournament = new Tournament(tournamentDto);
-		tournament.setCourseExecution(courseExecution);
-		tournament.setCreator(user);
+		tournament.setName(tournamentDto.getName());
+		tournament.setStartDate(LocalDateTime.parse(tournamentDto.getStartDate() , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		tournament.setEndDate(LocalDateTime.parse(tournamentDto.getEndDate() , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		tournament.setNumQuestions(tournamentDto.getNumQuestions());
 		tournament.setTopics(topics);
+		tournament.setState(Tournament.State.OPEN);
+		tournament.enrollStudent(user);
 
 		tournamentRepository.save(tournament);
 
