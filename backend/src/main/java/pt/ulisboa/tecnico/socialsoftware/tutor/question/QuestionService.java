@@ -231,7 +231,7 @@ public class QuestionService {
 
         xmlImporter.importQuestions(questionsXML, this, courseRepository);
     }
-    //CHECK ME OUT BRO
+
     @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))

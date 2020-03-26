@@ -140,7 +140,6 @@ public class QuestionController {
         return ResponseEntity.ok().build();
     }
 
-    /* NEW METHOD FOR SUBMIT QUESTION JUST FOR LOCALIZATION PURPOSES*/
     @PostMapping("/courses/{courseId}/questions/submit")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public QuestionDto submitQuestion(Principal principal, @PathVariable int courseId, @Valid @RequestBody QuestionDto question){
