@@ -80,6 +80,9 @@ public class UserService {
         return user.getEnrolledCoursesAcronyms();
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Set<QuestionDto> getAnsweredQuestions(String username){
         User user = this.userRepository.findByUsername(username);

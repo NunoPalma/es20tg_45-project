@@ -23,7 +23,6 @@ import java.util.List;
 
 @RestController
 public class DoubtController {
-    private static Logger logger = LoggerFactory.getLogger(DoubtController.class);
 
     @Autowired
     DoubtService doubtService;
@@ -39,9 +38,7 @@ public class DoubtController {
     @PostMapping(value = "question/{questionId}/doubts")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ANSWERED')")
     public DoubtDto createDoubt(Principal principal, @RequestBody DoubtDto doubtDto, @PathVariable int questionId){
-        logger.info(Integer.toString(questionId));
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
-        logger.info(Integer.toString(studentId));
         return this.doubtService.createDoubt(doubtDto, questionId, studentId);
     }
 

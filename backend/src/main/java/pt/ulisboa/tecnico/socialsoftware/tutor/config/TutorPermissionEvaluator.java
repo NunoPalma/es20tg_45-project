@@ -35,7 +35,6 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DO
 
 @Component
 public class TutorPermissionEvaluator implements PermissionEvaluator {
-    private static Logger logger = LoggerFactory.getLogger(TutorPermissionEvaluator.class);
 
     @Autowired
     private UserService userService;
@@ -84,7 +83,6 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
                 case "QUESTION.ACCESS":
                     return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(id).getCourseId());
                 case "QUESTION.ANSWERED":
-                    logger.info("Entra aqui");
                     return hasAnsweredQuestion(username, id);
                 case "TOPIC.ACCESS":
                     return userHasAnExecutionOfTheCourse(username, topicService.findTopicCourse(id).getCourseId());
@@ -107,8 +105,7 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
 
 
     boolean hasAnsweredQuestion(String username, int id){
-        return userService.getAnsweredQuestions(username).stream().anyMatch(question -> question.getId() == id)
-                && userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(id).getCourseId());
+        return userService.getAnsweredQuestions(username).stream().anyMatch(question -> question.getId() == id);
     }
 
 

@@ -43,7 +43,9 @@ public class DoubtService {
     @PersistenceContext
     EntityManager entityManager;
 
-
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public DoubtDto createDoubt(DoubtDto doubtdto, Integer questionId, Integer studentId){
 
