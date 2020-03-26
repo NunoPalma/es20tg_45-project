@@ -20,8 +20,8 @@ public class TournamentController {
     }
 
     @PostMapping("/tournament/enroll/{studentId}/{tournamentId}")
-    @PreAuthorize("hasRole('STUDENT')")
-    public void enrollStudent(@PathVariable int studentId, @PathVariable int tournamentId) {
-        tournamentService.enrollStudent(studentId, tournamentId);
+    @PreAuthorize("hasRole('STUDENT') or hasRole('ROLE_DEMO_STUDENT')")
+    public TournamentDto enrollStudent(@PathVariable int studentId, @PathVariable int tournamentId) {
+        return tournamentService.enrollStudent(studentId, tournamentId);
     }
 }
