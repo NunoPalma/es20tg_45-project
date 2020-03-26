@@ -141,5 +141,14 @@ public class TournamentService {
 		return tournamentDtos.stream()
 				.sorted(Comparator.comparing(TournamentDto::getName))
 				.collect(Collectors.toList());
+
+		/*
+		return tournaments.stream()
+				.map(tournament -> new TournamentDto(tournament, true))
+				.sorted(Comparator.comparing(TournamentDto::getName))
+				.collect(Collectors.toList());
+
+				instead of literally everything we have since declaration of tournamentDtos?
+		 */
 	}
 }

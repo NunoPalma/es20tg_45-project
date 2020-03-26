@@ -27,7 +27,7 @@ public class TournamentController {
 
     @GetMapping("/tournament/show/{studentId}")
     @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
-    public List<TournamentDto> getOpenTournaments(@PathVariable int studentId) {
+    public List<TournamentDto> getTournaments(@PathVariable int studentId) {
         return tournamentService.getTournaments(studentId);
     }
 }
