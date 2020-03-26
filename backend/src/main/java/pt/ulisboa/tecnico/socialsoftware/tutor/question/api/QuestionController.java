@@ -158,9 +158,9 @@ public class QuestionController {
         return questionService.submitQuestion(user.getId(), courseId, question);
     }
 
-    @GetMapping("/student/{studentId}/questions")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public List<QuestionDto> sortStudentSubmittedQuestionsByCreationDate(Principal principal){
+    @GetMapping("/courses/{courseId}/questions/submitted")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public List<QuestionDto> sortStudentSubmittedQuestionsByCreationDate(Principal principal, @PathVariable Integer courseId){
         User user = (User) ((Authentication) principal).getPrincipal();
 
         if (user == null) {
