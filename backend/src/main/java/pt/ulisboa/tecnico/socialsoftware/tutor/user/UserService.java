@@ -116,20 +116,6 @@ public class UserService {
         courseExecution.addUser(user);
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<Question> sortStudentSubmittedQuestions(String username) {
-        User user =  this.userRepository.findByUsername(username);
-
-        if(user == null){
-            throw new TutorException(USERNAME_NOT_FOUND, username);
-        }
-
-        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
-        LinkedList<Question> userSubmittedQuestionsList = new LinkedList<Question>(userSubmittedQuestions);
-
-        return questionService.sortQuestionByCreationDate(userSubmittedQuestionsList);
-    }
-
     public String exportUsers() {
         UsersXmlExport xmlExporter = new UsersXmlExport();
 

@@ -335,7 +335,6 @@ public class User implements UserDetails, Importable {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
-
     public Set<Tournament> getTournaments() {
         return tournaments;
     }

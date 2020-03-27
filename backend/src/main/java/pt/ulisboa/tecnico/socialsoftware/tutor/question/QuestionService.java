@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -80,13 +81,23 @@ public class QuestionService {
     }
 
     @Retryable(
-      value = { SQLException.class },
-      backoff = @Backoff(delay = 5000))
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<QuestionDto> findQuestions(int courseId) {
         return questionRepository.findQuestions(courseId).stream()
                 .filter(question -> question.getStatus() != Question.Status.PENDING
                         && question.getStatus() != Question.Status.REJECTED)
+                .map(QuestionDto::new).collect(Collectors.toList());
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<QuestionDto> findPendingQuestions(int courseId) {
+        return questionRepository.findQuestions(courseId).stream()
+                .filter(question -> question.getStatus() == Question.Status.PENDING)
                 .map(QuestionDto::new).collect(Collectors.toList());
     }
 
@@ -227,14 +238,23 @@ public class QuestionService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<Question> sortQuestionByCreationDate(LinkedList<Question> userSubmittedQuestionsList) {
+    public List<QuestionDto> sortStudentSubmittedQuestionsByCreationDate(String username) {
+        User user =  userRepository.findByUsername(username);
+
+        if(user == null){
+            throw new TutorException(USERNAME_NOT_FOUND, username);
+        }
+
+        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
+        LinkedList<Question> userSubmittedQuestionsList = new LinkedList<Question>(userSubmittedQuestions);
+
         LinkedList<Question> sortedQuestions = userSubmittedQuestionsList;
         sortedQuestions.sort((q1, q2) -> {
             if(q1.getCreationDate().isBefore(q2.getCreationDate())) { return 1; }
             else { return -1; }
         });
 
-        return sortedQuestions;
+        return sortedQuestions.stream().map(QuestionDto::new).collect(Collectors.toList());
     }
 }
 
