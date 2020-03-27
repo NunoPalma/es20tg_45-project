@@ -1,11 +1,18 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 
+import org.aspectj.weaver.patterns.TypePatternQuestions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuizAnswerDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.TutorPermissionEvaluator;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
@@ -14,19 +21,22 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlImport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Service
 public class UserService {
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
+
+
     @Autowired
     private UserRepository userRepository;
 
@@ -70,6 +80,24 @@ public class UserService {
         return user.getEnrolledCoursesAcronyms();
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Set<QuestionDto> getAnsweredQuestions(String username){
+        User user = this.userRepository.findByUsername(username);
+        Set<QuizAnswer> quizAnswers = user.getQuizAnswers();
+        if(quizAnswers == null || quizAnswers.isEmpty()){
+            return new HashSet<>();
+        }
+        Set<QuestionAnswer> questionAnswerList = new HashSet<>();
+        for(QuizAnswer quizAnswer: quizAnswers){
+            questionAnswerList.addAll(quizAnswer.getQuestionAnswers());
+        }
+        return questionAnswerList.stream().map(QuestionAnswer::getQuizQuestion)
+                .map(QuizQuestion::getQuestion).map(QuestionDto::new).collect(Collectors.toSet());
+    }
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<CourseDto> getCourseExecutions(String username) {
         User user =  this.userRepository.findByUsername(username);
@@ -88,20 +116,6 @@ public class UserService {
         courseExecution.addUser(user);
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public List<Question> sortStudentSubmittedQuestions(String username) {
-        User user =  this.userRepository.findByUsername(username);
-
-        if(user == null){
-            throw new TutorException(USERNAME_NOT_FOUND, username);
-        }
-
-        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
-        LinkedList<Question> userSubmittedQuestionsList = new LinkedList<Question>(userSubmittedQuestions);
-
-        return questionService.sortQuestionByCreationDate(userSubmittedQuestionsList);
-    }
-
     public String exportUsers() {
         UsersXmlExport xmlExporter = new UsersXmlExport();
 
@@ -118,6 +132,8 @@ public class UserService {
 
         xmlImporter.importUsers(usersXML, this);
     }
+
+
 
     public User getDemoTeacher() {
         return this.userRepository.findByUsername("Demo-Teacher");

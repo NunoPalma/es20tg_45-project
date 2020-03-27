@@ -29,7 +29,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 class CreateTournamentServiceSpockTest extends Specification {
 
 	static final String TOURNAMENT_NAME = "TournamentOne"
-	static final LocalDateTime START_DATE = LocalDateTime.now()
+	static final LocalDateTime START_DATE = LocalDateTime.now().withSecond(0).withNano(0)
 	static final LocalDateTime OVERLAP_END_DATE = START_DATE
 	static final LocalDateTime EARLY_END_DATE = START_DATE.minusDays(1)
 	static final LocalDateTime END_DATE = START_DATE.plusDays(20)
@@ -115,8 +115,8 @@ class CreateTournamentServiceSpockTest extends Specification {
 		given: "a TournamentDto"
 		def tournamentDto = new TournamentDto(userStudent, courseExecution)
 		tournamentDto.setName(tournamentName)
-		tournamentDto.setStartDate(START_DATE.format(formatter))
-		tournamentDto.setEndDate(END_DATE.format(formatter))
+		tournamentDto.setStartDate(startDate ? startDate.format(formatter) : null)
+		tournamentDto.setEndDate(endDate ? endDate.format(formatter) : null)
 		tournamentDto.setNumQuestions(numQuestions)
 
 		when:
@@ -137,21 +137,9 @@ class CreateTournamentServiceSpockTest extends Specification {
 		TOURNAMENT_NAME | START_DATE | END_DATE         | 0            || TOURNAMENT_NOT_ENOUGH_QUESTIONS
 	}
 
-	def "create a tournament no name"() {
-		given: "a tournament"
-		tournamentDto.setName(null)
-
-		when:
-		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
-
-		then: "an exception is thrown"
-		def exception = thrown(TutorException)
-		exception.getErrorMessage() == TOURNAMENT_NAME_EMPTY
-	}
-
 	def "tournament creator is a student"() {
 		given: "a user that is not a student"
-		tournamentDto.setName("HelloTournament")
+		//tournamentDto.setName("HelloTournament")
 		userStudent.setRole(User.Role.TEACHER)
 
 		when:
@@ -163,11 +151,11 @@ class CreateTournamentServiceSpockTest extends Specification {
 	}
 
 	def "create tournament without enough topics"() {
-		given: "a tournament"
-		tournamentDto.setTopics(topicsEmpty)
+		given: "an empty list of topics"
+		def emptyTopicNameList = new LinkedList<String>();
 
 		when:
-		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
+		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), emptyTopicNameList, tournamentDto)
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
@@ -192,6 +180,16 @@ class CreateTournamentServiceSpockTest extends Specification {
 		result.endDate == END_DATE.format(formatter)
 		result.numQuestions == ONE_QUESTION
 		result.topics.size() == 1
+		and: "tournament is created"
+		tournamentRepository.findAll().size() == 1
+		def tournament = tournamentRepository.findTournamentByName(courseExecution.getId(), TOURNAMENT_NAME).get()
+		tournament != null
+		and: "has the correct values"
+		tournament.name == TOURNAMENT_NAME
+		tournament.startDate == START_DATE
+		tournament.endDate == END_DATE
+		tournament.numQuestions == ONE_QUESTION
+		tournament.topics.size() == 1
 	}
 
 	@TestConfiguration
