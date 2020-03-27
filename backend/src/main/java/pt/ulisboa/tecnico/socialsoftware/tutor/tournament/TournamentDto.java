@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class TournamentDto implements Serializable {
 
 	private Integer id;
-	private Integer key;
 	private UserDto creator;
 	private Integer courseExecutionId;
 	private String name;
@@ -38,7 +37,6 @@ public class TournamentDto implements Serializable {
 
 	public TournamentDto(Tournament tournament, boolean deepCopy) {
 		this.id = tournament.getId();
-		this.key = tournament.getKey();
 		this.creator = new UserDto(tournament.getCreator());
 		this.courseExecutionId = tournament.getCourseExecution().getId();
 		this.name = tournament.getName();
@@ -66,14 +64,6 @@ public class TournamentDto implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getKey() {
-		return key;
-	}
-
-	public void setKey(Integer key) {
-		this.key = key;
-	}
-
 	public Integer getCourseExecutionId() {
 		return courseExecutionId;
 	}
@@ -82,11 +72,11 @@ public class TournamentDto implements Serializable {
 		this.courseExecutionId = courseExecution;
 	}
 
-	public UserDto getCreatorId() {
+	public UserDto getCreator() {
 		return creator;
 	}
 
-	public void setCreatorId(UserDto creator) {
+	public void setCreator(UserDto creator) {
 		this.creator = creator;
 	}
 

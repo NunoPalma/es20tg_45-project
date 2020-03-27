@@ -85,10 +85,6 @@ public class TournamentService {
 
 		Tournament tournament = new Tournament(user, courseExecution);
 
-		if (tournament.getKey() == null) {
-			tournament.setKey(getMaxTournamentKey() + 1);
-		}
-
 		tournament.setName(tournamentDto.getName());
 		tournament.setStartDate(LocalDateTime.parse(tournamentDto.getStartDate() , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		tournament.setEndDate(LocalDateTime.parse(tournamentDto.getEndDate() , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

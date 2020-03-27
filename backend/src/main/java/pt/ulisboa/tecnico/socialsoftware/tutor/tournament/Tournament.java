@@ -15,20 +15,12 @@ import java.util.Set;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Entity
-@Table(
-        name = "tournaments",
-        indexes = {
-                @Index(name = "tournaments_idx_0", columnList = "key")
-        }
-)
+@Table(name = "tournaments")
 public class Tournament {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(unique=true, nullable = false)
-    private Integer key;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -94,14 +86,6 @@ public class Tournament {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getKey() {
-        return key;
-    }
-
-    public void setKey(Integer key) {
-        this.key = key;
     }
 
     public User getCreator() {
