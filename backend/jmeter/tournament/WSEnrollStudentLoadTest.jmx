@@ -92,7 +92,7 @@
             <stringProp name="LoopController.loops">10</stringProp>
           </LoopController>
           <hashTree>
-            <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Data to create tournaments" enabled="true">
+            <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Data to enroll students in a tournament" enabled="true">
               <stringProp name="delimiter">,</stringProp>
               <stringProp name="fileEncoding"></stringProp>
               <stringProp name="filename">C:/Users/Nuno/Desktop/es20tg_45-project/backend/jmeter/tournament/EnrollmentData.csv</stringProp>
@@ -126,7 +126,7 @@
           </hashTree>
         </hashTree>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
-          <boolProp name="ResultCollector.error_logging">true</boolProp>
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
             <value class="SampleSaveConfiguration">
@@ -222,7 +222,7 @@
           <stringProp name="dataSource">sampleReq</stringProp>
           <stringProp name="dbUrl">jdbc:postgresql://localhost:5432/tutordb?autoReconnect=true</stringProp>
           <stringProp name="driver">org.postgresql.Driver</stringProp>
-          <stringProp name="initQuery">DELETE FROM participants_of_tournament WHERE tournament_id BETWEEN 1 AND 10;</stringProp>
+          <stringProp name="initQuery"></stringProp>
           <boolProp name="keepAlive">true</boolProp>
           <stringProp name="password">1234</stringProp>
           <stringProp name="poolMax">0</stringProp>
@@ -235,7 +235,7 @@
         <hashTree/>
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request" enabled="true">
           <stringProp name="dataSource">sampleReq</stringProp>
-          <stringProp name="query"></stringProp>
+          <stringProp name="query">DELETE FROM participants_of_tournament WHERE tournament_id BETWEEN 1 AND 10;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="queryTimeout"></stringProp>

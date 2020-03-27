@@ -131,12 +131,12 @@ public class TournamentService {
 		for (CourseExecution courseExecution : user.getCourseExecutions())
 			tournaments.addAll(tournamentRepository.findTournaments(courseExecution.getId()));
 
-		List<TournamentDto> tournamentDtos = new ArrayList<>();
+		List<TournamentDto> tournamentsDto = new ArrayList<>();
 
 		for (Tournament tournament: tournaments)
-			tournamentDtos.add(new TournamentDto(tournament, true));
+			tournamentsDto.add(new TournamentDto(tournament, true));
 
-		return tournamentDtos.stream()
+		return tournamentsDto.stream()
 				.sorted(Comparator.comparing(TournamentDto::getName))
 				.collect(Collectors.toList());
 

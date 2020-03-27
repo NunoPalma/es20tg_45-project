@@ -25,6 +25,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 class EnrollStudentServiceSpockTest extends Specification {
 
     static final int USER_ID
+    static final String USER_NAME = "UserName"
+    static final String USER_NICKNAME = "UserNickname"
+    static final LocalDateTime USER_CREATION_DATE = LocalDateTime.now().withSecond(0).withNano(0)
     static final int TOURNAMENT_ID = 1
     static final String TOURNAMENT_NAME = "NewTournament"
     static final LocalDateTime START_DATE = LocalDateTime.now()
@@ -72,7 +75,6 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
-        tournament.setKey(TOURNAMENT_ID)
         tournamentRepository.save(tournament)
 
 
@@ -96,7 +98,6 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
-        tournament.setKey(TOURNAMENT_ID)
         tournament.setState(Tournament.State.OPEN)
         tournamentRepository.save(tournament)
 
@@ -137,7 +138,6 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
-        tournament.setKey(TOURNAMENT_ID)
         tournament.setState(state)
 
         when:
@@ -160,6 +160,9 @@ class EnrollStudentServiceSpockTest extends Specification {
         def user = new User()
         user.setRole(User.Role.STUDENT)
         user.setKey(USER_ID)
+        user.setName(USER_NAME)
+        user.setUsername(USER_NICKNAME)
+        user.setCreationDate(USER_CREATION_DATE)
         userRepository.save(user)
         and: "a tournament"
         def tournament = new Tournament()
@@ -167,8 +170,9 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
-        tournament.setKey(TOURNAMENT_ID)
         tournament.setState(Tournament.State.OPEN)
+        def creator = userRepository.findById(667).get(0)
+        tournament.setCreator(creator)
         tournamentRepository.save(tournament)
 
         when:
