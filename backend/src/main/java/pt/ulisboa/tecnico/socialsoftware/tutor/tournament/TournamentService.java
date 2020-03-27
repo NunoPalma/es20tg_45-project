@@ -6,7 +6,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -19,8 +18,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.constraints.Null;
-
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,11 +49,6 @@ public class TournamentService {
 
 	public TournamentService() {}
 
-	public Integer getMaxTournamentKey() {
-		Integer maxTournamentKey = tournamentRepository.getMaxTournamentKey();
-		return maxTournamentKey != null ? maxTournamentKey : 0;
-	}
-
 	@Retryable(
 			value = { SQLException.class },
 			backoff = @Backoff(delay = 5000))
@@ -74,9 +66,9 @@ public class TournamentService {
 		Set<Topic> topics = new HashSet<>();
 		for (TopicDto topicDto : topicDtos) {
 			Topic topic = topicRepository.findTopicByName(courseExecution.getCourse().getId(), topicDto.getName());
-			if (topic == null) {
+			if (topic == null)
 				throw new TutorException(TOPIC_WITH_NAME_NOT_FOUND, topicDto.getName());
-			}
+
 			topics.add(topic);
 		}
 
@@ -140,13 +132,5 @@ public class TournamentService {
 				.sorted(Comparator.comparing(TournamentDto::getName))
 				.collect(Collectors.toList());
 
-		/*
-		return tournaments.stream()
-				.map(tournament -> new TournamentDto(tournament, true))
-				.sorted(Comparator.comparing(TournamentDto::getName))
-				.collect(Collectors.toList());
-
-				instead of literally everything we have since declaration of tournamentDtos?
-		 */
 	}
 }

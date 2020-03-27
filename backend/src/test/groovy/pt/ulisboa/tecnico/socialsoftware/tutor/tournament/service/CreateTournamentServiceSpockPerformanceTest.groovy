@@ -11,7 +11,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
@@ -21,9 +20,6 @@ import spock.lang.Specification
 
 @DataJpaTest
 class CreateTournamentServiceSpockPerformanceTest extends Specification {
-
-	def courseExecution
-	def formatter
 
 	@Autowired
 	TournamentService tournamentService
