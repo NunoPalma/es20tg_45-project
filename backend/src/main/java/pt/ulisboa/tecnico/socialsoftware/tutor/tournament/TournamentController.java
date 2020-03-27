@@ -12,7 +12,6 @@ public class TournamentController {
     @Autowired
     private TournamentService tournamentService;
 
-    /* how about o execution id e o student id no request body? */
     @PostMapping("/executions/students/{executionId}/{studentId}")
     @PreAuthorize("(hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')) and hasPermission(#executionId, 'EXECUTION.ACCESS')")
     public TournamentDto createTournament(@PathVariable int studentId, @PathVariable int executionId,

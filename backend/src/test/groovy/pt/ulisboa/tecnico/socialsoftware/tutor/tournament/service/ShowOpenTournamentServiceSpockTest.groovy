@@ -8,28 +8,19 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
 class ShowOpenTournamentServiceSpockTest extends Specification {
-	static final int TOURNAMENT_ID_1 = 1
-	static final int TOURNAMENT_ID_2 = 2
 	static final String TOURNAMENT_NAME_ONE = "Tournament_A"
 	static final String TOURNAMENT_NAME_TWO = "Tournament_B"
 	static final LocalDateTime START_DATE = LocalDateTime.now()

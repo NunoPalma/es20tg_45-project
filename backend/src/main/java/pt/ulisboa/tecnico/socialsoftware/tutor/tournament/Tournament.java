@@ -4,7 +4,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
@@ -60,6 +59,7 @@ public class Tournament {
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+
     private Set<User> participants;
 
     @Enumerated(EnumType.STRING)
@@ -169,36 +169,29 @@ public class Tournament {
     }
 
     private void checkName(String name) {
-        if (name == null || name.trim().length() == 0) {
+        if (name == null || name.trim().length() == 0)
             throw new TutorException(TOURNAMENT_NAME_EMPTY);
-        }
     }
 
     private void checkStartDate(LocalDateTime startDate) {
-        if (startDate == null) {
+        if (startDate == null)
             throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
-        }
     }
 
     private void checkEndDate(LocalDateTime endDate) {
-        if (this.startDate == null) {
+        if (this.startDate == null)
             throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
-        }
-        if (endDate == null) {
+        if (endDate == null)
             throw new TutorException(TOURNAMENT_END_DATE_EMPTY);
-        }
-        if (endDate.isBefore(this.startDate)) {
+        if (endDate.isBefore(this.startDate))
             throw new TutorException(TOURNAMENT_INVALID_END_DATE);
-        }
-        if (endDate.isEqual(this.startDate)) {
+        if (endDate.isEqual(this.startDate))
             throw new TutorException(TOURNAMENT_DATES_OVERLAP);
-        }
     }
 
     private void checkNumQuestions(Integer numQuestions) {
-        if (numQuestions < 1) {
+        if (numQuestions < 1)
             throw new TutorException(TOURNAMENT_NOT_ENOUGH_QUESTIONS);
-        }
     }
 
     public void addParticipant(User user) {
