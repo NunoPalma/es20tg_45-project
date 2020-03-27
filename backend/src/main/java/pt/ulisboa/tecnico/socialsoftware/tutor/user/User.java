@@ -54,7 +54,7 @@ public class User implements UserDetails, Importable {
     @Column(name = "last_access")
     private LocalDateTime lastAccess;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<QuizAnswer> quizAnswers = new HashSet<>();
 
     @ManyToMany
@@ -69,7 +69,7 @@ public class User implements UserDetails, Importable {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "participants", fetch=FetchType.EAGER)
     private Set<Tournament> enrolledTournaments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "author", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Doubt> doubts = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -98,10 +98,6 @@ public class User implements UserDetails, Importable {
 
     public void addClarification(Clarification clarification) {
         this.clarifications.add(clarification);
-    }
-
-    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
-        this.quizAnswers = quizAnswers;
     }
 
     public Set<Clarification> getClarifications() {
@@ -339,9 +335,6 @@ public class User implements UserDetails, Importable {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
-    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
-        this.quizAnswers = quizAnswers;
-    }
 
     public Set<Tournament> getTournaments() {
         return tournaments;

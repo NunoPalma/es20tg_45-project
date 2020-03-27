@@ -12,6 +12,7 @@ public class DoubtDto implements Serializable {
     }
 
     public DoubtDto(Doubt doubt){
+        this.id = doubt.getId();
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
         this.status = doubt.getStatus();
