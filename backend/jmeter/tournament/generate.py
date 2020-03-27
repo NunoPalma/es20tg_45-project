@@ -1,7 +1,9 @@
-
+from sys import argv
 
 FILENAME = "TournamentsData.csv"
-NUM_ITERATIONS = 1000
+NUM_ITERATIONS = int(argv[1])
+
+print("Nigga " + argv[1])
 
 open(FILENAME, "w").close()	# clean up file
 

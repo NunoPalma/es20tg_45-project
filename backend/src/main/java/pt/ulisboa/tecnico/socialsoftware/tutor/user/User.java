@@ -326,10 +326,6 @@ public class User implements UserDetails, Importable {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
-    public void setQuizAnswers(Set<QuizAnswer> quizAnswers) {
-        this.quizAnswers = quizAnswers;
-    }
-
     public Set<Tournament> getTournaments() {
         return tournaments;
     }
