@@ -146,6 +146,9 @@ class CreateDoubtPerformanceTest extends Specification {
     }
 
 
+
+
+
     @TestConfiguration
     static class DoubtServiceImplTestContextConfiguration {
 
