@@ -67,14 +67,12 @@ class CreateEvaluationTest extends Specification {
         given: "An evaluationDto"
         def evaluationDto = new EvaluationDto()
 
-        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
-        def evaluation = evaluationRepository.findAll().get(0)
-
         when:
-        evaluation != null
+        evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
 
         then:
-        true
+        def evaluation = evaluationRepository.findAll().get(0)
+        evaluation != null
     }
 
     @TestConfiguration

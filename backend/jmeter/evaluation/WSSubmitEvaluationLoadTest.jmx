@@ -444,7 +444,7 @@
           <stringProp name="dataSource">loadTest</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
           <stringProp name="query">DELETE FROM options o WHERE o.content=&apos;OptionContentTEST&apos;;
-DELETE FROM questions q WHERE q.title=&apos;QuestionTitleTEST&apos; AND q.content=&apos;QuestionContentTEST&apos; AND q.status=&apos;PENDING&apos;;
+DELETE FROM questions q WHERE q.key BETWEEN 99998 AND 100199;
 DELETE FROM evaluations e WHERE e.key BETWEEN 99998 AND 100199;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>

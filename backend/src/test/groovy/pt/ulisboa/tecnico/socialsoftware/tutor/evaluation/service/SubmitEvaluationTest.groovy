@@ -96,7 +96,6 @@ class SubmitEvaluationTest extends Specification {
         evaluationDto1.setJustification(justification)
         def questionId = pendingQuestion.getId()
 
-
         when:
         evaluationService.submitEvaluation(evaluationDto1, questionId)
 
