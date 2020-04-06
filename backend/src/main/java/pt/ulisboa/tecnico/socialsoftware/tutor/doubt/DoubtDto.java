@@ -6,13 +6,24 @@ public class DoubtDto implements Serializable {
     private Integer id;
     private String content;
     private String author;
+    private Doubt.Status status;
 
     public DoubtDto(){
     }
 
     public DoubtDto(Doubt doubt){
+        this.id = doubt.getId();
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
+        this.status = doubt.getStatus();
+    }
+
+    public Doubt.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Doubt.Status status) {
+        this.status = status;
     }
 
     public String getContent() {

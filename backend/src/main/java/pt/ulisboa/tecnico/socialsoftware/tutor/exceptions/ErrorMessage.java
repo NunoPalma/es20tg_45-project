@@ -59,6 +59,12 @@ public enum ErrorMessage {
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
+
+    QUESTION_NOT_PENDING("Expected Question to be in pending status"),
+
+    EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
+    MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),
+
     TOURNAMENT_NAME_EMPTY("The tournament name is empty"),
     TOURNAMENT_START_DATE_EMPTY("The tournament start date is empty"),
     TOURNAMENT_END_DATE_EMPTY("The tournament end date is empty"),
@@ -87,6 +93,7 @@ public enum ErrorMessage {
     ACCESS_DENIED("You do not have permission to view this resource"),
 
     CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request");
+
 
 
     public final String label;

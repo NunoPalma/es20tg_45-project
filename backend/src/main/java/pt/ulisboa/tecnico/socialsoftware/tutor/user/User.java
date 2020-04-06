@@ -60,17 +60,21 @@ public class User implements UserDetails, Importable {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<CourseExecution> courseExecutions = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval=true)
+    private Set<Question> submittedQuestions = new HashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creator", fetch = FetchType.EAGER)
     private Set<Tournament> tournaments = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "participants", fetch=FetchType.EAGER)
     private Set<Tournament> enrolledTournaments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "author", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Doubt> doubts = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Clarification> clarifications = new HashSet<>();
+
 
     public User() {
     }
@@ -180,6 +184,10 @@ public class User implements UserDetails, Importable {
     public void setCourseExecutions(Set<CourseExecution> courseExecutions) {
         this.courseExecutions = courseExecutions;
     }
+
+    public Set<Question> getSubmittedQuestions() { return submittedQuestions; }
+
+    public void addSubmittedQuestion(Question question) { submittedQuestions.add(question); }
 
     public Integer getNumberOfTeacherQuizzes() {
         if (this.numberOfTeacherQuizzes == null)

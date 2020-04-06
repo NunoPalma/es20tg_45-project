@@ -1,34 +1,50 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 
+import org.aspectj.weaver.patterns.TypePatternQuestions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.QuizAnswerDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.TutorPermissionEvaluator;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlExport;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.UsersXmlImport;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_EXECUTION_NOT_FOUND;
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DUPLICATE_USER;
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Service
 public class UserService {
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
+
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
+
+    @Autowired
+    private QuestionService questionService;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -62,6 +78,24 @@ public class UserService {
         User user =  this.userRepository.findByUsername(username);
 
         return user.getEnrolledCoursesAcronyms();
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Set<QuestionDto> getAnsweredQuestions(String username){
+        User user = this.userRepository.findByUsername(username);
+        Set<QuizAnswer> quizAnswers = user.getQuizAnswers();
+        if(quizAnswers == null || quizAnswers.isEmpty()){
+            return new HashSet<>();
+        }
+        Set<QuestionAnswer> questionAnswerList = new HashSet<>();
+        for(QuizAnswer quizAnswer: quizAnswers){
+            questionAnswerList.addAll(quizAnswer.getQuestionAnswers());
+        }
+        return questionAnswerList.stream().map(QuestionAnswer::getQuizQuestion)
+                .map(QuizQuestion::getQuestion).map(QuestionDto::new).collect(Collectors.toSet());
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -98,6 +132,8 @@ public class UserService {
 
         xmlImporter.importUsers(usersXML, this);
     }
+
+
 
     public User getDemoTeacher() {
         return this.userRepository.findByUsername("Demo-Teacher");
