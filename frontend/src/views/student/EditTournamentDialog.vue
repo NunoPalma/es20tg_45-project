@@ -25,24 +25,18 @@
 									data-cy="Name"
 							/>
 						</v-flex>
-						<v-flex xs24 sm12 md8>
-							<p v-if="isCreateTournament"><b>Start date:</b> {{ editTournament.startDate }} </p>
-							<v-text-field
-									v-if="!isCreateTournament"
-									v-model="editTournament.name"
-									label="Start date (YYYY-MM-dd HH:mm:ss)"
-									data-cy="Name"
-							/>
-						</v-flex>
-						<v-flex xs24 sm12 md8>
-							<p v-if="isCreateTournament"><b>End date:</b> {{ editTournament.endDate }} </p>
-							<v-text-field
-									v-if="!isCreateTournament"
-									v-model="editTournament.name"
-									label="End date (YYYY-MM-dd HH:mm:ss)"
-									data-cy="Name"
-							/>
-						</v-flex>
+						<v-menu>
+							<template v-slot:activator="{ on }">
+								<v-text-field :value="formattedDate(start_date)" label="Start date" prepend-icon="mdi-calendar-range" v-on="on"></v-text-field>
+							</template>
+							<v-datetime-picker v-model="start_date"></v-datetime-picker>
+						</v-menu>
+							<v-menu>
+								<template v-slot:activator="{ on }">
+									<v-text-field :value="formattedDate(end_date)" label="End date" prepend-icon="mdi-calendar-range" v-on="on"></v-text-field>
+								</template>
+								<v-datetime-picker v-model="end_date"></v-datetime-picker>
+							</v-menu>
 						<v-card class="table">
 							<v-data-table
 									:headers="headers"
@@ -130,14 +124,17 @@
     import {Component, Model, Prop, Vue} from 'vue-property-decorator';
     import RemoteServices from '@/services/RemoteServices';
     import Course from '@/models/user/Course';
-    import Tournament from "@/models/management/Tournament";
-    import Topic from "@/models/management/Topic";
-    import StatementManager from "@/models/statement/StatementManager";
+    import Tournament from '@/models/management/Tournament';
+    import Topic from '@/models/management/Topic';
+    import StatementManager from '@/models/statement/StatementManager';
+    import format from 'date-fns/format'
 
     @Component
     export default class EditTournamentDialog extends Vue {
         @Model('dialog', Boolean) dialog!: boolean;
         @Prop({type: Course, required: true}) readonly tournament!: Tournament;
+        start_date!: null;
+        end_date!: null;
         editTournament!: Tournament;
         isCreateTournament: boolean = false;
         topics: Topic[] = [];
@@ -148,10 +145,15 @@
         ];
         statementManager: StatementManager = StatementManager.getInstance;
 
+
         created() {
             this.editTournament = new Tournament(this.tournament);
             this.isCreateTournament = !!this.editTournament.name;
         }
+
+		formattedDate(date: Date) {
+        	return date ? format(date, 'Pp'): ''
+		}
 
         /*
         async saveTournament() {

@@ -15,6 +15,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
     "axios": "^0.19.2",
+    "date-fns": "^2.11.1",
     "material-design-icons-iconfont": "^5.0.1",
     "qrcode": "^1.4.4",
     "showdown": "^1.9.1",
