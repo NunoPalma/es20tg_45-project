@@ -10,6 +10,7 @@
 				multi-sort
 		>
 			<template v-slot:top>
+
 				<v-card-title>
 					<v-text-field
 							v-model="search"
@@ -53,6 +54,46 @@
 					<span>Delete Course</span>
 				</v-tooltip>
 			</template>
+
+
+			<template v-slot:item.name="{item}">
+				<v-col align="left">
+					{{ item.name }}
+
+				</v-col>
+			</template>
+
+			<template v-slot:item.status="{item}">
+				<v-col align="left">
+					{{ item.state }}
+
+				</v-col>
+			</template>
+
+			<template v-slot:item.creator="{item}">
+				<td>
+					<v-layout align="left">
+						{{ item.creator.name }}
+					</v-layout>
+				</td>
+			</template>
+
+			<template v-slot:item.startDate="{item}">
+				<td>
+					<v-layout justify-center>
+						{{ item.startDate }}
+					</v-layout>
+				</td>
+			</template>
+
+			<template v-slot:item.endDate="{item}">
+				<td>
+					<v-layout justify-center>
+						{{ item.endDate }}
+					</v-layout>
+				</td>
+			</template>
+
 		</v-data-table>
 
 		<edit-tournament-dialog
@@ -66,75 +107,69 @@
 </template>
 
 <script lang="ts">
-    import { Component, Vue } from 'vue-property-decorator';
-    import Course from '@/models/user/Course';
-    import Tournament from '@/models/management/Tournament';
-    import RemoteServices from '@/services/RemoteServices';
-    import EditTournamentDialog from '@/views/student/EditTournamentDialog.vue';
-    @Component({
-        components: {
-            'edit-tournament-dialog': EditTournamentDialog
-        }
-    })
-    export default class TournamentsView extends Vue {
-        tournaments: Tournament[] = [];
-        currentCourse: Course | null = null;
-        editTournamentDialog: boolean = false;
-        search: string = '';
-        headers: object = [
-            {
-                text: 'Course Type',
-                value: 'courseType',
-                align: 'center',
-                width: '10%'
-            },
-            { text: 'Name', value: 'name', align: 'left', width: '30%' },
-            {
-                text: 'Execution Type',
-                value: 'courseExecutionType',
-                align: 'center',
-                width: '10%'
-            },
-            {
-                text: 'Acronym',
-                value: 'acronym',
-                align: 'center',
-                width: '10%'
-            },
-            {
-                text: 'Academic Term',
-                value: 'academicTerm',
-                align: 'center',
-                width: '10%'
-            },
-            {
-                text: 'Status',
-                value: 'status',
-                align: 'center',
-                width: '10%'
-            },
-            {
-                text: 'Actions',
-                value: 'action',
-                align: 'center',
-                sortable: false,
-                width: '20%'
-            }
-        ];
-        async created() {
-            await this.$store.dispatch('loading');
-            try {
-                //this.courses = await RemoteServices.getCourses();
-            } catch (error) {
-                await this.$store.dispatch('error', error);
-            }
-            await this.$store.dispatch('clearLoading');
-        }
-        newTournament() {
-            this.currentCourse = new Course();
-            this.editTournamentDialog = true;
-        }
-        /*
+	import { Component, Vue } from 'vue-property-decorator';
+	import Course from '@/models/user/Course';
+	import Tournament from '@/models/management/Tournament';
+	import RemoteServices from '@/services/RemoteServices';
+	import EditTournamentDialog from '@/views/student/EditTournamentDialog.vue';
+	@Component({
+		components: {
+			'edit-tournament-dialog': EditTournamentDialog
+		}
+	})
+	export default class TournamentsView extends Vue {
+		tournaments: Tournament[] = [];
+		currentCourse: Course | null = null;
+		editTournamentDialog: boolean = false;
+		search: string = '';
+		headers: object = [
+			{
+				text: 'Creator',
+				value: 'creator',
+				align: 'left',
+				width: '10%'
+			},
+			{ text: 'Name', value: 'name', align: 'left', width: '10%' },
+			{
+				text: 'Start Date',
+				value: 'startDate',
+				align: 'left',
+				width: '10%'
+			},
+			{
+				text: 'End Date',
+				value: 'endDate',
+				align: 'left',
+				width: '10%'
+			},
+			{
+				text: 'Status',
+				value: 'status',
+				align: 'left',
+				width: '10%'
+			},
+			{
+				text: 'Actions',
+				value: 'action',
+				align: 'center',
+				sortable: false,
+				width: '10%'
+			}
+		];
+		async created() {
+			await this.$store.dispatch('loading');
+			try {
+				//this.tournaments = await RemoteServices.getAvailableTournaments();
+			} catch (error) {
+				await this.$store.dispatch('error', error);
+			}
+			await this.$store.dispatch('clearLoading');
+		}
+		newTournament() {
+			this.currentCourse = new Course();
+			this.editTournamentDialog = true;
+		}
+		/*
         createFromCourse(course: Course) {
             this.currentCourse = new Course(course);
             this.currentCourse.courseExecutionId = undefined;
@@ -144,16 +179,16 @@
             this.editCourseDialog = true;
         }
         */
-        async onCreateTournament(tournament: Tournament) {
-            this.tournaments.unshift(tournament);
-            this.editTournamentDialog = false;
-            this.currentCourse = null;
-        }
-        onCloseDialog() {
-            this.editTournamentDialog = false;
-            this.currentCourse = null;
-        }
-        /*
+		async onCreateTournament(tournament: Tournament) {
+			this.tournaments.unshift(tournament);
+			this.editTournamentDialog = false;
+			this.currentCourse = null;
+		}
+		onCloseDialog() {
+			this.editTournamentDialog = false;
+			this.currentCourse = null;
+		}
+		/*
         async deleteCourse(courseToDelete: Course) {
             if (confirm('Are you sure you want to delete this question?')) {
                 try {
@@ -167,7 +202,7 @@
             }
         }
          */
-    }
+	}
 </script>
 
 <style lang="scss" scoped></style>
