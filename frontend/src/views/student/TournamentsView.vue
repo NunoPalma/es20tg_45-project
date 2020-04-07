@@ -5,9 +5,11 @@
 				:items="tournaments"
 				:search="search"
 				disable-pagination
-				:hide-default-footer="true"
+				:hide-default-footer="false"
 				:mobile-breakpoint="0"
 				multi-sort
+				no-data-text="No available tournaments"
+				loading-text="Loading tournaments"
 		>
 			<template v-slot:top>
 
