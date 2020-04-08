@@ -1,9 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserDto implements Serializable {
     private int id;

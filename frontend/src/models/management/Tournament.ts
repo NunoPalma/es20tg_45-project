@@ -13,6 +13,7 @@ export default class Tournament {
     numQuestions!: number;
     quiz!: Quiz;
     state!: string;
+    isLoading: boolean = false;
 
 
     constructor(jsonObj?: Tournament) {

@@ -11,6 +11,7 @@ export default class User {
   courses: CourseMap = {};
   coursesNumber: number = 0;
   id!: number;
+  tournaments: number[] = [];
 
   constructor(jsonObj?: User) {
     if (jsonObj) {
@@ -23,6 +24,9 @@ export default class User {
         this.courses[name] = courses.map(course => new Course(course));
         this.coursesNumber += this.courses[name].length;
       }
+
+      for (let tournamentId of Object.entries(jsonObj.tournaments))
+        this.tournaments.push(tournamentId[1]);
     }
   }
 }

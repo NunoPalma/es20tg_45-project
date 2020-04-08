@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class AuthUserDto implements Serializable {
     private User.Role role;
     private int id;
     private Map<String, List<CourseDto>> courses;
+    private List<Integer> tournaments = new ArrayList<>();
 
     public AuthUserDto(User user) {
         this.name = user.getName();
@@ -21,6 +23,8 @@ public class AuthUserDto implements Serializable {
         this.role = user.getRole();
         this.courses = getActiveAndInactiveCourses(user, new ArrayList<>());
         this.id = user.getId();
+        for(Tournament tournament: user.getTournaments())
+            tournaments.add(tournament.getId());
     }
 
     public AuthUserDto(User user, List<CourseDto> currentCourses) {
@@ -29,6 +33,16 @@ public class AuthUserDto implements Serializable {
         this.role = user.getRole();
         this.courses = getActiveAndInactiveCourses(user, currentCourses);
         this.id = user.getId();
+        for(Tournament tournament: user.getTournaments())
+            tournaments.add(tournament.getId());
+    }
+
+    public List<Integer> getTournaments() {
+        return tournaments;
+    }
+
+    public void setTournaments(List<Integer> tournaments) {
+        this.tournaments = tournaments;
     }
 
     public int getId() {
