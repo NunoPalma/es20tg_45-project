@@ -329,6 +329,15 @@
                 <boolProp name="ISREGEX">false</boolProp>
               </JSONPathAssertion>
               <hashTree/>
+              <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="assert username" enabled="true">
+                <stringProp name="JSON_PATH">$.teacherUsername</stringProp>
+                <stringProp name="EXPECTED_VALUE">Demo-Teacher</stringProp>
+                <boolProp name="JSONVALIDATION">true</boolProp>
+                <boolProp name="EXPECT_NULL">false</boolProp>
+                <boolProp name="INVERT">false</boolProp>
+                <boolProp name="ISREGEX">false</boolProp>
+              </JSONPathAssertion>
+              <hashTree/>
             </hashTree>
           </hashTree>
         </hashTree>
