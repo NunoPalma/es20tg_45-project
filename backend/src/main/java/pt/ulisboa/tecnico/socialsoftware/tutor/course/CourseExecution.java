@@ -43,7 +43,7 @@ public class CourseExecution {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", fetch=FetchType.LAZY, orphanRemoval=true)
     private Set<Assessment> assessments = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", fetch = FetchType.EAGER)
     private Set<Tournament> tournaments = new HashSet<>();
 
     public CourseExecution() {

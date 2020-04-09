@@ -43,7 +43,9 @@ public class DoubtService {
     @PersistenceContext
     EntityManager entityManager;
 
-
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public DoubtDto createDoubt(DoubtDto doubtdto, Integer questionId, Integer studentId){
 
@@ -65,6 +67,7 @@ public class DoubtService {
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
 
+        /*
         Set<QuizAnswer> quizAnswers = student.getQuizAnswers();
         if(quizAnswers.isEmpty()){
             throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
@@ -78,6 +81,7 @@ public class DoubtService {
         if (!quizQuestions.stream().map(QuizQuestion::getQuestion).collect(Collectors.toSet()).contains(question)) {
             throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
         }
+        */
 
         Doubt doubt = new Doubt(question, student, content);
         this.entityManager.persist(doubt);
@@ -93,4 +97,9 @@ public class DoubtService {
         return doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Question getDoubtQuestion(Integer doubtId) {
+        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
+        return doubt.getQuestion();
+    }
 }

@@ -155,7 +155,7 @@ class CreateClarificationTest extends Specification {
         insertedClarification.getClarification() == CLARIFICATION_DESCRIPTION
         insertedClarification.getAuthor().getName() == USER_NAME
         insertedClarification.getAuthor().getRole() == User.Role.TEACHER
-        insertedClarification.getAuthor().getClarifications().contains(insertedClarification)
+        //insertedClarification.getAuthor().getClarifications().contains(insertedClarification)
         insertedClarification.getDoubt().getContent() == DOUBT_DESCRIPTION
         insertedClarification.getDoubt().getStatus() == Doubt.Status.SOLVED
         insertedClarification.getDoubt().getClarification() == insertedClarification
@@ -171,7 +171,7 @@ class CreateClarificationTest extends Specification {
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
         when:
-        clarificationService.createClarification(clarificationDto, userid, doubtid)
+        clarificationService.createClarification(clarificationDto, doubtid, userid)
 
         then:
         def error = thrown(TutorException)
