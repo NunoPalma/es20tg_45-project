@@ -121,6 +121,11 @@ export default class RemoteServices {
       });
   }
 
+  // static submitQuestion(question: Question): Promise<Question> {
+  //
+  // }
+
+
   static updateQuestion(question: Question): Promise<Question> {
     return httpClient
       .put(`/questions/${question.id}`, question)

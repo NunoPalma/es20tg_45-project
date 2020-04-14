@@ -111,7 +111,7 @@
             </v-list-item>
             <v-list-item to="/student/scan">
               <v-list-item-action>
-                <v-icon>fas fa-qrcode</v-icon>
+                <v-icon>fa-plus-square</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Scan</v-list-item-title>
@@ -123,6 +123,25 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Solved</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" text dark>
+              Questions
+              <v-icon>question_answer</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/submit">
+              <v-list-item-action>
+                <v-icon>fa-plus-square</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Submit Question</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
