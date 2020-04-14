@@ -1,10 +1,9 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament;
 
 import org.springframework.data.annotation.Transient;
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto;
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.dto.QuizDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,15 +15,14 @@ import java.util.stream.Collectors;
 public class TournamentDto implements Serializable {
 
 	private Integer id;
-	private Integer key;
-	private User creator;
-	private CourseExecution courseExecution;
+	private UserDto creator;
+	private Integer courseExecutionId;
 	private String name;
 	private String startDate;
 	private String endDate;
 	private Set<TopicDto> topics = new HashSet<>();
-	private Integer numQuestions;
-	private Quiz quiz;
+	private int numQuestions;
+	private QuizDto quizDto;
 	private Tournament.State state;
 
 	@Transient
@@ -32,16 +30,15 @@ public class TournamentDto implements Serializable {
 
 	public TournamentDto() {}
 
-	public TournamentDto(User creator, CourseExecution courseExecution) {
+	public TournamentDto(UserDto creator, Integer courseExecution) {
 		this.creator = creator;
-		this.courseExecution = courseExecution;
+		this.courseExecutionId = courseExecution;
 	}
 
 	public TournamentDto(Tournament tournament, boolean deepCopy) {
 		this.id = tournament.getId();
-		this.key = tournament.getKey();
-		this.creator = tournament.getCreator();
-		this.courseExecution = tournament.getCourseExecution();
+		this.creator = new UserDto(tournament.getCreator());
+		this.courseExecutionId = tournament.getCourseExecution().getId();
 		this.name = tournament.getName();
 		this.state = tournament.getState();
 
@@ -67,20 +64,20 @@ public class TournamentDto implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getKey() {
-		return key;
+	public Integer getCourseExecutionId() {
+		return courseExecutionId;
 	}
 
-	public void setKey(Integer key) {
-		this.key = key;
+	public void setCourseExecutionId(Integer courseExecution) {
+		this.courseExecutionId = courseExecution;
 	}
 
-	public CourseExecution getCourseExecution() {
-		return courseExecution;
-	}
-
-	public User getCreator() {
+	public UserDto getCreator() {
 		return creator;
+	}
+
+	public void setCreator(UserDto creator) {
+		this.creator = creator;
 	}
 
 	public String getName() {
@@ -115,28 +112,20 @@ public class TournamentDto implements Serializable {
 		this.topics = topics;
 	}
 
-	public Integer getNumQuestions() {
+	public int getNumQuestions() {
 		return numQuestions;
 	}
 
-	public void setNumQuestions(Integer numQuestions) {
+	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
 
-	public void setCreator(User creator) {
-		this.creator = creator;
+	public QuizDto getQuizDto() {
+		return quizDto;
 	}
 
-	public void setCourseExecution(CourseExecution courseExecution) {
-		this.courseExecution = courseExecution;
-	}
-
-	public Quiz getQuiz() {
-		return quiz;
-	}
-
-	public void setQuiz(Quiz quiz) {
-		this.quiz = quiz;
+	public void setQuizDto(QuizDto quizDto) {
+		this.quizDto = quizDto;
 	}
 
 	public Tournament.State getState() {
