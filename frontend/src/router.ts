@@ -24,7 +24,7 @@ import NotFoundView from './views/NotFoundView.vue';
 import ImpExpView from '@/views/teacher/impexp/ImpExpView.vue';
 import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
-import SubmitQuestionsView from '@views/student/SubmitQuestionsView.vue';
+import SubmittedQuestionsView from '@/views/student/SubmittedQuestionsView.vue';
 
 Vue.use(Router);
 
@@ -141,11 +141,11 @@ let router = new Router({
           }
         },
         {
-          path: 'submit',
-          name: 'submit-question',
-          component: SubmitQuestionsView,
+          path: 'questions',
+          name: 'student-questions',
+          component: SubmittedQuestionsView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Submit Question',
+            title: process.env.VUE_APP_NAME + ' - Student Questions',
             requiredAuth: 'Student'
           }
         },
