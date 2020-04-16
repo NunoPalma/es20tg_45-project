@@ -12,6 +12,7 @@ import { Student } from '@/models/management/Student';
 import Assessment from '@/models/management/Assessment';
 import AuthDto from '@/models/user/AuthDto';
 import StatementAnswer from '@/models/statement/StatementAnswer';
+import { VResponsive } from 'vuetify/lib';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -121,9 +122,34 @@ export default class RemoteServices {
       });
   }
 
-  // static submitQuestion(question: Question): Promise<Question> {
-  //
-  // }
+  static submitQuestion(question: Question): Promise<Question> {
+    return httpClient
+      .post(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/submit`,
+        question
+      )
+      .then(response => {
+        return new Question(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static getSubmittedQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/submitted`
+      )
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
 
 
   static updateQuestion(question: Question): Promise<Question> {
