@@ -129,7 +129,7 @@
         </v-menu>
 
         <v-btn to="/student/questions" v-if="isStudent && currentCourse" text dark>
-          Questions
+          My Questions
           <v-icon>question_answer</v-icon>
         </v-btn>
 
@@ -275,7 +275,7 @@
             <v-list-item-action>
               <v-icon>question_answer</v-icon>
             </v-list-item-action>
-            <v-list-item-content>Questions</v-list-item-content>
+            <v-list-item-content>My Questions</v-list-item-content>
           </v-list-item>
 
           <v-list-item to="/student/stats">

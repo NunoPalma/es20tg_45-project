@@ -24,7 +24,7 @@ import NotFoundView from './views/NotFoundView.vue';
 import ImpExpView from '@/views/teacher/impexp/ImpExpView.vue';
 import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
-import SubmittedQuestionsView from '@/views/student/SubmittedQuestionsView.vue';
+import SubmittedQuestionsView from '@/views/student/question/SubmittedQuestionsView.vue';
 
 Vue.use(Router);
 
