@@ -82,9 +82,6 @@ public class Question {
     @JoinColumn(name = "evaluation_id")
     private Evaluation evaluation;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Doubt> doubts = new ArrayList<>();
-
 
     public Question() {
     }
@@ -157,10 +154,6 @@ public class Question {
     public void setImage(Image image) {
         this.image = image;
         image.setQuestion(this);
-    }
-
-    public List<Doubt> getDoubts() {
-        return doubts;
     }
 
     public String getTitle() {
@@ -237,10 +230,6 @@ public class Question {
         course = null;
         getTopics().forEach(topic -> topic.getQuestions().remove(this));
         getTopics().clear();
-    }
-
-    public void addDoubt(Doubt doubt){
-        this.doubts.add(doubt);
     }
 
     @Override
