@@ -42,6 +42,14 @@
                 <v-list-item-title>Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item to="/management/evaluate_questions">
+              <v-list-item-action>
+                <v-icon>question_answer</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Evaluate Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item to="/management/topics">
               <v-list-item-action>
                 <v-icon>category</v-icon>
@@ -186,6 +194,14 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>Questions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/evaluate_questions">
+            <v-list-item-action>
+              <v-icon>question_answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Evaluate Questions</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/topics">
