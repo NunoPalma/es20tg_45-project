@@ -59,7 +59,7 @@ class EnrollStudentServiceSpockPerformanceTest extends Specification {
         tournamentRepository.save(tournament)
 
         when: "1000 users try to enroll in a tournament"
-        1.upto(1000, {
+        1.upto(1, {
             def student = new User()
             student.setRole(User.Role.STUDENT)
             student.setKey(USER_ID)

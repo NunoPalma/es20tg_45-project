@@ -20,13 +20,14 @@ public class TournamentController {
     }
 
     @PostMapping("/tournament/enroll/{studentId}/{tournamentId}")
-    @PreAuthorize("hasRole('STUDENT') or hasRole('ROLE_DEMO_STUDENT')")
+    @PreAuthorize("hasRole('STUDENT') or hasRole('ROLE_DEMO_STUDENT')") // missing execution access/tournament acces
     public TournamentDto enrollStudent(@PathVariable int studentId, @PathVariable int tournamentId) {
         return tournamentService.enrollStudent(studentId, tournamentId);
     }
 
     @GetMapping("/tournament/show/{studentId}")
-    @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')") // student could be enrolled in several executions,
+                                                                            // get tournament should be for a specific exec
     public List<TournamentDto> getTournaments(@PathVariable int studentId) {
         return tournamentService.getTournaments(studentId);
     }

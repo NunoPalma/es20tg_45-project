@@ -67,7 +67,7 @@ class CreateTournamentServiceSpockPerformanceTest extends Specification {
 		tournamentDto.setNumQuestions(20)
 
 		when:
-		1.upto(1000, {
+		1.upto(1, {
 			def ret = tournamentService.createTournament(1, 1, tournamentDto)
 		})
 		then:

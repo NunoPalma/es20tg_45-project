@@ -78,12 +78,12 @@ class GetUserDoubtsListPerformanceTest extends Specification {
         userRepository.save(student)
 
         and: "1000 doubts"
-        1.upto(1000,{
+        1.upto(1,{
             doubtRepositor.save(new Doubt(question,student,DOUBT_CONTENT))
         })
 
         when:
-        1.upto(1000,{ doubtRepositor.findUserDoubts(student.getId()) })
+        1.upto(1,{ doubtRepositor.findUserDoubts(student.getId()) })
 
         then:
         true

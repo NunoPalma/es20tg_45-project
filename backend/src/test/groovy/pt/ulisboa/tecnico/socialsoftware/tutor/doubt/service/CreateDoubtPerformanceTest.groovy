@@ -135,7 +135,7 @@ class CreateDoubtPerformanceTest extends Specification {
         def doubtdto
 
         when: "1000 doubts are created"
-        1.upto(1000, {
+        1.upto(1, {
             doubtdto = new DoubtDto()
             doubtdto.setContent(DOUBT_CONTENT + it)
             doubtService.createDoubt(doubtdto, question.getId(), student.getId())

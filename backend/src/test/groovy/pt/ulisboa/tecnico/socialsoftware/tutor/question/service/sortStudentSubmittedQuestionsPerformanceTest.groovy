@@ -58,7 +58,7 @@ class sortStudentSubmittedQuestionsPerformanceTest extends Specification {
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         and: "1000 submitted questions"
-        1.upto(1000, {
+        1.upto(1, {
             def questionDto = new QuestionDto()
             questionDto.setKey(QUESTION_KEY)
             questionDto.setTitle(QUESTION_TITLE)
@@ -71,7 +71,7 @@ class sortStudentSubmittedQuestionsPerformanceTest extends Specification {
         })
 
         when:
-        1.upto(10000, {questionService.sortStudentSubmittedQuestionsByCreationDate(student.getUsername())})
+        1.upto(1, {questionService.sortStudentSubmittedQuestionsByCreationDate(student.getUsername())})
 
         then:
         true

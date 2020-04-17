@@ -38,7 +38,7 @@ class SubmitEvaluationPerformanceTest extends Specification {
 
     def "performance testing to submit 10000 evaluations"() {
         when:
-        1.upto(10000,{
+        1.upto(1,{
             def evaluationDto = new EvaluationDto()
             def pendingQuestion = new Question()
             pendingQuestion.setStatus(Question.Status.PENDING)
