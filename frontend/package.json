@@ -29,7 +29,8 @@
     "vue-underscore": "^0.1.4",
     "vuetify": "^2.2.5",
     "vuetify-datetime-picker": "^2.1.1",
-    "vuex": "^3.1.2"
+    "vuex": "^3.1.2",
+    "@/models": "latest"
   },
   "devDependencies": {
     "@mdi/font": "^4.8.95",
