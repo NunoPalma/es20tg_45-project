@@ -14,6 +14,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
@@ -37,7 +38,7 @@ public class DoubtService {
     private UserRepository userRepository;
 
     @Autowired
-    private QuestionAnswerRepository questionAnswerRepository;
+    private QuizQuestionRepository quizQuestionRepository;
 
     @Autowired
     private DoubtRepositor doubtRepository;
@@ -67,7 +68,9 @@ public class DoubtService {
             throw new TutorException(DOUBT_USER_IS_NOT_A_STUDENT);
         }
 
-        QuestionAnswer questionAnswer = questionAnswerRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
+        QuizQuestion quizQuestion = quizQuestionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
+
+        QuestionAnswer questionAnswer = quizQuestion.getQuestionAnswerofUser(studentId);
 
         Doubt doubt = new Doubt(questionAnswer, student, content);
         this.entityManager.persist(doubt);
