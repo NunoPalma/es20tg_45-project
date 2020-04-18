@@ -25,6 +25,84 @@
 
 			<v-spacer />
 
+      <v-toolbar-items class="hidden-sm-and-down" hide-details>
+        <v-menu offset-y v-if="isAdmin" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" text dark>
+              Administration
+              <v-icon>fas fa-file-alt</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/admin/courses">
+              <v-list-item-action>
+                <v-icon>fas fa-school</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Manage Courses</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" text dark>
+              Management
+              <v-icon>fas fa-file-alt</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/management/questions">
+              <v-list-item-action>
+                <v-icon>question_answer</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/topics">
+              <v-list-item-action>
+                <v-icon>category</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Topics</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/quizzes">
+              <v-list-item-action>
+                <v-icon>ballot</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Quizzes</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/assessments">
+              <v-list-item-action>
+                <v-icon>book</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Assessments</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/students">
+              <v-list-item-action>
+                <v-icon>school</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Students</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/impexp">
+              <v-list-item-action>
+                <v-icon>cloud</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>ImpExp</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 			<v-toolbar-items class="hidden-sm-and-down" hide-details>
 				<v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
 					<template v-slot:activator="{ on }">
@@ -172,7 +250,90 @@
 					</v-list-item>
 				</v-list>
 			</v-toolbar>
+      <v-list class="pt-0" dense>
+        <!-- Administration Group-->
+        <v-list-group
+          prepend-icon="fas fa-file-alt"
+          :value="false"
+          v-if="
+          
+          
+          
+          "
+        >
+          <template v-slot:activator>
+            <v-list-item-title data-cy="Administration"
+              >Administration</v-list-item-title
+            >
+          </template>
+          <v-list-item to="/admin/courses">
+            <v-list-item-action>
+              <v-icon>fas fa-school</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Manage Courses</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
 
+        <!-- Management Group-->
+        <v-list-group
+          prepend-icon="fas fa-file-alt"
+          :value="false"
+          v-if="isTeacher && currentCourse"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Management</v-list-item-title>
+          </template>
+          <v-list-item to="/management/questions">
+            <v-list-item-action>
+              <v-icon>question_answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Questions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/topics">
+            <v-list-item-action>
+              <v-icon>category</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Topics</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/quizzes">
+            <v-list-item-action>
+              <v-icon>ballot</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Quizzes</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/assessments">
+            <v-list-item-action>
+              <v-icon>book</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Assessments</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/students">
+            <v-list-item-action>
+              <v-icon>school</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Students</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/impexp">
+            <v-list-item-action>
+              <v-icon>cloud</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>ImpExp</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
 			<v-list class="pt-0" dense>
 				<!-- Management Group-->
 				<v-list-group
