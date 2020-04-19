@@ -24,6 +24,7 @@ import NotFoundView from './views/NotFoundView.vue';
 import ImpExpView from '@/views/teacher/impexp/ImpExpView.vue';
 import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
+import SolveDoubtsView from '@/views/teacher/doubts/SolveDoubtsView.vue';
 
 Vue.use(Router);
 
@@ -111,6 +112,15 @@ let router = new Router({
           component: ImpExpView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - ImpExp',
+            requiredAuth: 'Teacher'
+          }
+        },
+        {
+          path: 'doubts',
+          name: 'doubts-management',
+          component: SolveDoubtsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Doubts',
             requiredAuth: 'Teacher'
           }
         }
