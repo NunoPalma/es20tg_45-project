@@ -1,9 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentDto implements Serializable {
     private String username;
@@ -21,6 +24,7 @@ public class StudentDto implements Serializable {
     private int percentageOfCorrectStudentAnswers = 0;
     private String creationDate;
     private String lastAccess;
+    private List<Integer> tournaments = new ArrayList<>();
 
     public StudentDto(User user) {
         this.username = user.getUsername();
@@ -48,6 +52,9 @@ public class StudentDto implements Serializable {
             this.lastAccess = user.getLastAccess().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         if (user.getCreationDate() != null)
             this.creationDate = user.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        for(Tournament tournament: user.getTournaments())
+            tournaments.add(tournament.getId());
     }
 
     public String getUsername() {

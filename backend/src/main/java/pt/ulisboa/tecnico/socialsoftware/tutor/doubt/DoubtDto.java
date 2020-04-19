@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
+
 import java.io.Serializable;
 
 public class DoubtDto implements Serializable {
@@ -7,6 +10,7 @@ public class DoubtDto implements Serializable {
     private String content;
     private String author;
     private Doubt.Status status;
+    private ClarificationDto clarificationDto;
 
     public DoubtDto(){
     }
@@ -16,6 +20,7 @@ public class DoubtDto implements Serializable {
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
         this.status = doubt.getStatus();
+        this.clarificationDto = new ClarificationDto(doubt.getClarification());
     }
 
     public Doubt.Status getStatus() {

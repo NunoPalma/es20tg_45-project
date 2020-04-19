@@ -28,6 +28,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
 import java.util.*;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -69,7 +71,7 @@ public class UserService {
         }
 
         User user = new User(name, username, getMaxUserNumber() + 1, role);
-        entityManager.persist(user);
+        userRepository.save(user);
         return user;
     }
 
@@ -135,15 +137,44 @@ public class UserService {
 
 
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoTeacher() {
-        return this.userRepository.findByUsername("Demo-Teacher");
+        User user = this.userRepository.findByUsername("Demo-Teacher");
+        if (user == null)
+            return createUser("Demo Teacher", "Demo-Teacher", User.Role.TEACHER);
+        return user;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoStudent() {
-        return this.userRepository.findByUsername("Demo-Student");
+        User user = this.userRepository.findByUsername("Demo-Student");
+        if (user == null)
+            return createUser("Demo Student", "Demo-Student", User.Role.STUDENT);
+        return user;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public User getDemoAdmin() {
-        return this.userRepository.findByUsername("Demo-Admin");
+        User user =  this.userRepository.findByUsername("Demo-Admin");
+        if (user == null)
+            return createUser("Demo Admin", "Demo-Admin", User.Role.DEMO_ADMIN);
+        return user;
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public User createDemoStudent() {
+        String birthDate = LocalDateTime.now().toString();
+        User newDemoUser = createUser("Demo-Student-" + birthDate, "Demo-Student-" + birthDate, User.Role.STUDENT);
+
+        User demoUser = this.userRepository.findByUsername("Demo-Student");
+
+        CourseExecution courseExecution = demoUser.getCourseExecutions().stream().findAny().orElse(null);
+
+        if (courseExecution != null) {
+            courseExecution.addUser(newDemoUser);
+            newDemoUser.addCourse(courseExecution);
+        }
+
+        return newDemoUser;
     }
 }
