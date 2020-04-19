@@ -7,10 +7,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.Evaluation;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-<<<<<<< HEAD
-=======
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
->>>>>>> reference/master
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
@@ -29,13 +26,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
         indexes = {
                 @Index(name = "question_indx_0", columnList = "key")
         })
-<<<<<<< HEAD
-public class Question {
 
-=======
-public class Question implements DomainEntity {
+public class Question {
     @SuppressWarnings("unused")
->>>>>>> reference/master
     public enum Status {
         DISABLED, REMOVED, AVAILABLE, PENDING, REJECTED
     }
@@ -121,7 +114,6 @@ public class Question implements DomainEntity {
         }
     }
 
-    @Override
     public void accept(Visitor visitor) {
         visitor.visitQuestion(this);
     }

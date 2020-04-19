@@ -24,13 +24,12 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
-<<<<<<< HEAD
 import java.util.*;
-=======
 import java.time.LocalDateTime;
 import java.util.List;
->>>>>>> reference/master
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -46,15 +45,12 @@ public class UserService {
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
 
-<<<<<<< HEAD
     @Autowired
     private QuestionService questionService;
 
     @PersistenceContext
     EntityManager entityManager;
 
-=======
->>>>>>> reference/master
     public User findByUsername(String username) {
         return this.userRepository.findByUsername(username);
     }
@@ -139,12 +135,9 @@ public class UserService {
         xmlImporter.importUsers(usersXML, this);
     }
 
-<<<<<<< HEAD
 
 
-=======
     @Transactional(isolation = Isolation.REPEATABLE_READ)
->>>>>>> reference/master
     public User getDemoTeacher() {
         User user = this.userRepository.findByUsername("Demo-Teacher");
         if (user == null)

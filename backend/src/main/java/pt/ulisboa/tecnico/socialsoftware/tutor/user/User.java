@@ -7,13 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
-<<<<<<< HEAD
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
-import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
-=======
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
->>>>>>> reference/master
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
@@ -102,7 +98,6 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectStudentAnswers = 0;
     }
 
-<<<<<<< HEAD
     public void addClarification(Clarification clarification) {
         this.clarifications.add(clarification);
     }
@@ -113,11 +108,10 @@ public class User implements UserDetails, DomainEntity {
 
     public void setClarifications(Set<Clarification> clarifications) {
         this.clarifications = clarifications;
-=======
+    }
     @Override
     public void accept(Visitor visitor) {
         visitor.visitUser(this);
->>>>>>> reference/master
     }
 
     public Integer getId() {
@@ -203,12 +197,8 @@ public class User implements UserDetails, DomainEntity {
 
     public Integer getNumberOfTeacherQuizzes() {
         if (this.numberOfTeacherQuizzes == null)
-<<<<<<< HEAD
-            this.numberOfTeacherQuizzes = (int) getQuizAnswers().stream().filter(quizAnswer -> quizAnswer.getCompleted())
-=======
             this.numberOfTeacherQuizzes = (int) getQuizAnswers().stream()
                     .filter(QuizAnswer::isCompleted)
->>>>>>> reference/master
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.PROPOSED))
                     .count();
 

@@ -22,13 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-<<<<<<< HEAD
 import java.security.Principal;
 import java.util.Arrays;
-=======
->>>>>>> reference/master
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
 
@@ -146,7 +144,6 @@ public class QuestionController {
         return ResponseEntity.ok().build();
     }
 
-<<<<<<< HEAD
     @PostMapping("/courses/{courseId}/questions/submit")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public QuestionDto submitQuestion(Principal principal, @PathVariable int courseId, @Valid @RequestBody QuestionDto question){
@@ -176,8 +173,6 @@ public class QuestionController {
         return questionService.sortStudentSubmittedQuestionsByCreationDate(user.getUsername());
     }
 
-=======
->>>>>>> reference/master
     private Path getTargetLocation(String url) {
         String fileLocation = figuresDir + url;
         return Paths.get(fileLocation);
