@@ -167,13 +167,16 @@ public class QuestionService {
             questionDto.setKey(maxQuestionNumber + 1);
         }
 
+        if (questionDto.getCreationDate() == null) {
+            questionDto.setCreationDate(LocalDateTime.now().format(Course.formatter));
+        }
+
         questionDto.setStatus(Question.Status.PENDING.name());
         Question question = new Question(course, questionDto);
         student.addSubmittedQuestion(question);
         question.setUser(student);
         Evaluation evaluation = new Evaluation(question);
         question.setEvaluation(evaluation);
-        question.setCreationDate(LocalDateTime.now());
 
         this.entityManager.persist(question);
         this.entityManager.persist(evaluation);
