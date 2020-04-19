@@ -44,6 +44,7 @@
 						</v-list-item>
 					</v-list>
 				</v-menu>
+			</v-toolbar-items>
         
       <v-toolbar-items class="hidden-sm-and-down" hide-details>
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>

@@ -47,27 +47,14 @@
 									:mobile-breakpoint="0"
 									multi-sort
 							>
-								<template v-slot:item.action="{ item }">
-									<v-tooltip bottom>
-										<template v-slot:activator="{ on }">
-											<v-icon
-													small
-													class="mr-2"
-													v-on="on"
-													@click="createFromCourse(item)"
-													data-cy="createFromCourse"
-											>cached
-											</v-icon
-											>
-										</template>
-										<span>Create from Course</span>
-									</v-tooltip>
+								<template v-slot:item.selected="{ item }">
+									<v-checkbox v-model="selectedBOis[item.name]" @change="onCheckboxChange(item.name)" primary hide-details></v-checkbox>
 								</template>
 							</v-data-table>
 						</v-card>
 							<p class="pl-0">Number of Questions</p>
 							<v-btn-toggle
-									v-model="statementManager.numberOfQuestions"
+									v-model="editTournament.numQuestions"
 									mandatory
 									class="button-group"
 							>
@@ -75,29 +62,6 @@
 								<v-btn text value="10">10</v-btn>
 								<v-btn text value="20">20</v-btn>
 							</v-btn-toggle>
-
-						<!--
-						<v-flex xs24 sm12 md8>
-							<p>
-								<b>Course Execution Type:</b> Merda
-								{{ editCourse.courseExecutionType }}
-							</p>
-						</v-flex>
-						<v-flex xs24 sm12 md8>
-							<v-text-field
-									v-model="editCourse.acronym"
-									label="Acronym"
-									data-cy="Acronym"
-							/>
-						</v-flex>
-						<v-flex xs24 sm12 md8>
-							<v-text-field
-									v-model="editCourse.academicTerm"
-									label="Academic Term"
-									data-cy="AcademicTerm"
-							/>
-						</v-flex>
-						-->
 					</v-layout>
 				</v-container>
 			</v-card-text>
@@ -126,15 +90,14 @@
     import Course from '@/models/user/Course';
     import Tournament from '@/models/management/Tournament';
     import Topic from '@/models/management/Topic';
-    import StatementManager from '@/models/statement/StatementManager';
     import format from 'date-fns/format'
 
     @Component
     export default class EditTournamentDialog extends Vue {
         @Model('dialog', Boolean) dialog!: boolean;
-        @Prop({type: Course, required: true}) readonly tournament!: Tournament;
-        start_date!: null;
-        end_date!: null;
+        //@Prop({type: Course, required: true}) readonly tournament!: Tournament;	// type: Course wtf should be TOurnament maube?
+        start_date: string = '';
+        end_date: string = '';
         editTournament!: Tournament;
         isCreateTournament: boolean = false;
         topics: Topic[] = [];
@@ -143,42 +106,80 @@
             {text: 'Name', value: 'name', align: 'left', width: '30%'},
             {text: 'Selected', value: 'selected', align: 'center', sortable: false, width: '20%'}
         ];
-        statementManager: StatementManager = StatementManager.getInstance;
+        selectedBOis: {[name: string]: boolean } = {};
 
-
-        created() {
-            this.editTournament = new Tournament(this.tournament);
+        async created() {
+            this.editTournament = new Tournament();
             this.isCreateTournament = !!this.editTournament.name;
+
+			try {
+			  this.topics = await RemoteServices.getTopics();
+			  for (let i = 0; i < this.topics.length; ++i)
+			      this.selectedBOis[this.topics[i].name] = false;
+			} catch (error) {
+			  await this.$store.dispatch('error', error);
+			}
+
+			await this.$store.dispatch('loading');
         }
 
 		formattedDate(date: Date) {
-        	return date ? format(date, 'Pp'): ''
+        	return date ? format(date, 'Pp') : '';
 		}
 
-        /*
+		onCheckboxChange(name: string) {
+            this.selectedBOis[name] = !this.selectedBOis[name];
+            console.log('now it\'s ' + this.selectedBOis[name]);
+		}
+
         async saveTournament() {
-            if (
-                this.editCourse &&
-                (!this.editCourse.name ||
-                    !this.editCourse.acronym ||
-                    !this.editCourse.academicTerm)
-            ) {
+            if (this.editTournament) {
+                this.editTournament.startDate = this.start_date;
+                this.editTournament.endDate = this.end_date;
+                for (let i = 0; i < this.topics.length; ++i) {
+                    if (this.selectedBOis[this.topics[i].name]) {
+                        console.log('mein nigger');
+                        this.editTournament.topics.push(this.topics[i]);
+					}
+				}
+
+                this.editTournament.startDate = this.start_date;
+                this.editTournament.endDate = this.end_date;
+			}
+
+            if (this.editTournament &&
+				(!this.editTournament.startDate ||
+				!this.editTournament.endDate ||
+				!this.editTournament.topics ||
+				!this.editTournament.numQuestions)) {
                 await this.$store.dispatch(
                     'error',
                     'Course must have name, acronym and academicTerm'
                 );
                 return;
-            }
-            if (this.editCourse && this.editCourse.courseExecutionId == null) {
-                try {
-                    //const result = await RemoteServices.createCourse(this.editCourse);
-                    //this.$emit('new-course', result);
-                } catch (error) {
-                    await this.$store.dispatch('error', error);
-                }
-            }
-        }
+			}
 
-         */
+            if (this.editTournament) {
+                try {
+                    const result = await RemoteServices.createTournament(this.editTournament);
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+                    console.log('crl crl crl crl');
+
+
+                    this.$emit('new-tournament', result);
+                } catch (error) {
+                    await this.$store.dispatch('error meu preto', error);
+                }
+			}
+        }
     }
 </script>
