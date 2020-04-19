@@ -31,6 +31,14 @@ Cypress.Commands.add('demoAdminLogin', () => {
   cy.contains('Manage Courses').click();
 });
 
+Cypress.Commands.add('demoStudentLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="studentButton"]').click();
+  cy.contains('My Questions').click();
+});
+
+// Commands for Course Execution test
+
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="createButton"]').click();
   cy.get('[data-cy="Name"]').type(name);
@@ -71,3 +79,28 @@ Cypress.Commands.add(
     cy.get('[data-cy="saveButton"]').click();
   }
 );
+
+
+//Commands for Submit Question Test
+
+Cypress.Commands.add('submitQuestion', (title, content, option) => {
+  cy.get('[data-cy="submitButton"]').click();
+  cy.get('[data-cy="Title"]').type(title,{force: true});
+  cy.get('[data-cy="Content"]').type(content);
+  cy.get('[data-cy="Correct"]').eq(0).click({force: true});
+  cy.get('[data-cy="Option"]').eq(0).type(option);
+  cy.get('[data-cy="Option"]').eq(1).type(option);
+  cy.get('[data-cy="Option"]').eq(2).type(option);
+  cy.get('[data-cy="Option"]').eq(3).type(option);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
+Cypress.Commands.add('deleteQuestion', (title) => {
+  cy.contains(title)
+    .parent()
+    .should('have.length',1)
+    .children()
+    .should('have.length',7)
+    .find('[data-cy="deleteQuestion"]')
+    .click();
+});
