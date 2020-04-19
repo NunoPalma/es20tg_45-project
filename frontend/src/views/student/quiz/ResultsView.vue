@@ -55,7 +55,7 @@
       v-on:new-doubt="onCreateDoubt"
       v-on:close-dialog="onCloseDialog"
     />
-    <div class="container">
+    <div class="container" v-if="createDoubtList">
       <h2>Current Discussions About This Question</h2>
       <ul>
         <li class="list-header ">
@@ -65,9 +65,9 @@
           <div class="col last-col"></div>
         </li>
         <li
-                class="list-row"
-                v-for="doubt in doubts[this.questionOrder]"
-                :key="doubt.id"
+          class="list-row"
+          v-for="doubt in doubts[this.questionOrder]"
+          :key="doubt.id"
         >
           <div class="col">
             {{ doubt.author }}
@@ -85,7 +85,8 @@
       </ul>
     </div>
     <v-btn width="1040px" large color="primary" dark @click="newDoubt">
-      <v-icon left dark>mdi-plus</v-icon>New Doubt</v-btn>
+      <v-icon left dark>mdi-plus</v-icon>New Doubt</v-btn
+    >
   </div>
 </template>
 
@@ -108,24 +109,35 @@ export default class ResultsView extends Vue {
   quizQuestionId: number = 0;
   questionOrder: number = 0;
   createDoubtDialog: boolean = false;
+  createDoubtList: boolean = false;
 
   doubt: Doubt | null = null;
   doubts: Doubt[][] = [];
 
   async created() {
     if (this.statementManager.isEmpty()) {
-      await this.$router.push({name: 'create-quiz'});
+      await this.$router.push({ name: 'create-quiz' });
     }
-    if(this.statementManager.statementQuiz != null){
-      for(var iter = 0; iter < this.statementManager.statementQuiz?.questions.length; iter++ ){
-        this.doubts[iter] = await RemoteServices.getQuestionDoubts(this.statementManager.correctAnswers[iter].quizQuestionId);
-        console.log(this.doubts);
+    if (this.statementManager.statementQuiz != null) {
+      for (
+        var iter = 0;
+        iter < this.statementManager.statementQuiz?.questions.length;
+        iter++
+      ) {
+        this.doubts[iter] = await RemoteServices.getQuestionDoubts(
+          this.statementManager.correctAnswers[iter].quizQuestionId
+        );
       }
+      console.log(this.doubts);
+      this.createDoubtList = true;
     }
   }
 
   increaseOrder(): void {
-    if (this.questionOrder + 1 < +this.statementManager.statementQuiz!.questions.length) {
+    if (
+      this.questionOrder + 1 <
+      +this.statementManager.statementQuiz!.questions.length
+    ) {
       this.questionOrder += 1;
     }
   }
@@ -151,7 +163,8 @@ export default class ResultsView extends Vue {
     this.createDoubtDialog = true;
   }
 
-  async onCreateDoubt() {
+  async onCreateDoubt(doubt: Doubt) {
+    this.doubts[this.questionOrder].unshift(doubt);
     this.createDoubtDialog = false;
     this.doubt = null;
   }
@@ -164,62 +177,63 @@ export default class ResultsView extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    max-width: 1040px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 10px;
-    padding-right: 10px;
+.container {
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: -100px;
 
-    h2 {
-      font-size: 26px;
-      margin: 20px 0;
-      text-align: center;
-      small {
-        font-size: 0.5em;
-      }
-    }
-
-    ul {
-      overflow: hidden;
-      padding: 0 5px;
-
-      li {
-        border-radius: 3px;
-        padding: 15px 10px;
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-      }
-
-      .list-header {
-        background-color: #1976d2;
-        color: white;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        text-align: center;
-      }
-
-      .col {
-        width: 25%;
-      }
-
-      .last-col {
-        max-width: 50px !important;
-      }
-
-      .list-row {
-        background-color: #ffffff;
-        cursor: pointer;
-        box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.1);
-      }
-
-      .list-row:hover {
-        background-color: #c8c8c8;
-      }
+  h2 {
+    font-size: 26px;
+    margin: 20px 0;
+    text-align: center;
+    small {
+      font-size: 0.5em;
     }
   }
+
+  ul {
+    overflow: hidden;
+    padding: 0 5px;
+
+    li {
+      border-radius: 3px;
+      padding: 15px 10px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .list-header {
+      background-color: #1976d2;
+      color: white;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      text-align: center;
+    }
+
+    .col {
+      width: 25%;
+    }
+
+    .last-col {
+      max-width: 50px !important;
+    }
+
+    .list-row {
+      background-color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .list-row:hover {
+      background-color: #c8c8c8;
+    }
+  }
+}
 .incorrect {
   color: #cf2323 !important;
 }
@@ -227,6 +241,5 @@ export default class ResultsView extends Vue {
 .incorrect-current {
   background-color: #cf2323 !important;
   color: #fff !important;
-
 }
 </style>
