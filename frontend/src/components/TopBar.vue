@@ -106,7 +106,7 @@
 
 				<v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
 					<template v-slot:activator="{ on }">
-						<v-btn v-on="on" text dark>
+						<v-btn v-on="on" text dark data-cy="Quizzes">
 							Quizzes
 							<v-icon>fas fa-file-alt</v-icon>
 						</v-btn>
@@ -149,7 +149,7 @@
 								<v-icon>fas fa-trophy</v-icon>
 							</v-list-item-action>
 							<v-list-item-content>
-								<v-list-item-title>Tournaments</v-list-item-title>
+								<v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -239,7 +239,7 @@
 							<v-list-item-title>Topics</v-list-item-title>
 						</v-list-item-content>
 					</v-list-item>
-					<v-list-item to="/management/quizzes">
+					<v-list-item data-cy="quizzes" to="/management/quizzes">
 						<v-list-item-action>
 							<v-icon>ballot</v-icon>
 						</v-list-item-action>
