@@ -14,6 +14,8 @@ public class EvaluationDto {
 
     private String justification;
 
+    private String teacherUsername;
+
     private QuestionDto submittedQuestion;
 
     public EvaluationDto() {
@@ -45,6 +47,9 @@ public class EvaluationDto {
 
     public boolean getApprovedEvaluation() { return this.approvedEvaluation;}
 
+    public String getTeacherUsername() { return this.teacherUsername;}
+
+    public void setTeacherUsername(String username) { teacherUsername = username; }
 
     public void setJustification(String message) { justification = message; }
 
