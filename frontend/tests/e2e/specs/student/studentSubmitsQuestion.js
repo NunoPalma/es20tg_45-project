@@ -10,8 +10,31 @@ describe('Student Submit Question action', () => {
   });
 
   it('login creates and submits a question', () => {
-    cy.submitQuestion('Title', 'Content', 'Option');
+    let title = 'Test_Title' + Date.now();
 
-    cy.deleteQuestion('Title');
+    cy.submitQuestion(title, 'Content', 'Option');
+
+    cy.deleteQuestion(title);
+
   });
+
+  it('login creates one normal question and one faulty question', () => {
+
+    let title1 = 'Test_Title' + Date.now();
+    let title2 = 'Test_Title' + Date.now();
+
+    cy.submitQuestion(title1, 'Content', 'Option');
+
+    cy.log('try to create with no correct option');
+    cy.submitQuestionNoCorrect(title2, 'Content2', 'Option');
+
+    cy.closeErrorMessage();
+
+    cy.log('close dialog');
+    cy.get('[data-cy="cancelButton"]').click();
+
+    cy.deleteQuestion(title1);
+  });
+
+
 });

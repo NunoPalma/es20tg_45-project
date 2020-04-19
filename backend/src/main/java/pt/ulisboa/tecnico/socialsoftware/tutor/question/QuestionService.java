@@ -91,6 +91,7 @@ public class QuestionService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public CourseDto findQuestionCourse(Integer questionId) {
+
         return questionRepository.findById(questionId)
                 .map(Question::getCourse)
                 .map(CourseDto::new)
@@ -331,7 +332,10 @@ public class QuestionService {
             throw new TutorException(USERNAME_NOT_FOUND, username);
         }
 
-        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
+        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions()
+                .stream()
+                .filter(c -> c.getCourse() != null)
+                .collect(Collectors.toSet());
         LinkedList<Question> userSubmittedQuestionsList = new LinkedList<Question>(userSubmittedQuestions);
 
         LinkedList<Question> sortedQuestions = userSubmittedQuestionsList;
