@@ -107,4 +107,14 @@ public class QuizQuestion implements DomainEntity {
             throw new TutorException(QUIZ_QUESTION_HAS_ANSWERS);
         }
     }
+
+    public QuestionAnswer getQuestionAnswerofUser(int id){
+        for (QuestionAnswer questionAnswer : questionAnswers){
+            if(questionAnswer.getQuizAnswer().getUser().getId() == id){
+                return questionAnswer;
+            }
+        }
+        return null;
+    }
+
 }

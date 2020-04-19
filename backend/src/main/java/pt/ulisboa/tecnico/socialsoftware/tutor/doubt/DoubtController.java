@@ -35,11 +35,11 @@ public class DoubtController {
         return doubtService.findUserDoubts(user.getId());
     }
 
-    @PostMapping(value = "question/{questionId}/doubts")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ANSWERED')")
-    public DoubtDto createDoubt(Principal principal, @RequestBody DoubtDto doubtDto, @PathVariable int questionId){
+    @PostMapping(value = "quizQuestion/{quizQuestionId}/doubts")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public DoubtDto createDoubt(Principal principal, @RequestBody DoubtDto doubtDto, @PathVariable int quizQuestionId){
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
-        return this.doubtService.createDoubt(doubtDto, questionId, studentId);
+        return this.doubtService.createDoubt(doubtDto, quizQuestionId, studentId);
     }
 
 }
