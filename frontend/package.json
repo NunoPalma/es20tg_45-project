@@ -16,9 +16,10 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
     "axios": "^0.19.2",
+    "cypress": "^4.4.0",
     "material-design-icons-iconfont": "^5.0.1",
     "qrcode": "^1.4.4",
-    "sanitize-html": "^1.22.1",
+    "sanitize-html": "^1.23.0",
     "showdown": "^1.9.1",
     "typeface-roboto": "0.0.75",
     "vue": "^2.6.10",

@@ -5,7 +5,7 @@ export default class Doubt {
   author: string = '';
   status: string = 'UNSOLVED';
   content: string = '';
-  clarification: Clarification | null = null;
+  clarificationDto: Clarification | null = null;
 
   constructor(jsonObj?: Doubt) {
     if (jsonObj) {
@@ -13,6 +13,7 @@ export default class Doubt {
       this.author = jsonObj.author;
       this.status = jsonObj.status;
       this.content = jsonObj.content;
+      this.clarificationDto = jsonObj.clarificationDto;
     }
   }
 }

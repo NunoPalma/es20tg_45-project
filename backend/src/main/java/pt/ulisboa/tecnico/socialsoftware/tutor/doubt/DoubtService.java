@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -22,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.*;
 
@@ -43,6 +40,9 @@ public class DoubtService {
 
     @Autowired
     private DoubtRepositor doubtRepository;
+
+    @Autowired
+    private ClarificationService clarificationService;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -106,5 +106,25 @@ public class DoubtService {
     public Question getDoubtQuestion(Integer doubtId) {
         Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
         return doubt.getQuestionAnswer().getQuizQuestion().getQuestion();
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<DoubtDto> findCourseExecutionDoubts(List<CourseExecution> courseExec){
+        //return doubtRepository.getDoubts().stream().filter( doubt -> courseExec.stream().anyMatch(doubt.getQuestion().getCourse().getCourseExecutions()::contains)).map(DoubtDto::new).collect(Collectors.toList());
+        if(!courseExec.isEmpty()) {
+            List<DoubtDto> doubts = doubtRepository.getDoubts().stream()
+                    .filter(doubt -> !courseExec.contains(doubt.getQuestionAnswer().getQuizQuestion().getQuiz().getCourseExecution()))
+                    .map(DoubtDto::new)
+                    .collect(Collectors.toList());
+
+            for (DoubtDto d: doubts) {
+                d.setClarificationDto(clarificationService.findDoubtClarification(d.getId()));
+            }
+
+            return doubts;
+
+        } else {
+            return new ArrayList<DoubtDto>();
+        }
     }
 }

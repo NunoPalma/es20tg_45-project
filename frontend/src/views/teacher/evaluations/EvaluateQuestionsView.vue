@@ -65,8 +65,8 @@
 
     @Component
     export default class EvaluateQuestionsView extends Vue {
-        //questions: Question[] = [];
-        // currentQuestion: Question | null = null;
+  //questions: Question[] = [];
+  // currentQuestion: Question | null = null;
         // evaluateQuestionDialog: boolean = false;
         // evaluationDialog: boolean = false;
         // search: string = '';

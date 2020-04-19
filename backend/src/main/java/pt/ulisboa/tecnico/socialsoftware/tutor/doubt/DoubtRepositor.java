@@ -15,4 +15,7 @@ public interface DoubtRepositor extends JpaRepository<Doubt, Integer> {
 
     @Query( value = "SELECT * FROM doubts d WHERE d.question_answer_id = :questionAnswerId", nativeQuery = true)
     List<Doubt> findQuestionAnswerDoubts(Integer questionAnswerId);
+
+    @Query( value = "SELECT * FROM doubts", nativeQuery = true)
+    List<Doubt> getDoubts();
 }
