@@ -10,7 +10,7 @@ public class DoubtDto implements Serializable {
     private String content;
     private String author;
     private Doubt.Status status;
-    private ClarificationDto clarificationDto;
+    //private ClarificationDto clarificationDto;
 
     public DoubtDto(){
     }
@@ -20,7 +20,7 @@ public class DoubtDto implements Serializable {
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
         this.status = doubt.getStatus();
-        this.clarificationDto = new ClarificationDto(doubt.getClarification());
+        //this.clarificationDto = new ClarificationDto(doubt.getClarification());
     }
 
     public Doubt.Status getStatus() {

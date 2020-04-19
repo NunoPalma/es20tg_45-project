@@ -21,6 +21,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.*;
@@ -79,12 +80,27 @@ public class DoubtService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<DoubtDto> findQuizQuestionDoubts(Integer questionQuestionId){
+        if (questionQuestionId == null){
+            throw new TutorException(DOUBT_USER_IS_EMPTY);
+        }
+        List<DoubtDto> doubts = new ArrayList<>();
+        QuizQuestion quizQuestion = quizQuestionRepository.findById(questionQuestionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionQuestionId));
+        Set<QuestionAnswer> questionAnswerList = quizQuestion.getQuestionAnswers();
+        for(QuestionAnswer questionAnswer : questionAnswerList){
+            doubts.addAll(doubtRepository.findQuestionAnswerDoubts(questionAnswer.getId()).stream().map(DoubtDto::new).collect(Collectors.toList()));
+        }
+        return doubts;
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<DoubtDto> findUserDoubts(Integer userId){
         if (userId == null){
             throw new TutorException(DOUBT_USER_IS_EMPTY);
         }
         return doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
     }
+
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Question getDoubtQuestion(Integer doubtId) {
