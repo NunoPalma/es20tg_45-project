@@ -16,6 +16,8 @@ import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
 import { VResponsive } from 'vuetify/lib';
 
+import Doubt from '@/models/management/Doubt';
+
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
 httpClient.defaults.baseURL = process.env.VUE_APP_ROOT_API;
@@ -361,6 +363,49 @@ export default class RemoteServices {
       .catch(async error => {
         throw Error(await this.errorMessage(error));
       });
+  }
+
+  static getDoubts(): Promise<Doubt[]> {
+    return httpClient
+        .get('/doubts')
+        .then(response => {
+          return response.data.map((doubts: any) => {
+            return new Doubt(doubts);
+          });
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+  }
+
+  static getQuestionDoubts(quizQuestionId: number): Promise<Doubt[]> {
+    return httpClient
+        .get(
+            `/quizQuestion/${quizQuestionId}/doubts`
+        )
+        .then(response => {
+          return response.data.map((doubts: any) => {
+            return new Doubt(doubts);
+          });
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+  }
+
+  static createDoubt(doubt: Doubt, quizQuestionId: number): Promise<Doubt> {
+    doubt.author = Store.getters.getUser.name;
+    return httpClient
+        .post(
+            `/quizQuestion/${quizQuestionId}/doubts`,
+            doubt
+        )
+        .then(response => {
+          return new Doubt(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
   }
 
   static async updateTopic(topic: Topic): Promise<Topic> {
