@@ -61,7 +61,6 @@ public class TournamentService {
 		System.out.println("le culocas has a bunch of " + tournamentDto.getTopics().size() + "\n");
 		System.out.flush();
 
-
 		Set<TopicDto> topicDtos = tournamentDto.getTopics();
 
 		System.out.println("i fard and shid and camded " + topicDtos.size() + "\n");

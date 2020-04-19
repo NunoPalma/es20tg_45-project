@@ -218,7 +218,7 @@
 								<v-icon>fas fa-trophy</v-icon>
 							</v-list-item-action>
 							<v-list-item-content>
-								<v-list-item-title>Tournaments</v-list-item-title>
+								<v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -308,7 +308,7 @@
 							<v-list-item-title>Topics</v-list-item-title>
 						</v-list-item-content>
 					</v-list-item>
-					<v-list-item to="/management/quizzes">
+					<v-list-item data-cy="quizzes" to="/management/quizzes">
 						<v-list-item-action>
 							<v-icon>ballot</v-icon>
 						</v-list-item-action>

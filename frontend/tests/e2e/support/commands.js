@@ -31,6 +31,13 @@ Cypress.Commands.add('demoAdminLogin', () => {
   cy.contains('Manage Courses').click();
 });
 
+Cypress.Commands.add('demoStudentLogin', () => {
+    cy.visit('/');
+    cy.get('[data-cy="studentButton"]').click();
+    cy.get('[data-cy="Quizzes"]').click({ force: true });
+    cy.get('[data-cy="Tournaments"]').click({ force: true });
+});
+
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="createButton"]').click();
   cy.get('[data-cy="Name"]').type(name);
@@ -71,3 +78,8 @@ Cypress.Commands.add(
     cy.get('[data-cy="saveButton"]').click();
   }
 );
+
+
+Cypress.Commands.add('viewTournaments', () => {
+
+});
