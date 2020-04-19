@@ -11,6 +11,7 @@ import QuestionsView from '@/views/teacher/questions/QuestionsView.vue';
 import TopicsView from '@/views/teacher/TopicsView.vue';
 import QuizzesView from '@/views/teacher/quizzes/QuizzesView.vue';
 import StudentsView from '@/views/teacher/students/StudentsView.vue';
+import EvaluateQuestionsView from './views/teacher/evaluations/EvaluateQuestionsView.vue'
 import StudentView from '@/views/student/StudentView.vue';
 import AvailableQuizzesView from './views/student/AvailableQuizzesView.vue';
 import SolvedQuizzesView from './views/student/SolvedQuizzesView.vue';
@@ -27,6 +28,7 @@ import AssessmentsView from '@/views/teacher/assessments/AssessmentsView.vue';
 import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import SolveDoubtsView from '@/views/teacher/doubts/SolveDoubtsView.vue';
+import SubmittedQuestionsView from '@/views/student/question/SubmittedQuestionsView.vue';
 
 Vue.use(Router);
 
@@ -69,6 +71,15 @@ let router = new Router({
           component: QuestionsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Questions',
+            requiredAuth: 'Teacher'
+          }
+        },
+        {
+          path: 'evaluate_questions',
+          name: 'evaluate-questions-management',
+          component: EvaluateQuestionsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Evaluate Questions',
             requiredAuth: 'Teacher'
           }
         },
@@ -148,6 +159,15 @@ let router = new Router({
           component: CreateQuizzesView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Create Quizzes',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'questions',
+          name: 'student-questions',
+          component: SubmittedQuestionsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student Questions',
             requiredAuth: 'Student'
           }
         },

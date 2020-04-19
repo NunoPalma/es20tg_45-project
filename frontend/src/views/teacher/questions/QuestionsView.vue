@@ -1,4 +1,4 @@
-<template>
+o<template>
   <v-card class="table">
     <v-data-table
       :headers="headers"
@@ -163,7 +163,7 @@ export default class QuestionsView extends Vue {
   editQuestionDialog: boolean = false;
   questionDialog: boolean = false;
   search: string = '';
-  statusList = ['DISABLED', 'AVAILABLE', 'REMOVED'];
+  statusList = ['DISABLED', 'REMOVED', 'AVAILABLE', 'PENDING', 'REJECTED'];
 
   headers: object = [
     { text: 'Title', value: 'title', align: 'center' },

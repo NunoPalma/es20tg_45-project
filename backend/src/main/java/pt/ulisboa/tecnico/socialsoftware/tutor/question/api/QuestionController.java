@@ -85,13 +85,13 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{questionId}")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public QuestionDto updateQuestion(@PathVariable Integer questionId, @Valid @RequestBody QuestionDto question) {
         return this.questionService.updateQuestion(questionId, question);
     }
 
     @DeleteMapping("/questions/{questionId}")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public ResponseEntity removeQuestion(@PathVariable Integer questionId) throws IOException {
         logger.debug("removeQuestion questionId: {}: ", questionId);
         QuestionDto questionDto = questionService.findQuestionById(questionId);
@@ -115,7 +115,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{questionId}/image")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public String uploadImage(@PathVariable Integer questionId, @RequestParam("file") MultipartFile file) throws IOException {
         logger.debug("uploadImage  questionId: {}: , filename: {}", questionId, file.getContentType());
 
@@ -137,7 +137,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{questionId}/topics")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
     public ResponseEntity updateQuestionTopics(@PathVariable Integer questionId, @RequestBody TopicDto[] topics) {
         questionService.updateQuestionTopics(questionId, topics);
 

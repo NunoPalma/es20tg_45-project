@@ -62,6 +62,14 @@
                 <v-list-item-title>Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item to="/management/evaluate_questions">
+              <v-list-item-action>
+                <v-icon>question_answer</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Evaluate Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item to="/management/topics">
               <v-list-item-action>
                 <v-icon>category</v-icon>
@@ -172,6 +180,16 @@
 					</v-list>
 				</v-menu>
 
+        <v-btn to="/student/questions" v-if="isStudent && currentCourse" text dark>
+          My Questions
+          <v-icon>question_answer</v-icon>
+        </v-btn>
+
+        <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
+          Stats
+          <v-icon>fas fa-user</v-icon>
+        </v-btn>
+
 				<v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
 					<template v-slot:activator="{ on }">
 						<v-btn v-on="on" text dark>
@@ -249,6 +267,73 @@
 				</v-btn>
 			</v-toolbar-items>
 		</v-app-bar>
+      <v-list class="pt-0" dense>
+        <!-- Management Group-->
+        <v-list-group
+          prepend-icon="fas fa-file-alt"
+          :value="false"
+          v-if="isTeacher && currentCourse"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Management</v-list-item-title>
+          </template>
+          <v-list-item to="/management/questions">
+            <v-list-item-action>
+              <v-icon>question_answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Questions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/evaluate_questions">
+            <v-list-item-action>
+              <v-icon>question_answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Evaluate Questions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/topics">
+            <v-list-item-action>
+              <v-icon>category</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Topics</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/quizzes">
+            <v-list-item-action>
+              <v-icon>ballot</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Quizzes</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/assessments">
+            <v-list-item-action>
+              <v-icon>book</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Assessments</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/students">
+            <v-list-item-action>
+              <v-icon>school</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Students</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/impexp">
+            <v-list-item-action>
+              <v-icon>cloud</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>ImpExp</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
 
 		<!-- Start of mobile side menu -->
 		<v-navigation-drawer app v-model="drawer" absolute dark temporary>
@@ -382,13 +467,20 @@
 						<v-list-item-content>Solved Quizzes</v-list-item-content>
 					</v-list-item>
 
-					<v-list-item to="/student/stats">
-						<v-list-item-action>
-							<v-icon>fas fa-user</v-icon>
-						</v-list-item-action>
-						<v-list-item-content>Stats</v-list-item-content>
-					</v-list-item>
-				</v-list-group>
+          <v-list-item to="/student/questions">
+            <v-list-item-action>
+              <v-icon>question_answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>My Questions</v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/student/stats">
+            <v-list-item-action>
+              <v-icon>fas fa-user</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Stats</v-list-item-content>
+          </v-list-item>
+        </v-list-group>
 
 				<v-list-item to="/courses" v-if="isLoggedIn && moreThanOneCourse">
 					<v-list-item-action>
