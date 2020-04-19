@@ -2,10 +2,14 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.Importable;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "question_answers")
@@ -28,6 +32,9 @@ public class QuestionAnswer implements DomainEntity {
     @ManyToOne
     @JoinColumn(name = "option_id")
     private Option option;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Doubt> doubts = new ArrayList<>();
 
     private Integer sequence;
 
@@ -131,6 +138,11 @@ public class QuestionAnswer implements DomainEntity {
 
     public boolean isCorrect() {
         return getOption() != null && getOption().getCorrect();
+    }
+
+
+    public void addDoubt(Doubt doubt){
+        this.doubts.add(doubt);
     }
 
 }

@@ -6,12 +6,15 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
@@ -35,7 +38,7 @@ public class DoubtService {
     private UserRepository userRepository;
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuizQuestionRepository quizQuestionRepository;
 
     @Autowired
     private DoubtRepositor doubtRepository;
@@ -65,25 +68,11 @@ public class DoubtService {
             throw new TutorException(DOUBT_USER_IS_NOT_A_STUDENT);
         }
 
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
+        QuizQuestion quizQuestion = quizQuestionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
 
-        /*
-        Set<QuizAnswer> quizAnswers = student.getQuizAnswers();
-        if(quizAnswers.isEmpty()){
-            throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
-        }
+        QuestionAnswer questionAnswer = quizQuestion.getQuestionAnswerofUser(studentId);
 
-        List<Quiz> quizList = quizAnswers.stream().map(QuizAnswer::getQuiz).collect(Collectors.toList());
-        Set<QuizQuestion> quizQuestions = new HashSet<>();
-        for(Quiz quiz: quizList){
-            quizQuestions.addAll(quiz.getQuizQuestions());
-        }
-        if (!quizQuestions.stream().map(QuizQuestion::getQuestion).collect(Collectors.toSet()).contains(question)) {
-            throw new TutorException(DOUBT_USER_HASNT_ANSWERED);
-        }
-        */
-
-        Doubt doubt = new Doubt(question, student, content);
+        Doubt doubt = new Doubt(questionAnswer, student, content);
         this.entityManager.persist(doubt);
 
         return new DoubtDto(doubt);
@@ -100,6 +89,6 @@ public class DoubtService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Question getDoubtQuestion(Integer doubtId) {
         Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
-        return doubt.getQuestion();
+        return doubt.getQuestionAnswer().getQuizQuestion().getQuestion();
     }
 }
