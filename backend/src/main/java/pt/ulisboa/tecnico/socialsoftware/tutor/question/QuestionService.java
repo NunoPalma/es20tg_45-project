@@ -91,7 +91,6 @@ public class QuestionService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public CourseDto findQuestionCourse(Integer questionId) {
-
         return questionRepository.findById(questionId)
                 .map(Question::getCourse)
                 .map(CourseDto::new)
@@ -168,16 +167,13 @@ public class QuestionService {
             questionDto.setKey(maxQuestionNumber + 1);
         }
 
-        if (questionDto.getCreationDate() == null) {
-            questionDto.setCreationDate(LocalDateTime.now().format(Course.formatter));
-        }
-
         questionDto.setStatus(Question.Status.PENDING.name());
         Question question = new Question(course, questionDto);
         student.addSubmittedQuestion(question);
         question.setUser(student);
         Evaluation evaluation = new Evaluation(question);
         question.setEvaluation(evaluation);
+        question.setCreationDate(LocalDateTime.now());
 
         this.entityManager.persist(question);
         this.entityManager.persist(evaluation);
@@ -332,10 +328,7 @@ public class QuestionService {
             throw new TutorException(USERNAME_NOT_FOUND, username);
         }
 
-        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions()
-                .stream()
-                .filter(c -> c.getCourse() != null)
-                .collect(Collectors.toSet());
+        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
         LinkedList<Question> userSubmittedQuestionsList = new LinkedList<Question>(userSubmittedQuestions);
 
         LinkedList<Question> sortedQuestions = userSubmittedQuestionsList;

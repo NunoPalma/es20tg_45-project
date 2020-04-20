@@ -53,7 +53,7 @@ class SubmitEvaluationPerformanceTest extends Specification {
         userRepository.save(user)
 
         when:
-        1.upto(2,{
+        1.upto(10000,{
             def evaluationDto = new EvaluationDto()
             def pendingQuestion = new Question()
             pendingQuestion.setStatus(Question.Status.PENDING)
