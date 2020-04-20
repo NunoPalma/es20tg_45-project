@@ -31,19 +31,20 @@ o<template>
         <v-switch
                 v-model="statusDefault"
                 label="Question Approved"
+                data-cy="approve"
         />
       </v-card-text>
 
       <v-card-text class="text-left">
         <div>
-          <v-text-field v-model="justification" label="Justification"></v-text-field>
+          <v-text-field v-model="justification" label="Justification" data-cy="justification"></v-text-field>
         </div>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
         <v-btn color="blue darken-1" @click="closeDialogue">Cancel</v-btn>
-        <v-btn color="blue darken-1" @click="evaluateQuestion">Save</v-btn>
+        <v-btn color="blue darken-1" @click="evaluateQuestion" data-cy="saveEvaluation">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -37,6 +37,12 @@ Cypress.Commands.add('demoStudentLogin', () => {
   cy.contains('My Questions').click();
 });
 
+Cypress.Commands.add('demoTeacherLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="teacherButton"]').click();
+  cy.contains('Management').click();
+});
+
 // Commands for Course Execution test
 
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
@@ -124,5 +130,33 @@ Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
     .parent()
     .should('have.length', 1)
     .contains(title2);
+});
+
+//Commands for Evaluate Question Test
+
+Cypress.Commands.add('approveQuestion' , (title) => {
+  cy.get('[data-cy="Management"]').click();
+  cy.get('[data-cy="Evaluate"]').click();
+  cy.contains(title)
+    .parent()
+    .should('have.length',1)
+    .children()
+    .should('have.length',7)
+    .find('[data-cy="evaluateQuestion"]')
+    .click({force: true});
+  cy.get('[data-cy="approve"]').click({force: true});
+  cy.get('[data-cy="saveEvaluation"]').click({force: true});
+});
+
+Cypress.Commands.add('rejectQuestion', (title,justification) => {
+  cy.contains(title)
+    .parent()
+    .should('have.length',1)
+    .children()
+    .should('have.length',7)
+    .find('[data-cy="evaluateQuestion"]')
+    .click({force: true});
+  cy.get('[data-cy="justification"]').type(justification);
+  cy.get('[data-cy="saveEvaluation"]').click({force: true});
 });
 

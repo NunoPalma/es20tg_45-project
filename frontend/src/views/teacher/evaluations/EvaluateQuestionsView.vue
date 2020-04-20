@@ -43,7 +43,7 @@ o<template>
         />
       </template>
       <template v-slot:item.evaluation="{ item }">
-        <v-btn color="primary" dark @click="evaluateQuestion(item)"
+        <v-btn color="primary" dark @click="evaluateQuestion(item)" data-cy="evaluateQuestion"
         >Evaluate Question</v-btn
         >
       </template>
