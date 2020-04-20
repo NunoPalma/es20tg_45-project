@@ -12,7 +12,7 @@
       <v-card-actions>
         <v-spacer />
         <v-btn dark color="blue darken-1" @click="closeQuestionDialog"
-          >close</v-btn
+        >close</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -20,21 +20,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-import Question from '@/models/management/Question';
-import ShowSubmittedQuestion from '@/views/student/question/ShowSubmittedQuestion.vue';
-
-@Component({
-  components: {
-    'show-question': ShowSubmittedQuestion
+  import { Component, Vue, Prop } from 'vue-property-decorator';
+  import Question from '@/models/management/Question';
+  import ShowSubmittedQuestion from '@/views/student/question/ShowSubmittedQuestion.vue';
+  @Component({
+    components: {
+      'show-question': ShowSubmittedQuestion
+    }
+  })
+  export default class ShowSubmittedQuestionDialog extends Vue {
+    @Prop({ type: Question, required: true }) readonly question!: Question;
+    @Prop({ type: Boolean, required: true }) readonly dialog!: boolean;
+    closeQuestionDialog() {
+      this.$emit('close-show-question-dialog');
+    }
   }
-})
-export default class ShowSubmittedQuestionDialog extends Vue {
-  @Prop({ type: Question, required: true }) readonly question!: Question;
-  @Prop({ type: Boolean, required: true }) readonly dialog!: boolean;
-
-  closeQuestionDialog() {
-    this.$emit('close-show-question-dialog');
-  }
-}
 </script>

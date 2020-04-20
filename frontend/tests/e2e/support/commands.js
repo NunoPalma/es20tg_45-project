@@ -97,10 +97,11 @@ Cypress.Commands.add('createDoubt2', description => {
 });
 
 Cypress.Commands.add('closeErrorMessage', () => {
-  cy.contains('error')
+  cy.contains('Error')
     .parent()
     .find('button')
     .click();
+});
 
   Cypress.Commands.add(
     'createFromCourseExecution',
@@ -164,8 +165,6 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .contains(title2);
   });
 
-//Commands for Evaluate Question Test
-//trying to merge
 
 
   Cypress.Commands.add('approveQuestion', (title) => {
@@ -242,3 +241,4 @@ Cypress.Commands.add('closeErrorMessage', () => {
     let search = '[data-cy="' + tournamentName + '"]';
     cy.get(search).click({ force: true });
   });
+
