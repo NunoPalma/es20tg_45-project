@@ -1,525 +1,695 @@
-<template>
-    <nav>
-        <v-app-bar color="primary" clipped-left>
-            <v-app-bar-nav-icon
-                    @click.stop="drawer = !drawer"
-                    class="hidden-md-and-up"
-                    aria-label="Menu"
-            />
+import axios from 'axios';
+import Store from '@/store';
+import Question from '@/models/management/Question';
+import { Quiz } from '@/models/management/Quiz';
+import Course from '@/models/user/Course';
+import StatementCorrectAnswer from '@/models/statement/StatementCorrectAnswer';
+import StudentStats from '@/models/statement/StudentStats';
+import StatementQuiz from '@/models/statement/StatementQuiz';
+import SolvedQuiz from '@/models/statement/SolvedQuiz';
+import Topic from '@/models/management/Topic';
+import { Student } from '@/models/management/Student';
+import Assessment from '@/models/management/Assessment';
+import AuthDto from '@/models/user/AuthDto';
+import StatementAnswer from '@/models/statement/StatementAnswer';
+import { QuizAnswers } from '@/models/management/QuizAnswers';
+import Tournament from '@/models/management/Tournament';
+import Evaluation from '@/models/management/Evaluation';
 
-            <v-toolbar-title>
-                <v-btn
-                        dark
-                        active-class="no-active"
-                        text
-                        tile
-                        to="/"
-                        v-if="currentCourse"
-                >
-                    {{ currentCourse.name }}
-                </v-btn>
-                <v-btn dark active-class="no-active" text tile to="/" v-else>
-                    {{ appName }}
-                </v-btn>
-            </v-toolbar-title>
+const httpClient = axios.create();
+httpClient.defaults.timeout = 10000;
+httpClient.defaults.baseURL = process.env.VUE_APP_ROOT_API;
+httpClient.defaults.headers.post['Content-Type'] = 'application/json';
+httpClient.interceptors.request.use(
+  config => {
+    if (!config.headers.Authorization) {
+      const token = Store.getters.getToken;
 
-            <v-spacer />
-
-            <v-toolbar-items class="hidden-sm-and-down" hide-details>
-                <v-menu offset-y v-if="isAdmin" open-on-hover>
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" text dark>
-                            Administration
-                            <v-icon>fas fa-file-alt</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list dense>
-                        <v-list-item to="/admin/courses">
-                            <v-list-item-action>
-                                <v-icon>fas fa-school</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Manage Courses</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </v-toolbar-items>
-
-
-            <v-toolbar-items class="hidden-sm-and-down" hide-details>
-                <v-menu offset-y v-if="isAdmin" open-on-hover>
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" text dark>
-                            Administration
-                            <v-icon>fas fa-file-alt</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list dense>
-                        <v-list-item to="/admin/courses">
-                            <v-list-item-action>
-                                <v-icon>fas fa-school</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Manage Courses</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </v-toolbar-items>
-
-            <v-toolbar-items class="hidden-sm-and-down" hide-details>
-                <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" text dark>
-                            Management
-                            <v-icon>fas fa-file-alt</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list dense>
-                        <v-list-item to="/management/questions">
-                            <v-list-item-action>
-                                <v-icon>question_answer</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Questions</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/evaluations">
-                            <v-list-item-action data-cy="Evaluate">
-                                <v-icon>fas fa-check-circle</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Evaluate Questions</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/topics">
-                            <v-list-item-action>
-                                <v-icon>category</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Topics</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/quizzes">
-                            <v-list-item-action>
-                                <v-icon>ballot</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Quizzes</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/assessments">
-                            <v-list-item-action>
-                                <v-icon>book</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Assessments</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/students">
-                            <v-list-item-action>
-                                <v-icon>school</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Students</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/impexp">
-                            <v-list-item-action>
-                                <v-icon>cloud</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>ImpExp</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/doubts">
-                            <v-list-item-action>
-                                <v-icon>question_answer</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Doubts</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-
-                <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" text dark data-cy="QuizzesButton">
-                            Quizzes
-                            <v-icon>fas fa-file-alt</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list dense>
-                        <v-list-item to="/student/available">
-                            <v-list-item-action>
-                                <v-icon>assignment</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Available</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/create">
-                            <v-list-item-action>
-                                <v-icon>create</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Create</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/scan">
-                            <v-list-item-action>
-                                <v-icon>fas fa-qrcode</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Scan</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/solved">
-                            <v-list-item-action>
-                                <v-icon>done</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title data-cy="solved">Solved</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/tournaments">
-                            <v-list-item-action>
-                                <v-icon>fas fa-trophy</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Tournaments</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/doubts">
-                            <v-list-item-action>
-                                <v-icon>question_answer</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Doubts</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/tournaments">
-                            <v-list-item-action>
-                                <v-icon>fas fa-trophy</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-
-                <v-btn to="/student/questions" v-if="isStudent && currentCourse" text dark>
-                    My Questions
-                    <v-icon>question_answer</v-icon>
-                </v-btn>
-                <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
-                    Stats
-                    <v-icon>fas fa-user</v-icon>
-                </v-btn>
-
-                <v-btn
-                        v-if="isLoggedIn && moreThanOneCourse"
-                        to="/courses"
-                        active-class="no-active"
-                        text
-                        dark
-                >
-                    Change course
-                    <v-icon>fa fa-book</v-icon>
-                </v-btn>
-
-                <v-btn v-if="isLoggedIn" @click="logout" text dark data-cy="Logout">
-                    Logout
-                    <v-icon>fas fa-sign-out-alt</v-icon>
-                </v-btn>
-
-                <v-btn v-else :href="fenixUrl" text dark>
-                    Login <v-icon>fas fa-sign-in-alt</v-icon>
-                </v-btn>
-            </v-toolbar-items>
-        </v-app-bar>
-
-        <!-- Start of mobile side menu -->
-        <v-navigation-drawer app v-model="drawer" absolute dark temporary>
-            <v-toolbar flat>
-                <v-list>
-                    <v-list-item>
-                        <v-list-item-title class="title">Menu</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-toolbar>
-
-            <v-btn
-                    to="/student/questions"
-                    v-if="isStudent && currentCourse"
-                    text
-                    dark
-            >
-                My Questions
-                <v-icon>question_answer</v-icon>
-            </v-btn>
-
-
-            <v-btn
-                    v-if="isLoggedIn && moreThanOneCourse"
-                    to="/courses"
-                    active-class="no-active"
-                    text
-                    dark
-            >
-
-                Change course
-                <v-icon>fa fa-book</v-icon>
-            </v-btn>
-
-            <v-btn v-if="isLoggedIn" @click="logout" text dark>
-                Logout
-                <v-icon>fas fa-sign-out-alt</v-icon>
-            </v-btn>
-
-            <v-btn v-else :href="fenixUrl" text dark>
-                Login <v-icon>fas fa-sign-in-alt</v-icon>
-            </v-btn>
-            </v-toolbar-items>
-            </v-app-bar>
-        </v-navigation-drawer>
-
-            <!-- Start of mobile side menu -->
-            <v-navigation-drawer app v-model="drawer" absolute dark temporary>
-                <v-toolbar flat>
-                    <v-list>
-                        <v-list-item>
-                            <v-list-item-title class="title">Menu</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-toolbar>
-
-                <v-list class="pt-0" dense>
-                    <!-- Administration Group-->
-                    <v-list-group
-                            prepend-icon="fas fa-file-alt"
-                            :value="false"
-                            v-if="isAdmin"
-                    >
-                        <template v-slot:activator>
-                            <v-list-item-title data-cy="Administration"
-                            >Administration</v-list-item-title
-                            >
-                        </template>
-                        <v-list-item to="/admin/courses">
-                            <v-list-item-action>
-                                <v-icon>fas fa-school</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Manage Courses</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list-group>
-
-                    <!-- Management Group-->
-                    <v-list-group
-                            prepend-icon="fas fa-file-alt"
-                            :value="false"
-                            v-if="isTeacher && currentCourse"
-                    >
-                        <template v-slot:activator>
-                            <v-list-item-title>Management</v-list-item-title>
-                        </template>
-                        <v-list-item to="/management/questions">
-                            <v-list-item-action>
-                                <v-icon>question_answer</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Questions</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/evaluations">
-                            <v-list-item-action>
-                                <v-icon>fas fa-check-circle</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Evaluate Questions</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/topics">
-                            <v-list-item-action>
-                                <v-icon>category</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Topics</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/quizzes">
-                            <v-list-item-action>
-                                <v-icon>ballot</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title >Quizzes</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/assessments">
-                            <v-list-item-action>
-                                <v-icon>book</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Assessments</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/students">
-                            <v-list-item-action>
-                                <v-icon>school</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Students</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/management/impexp">
-                            <v-list-item-action>
-                                <v-icon>cloud</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>ImpExp</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list-group>
-
-                    <!-- Student Group-->
-                    <v-list-group
-                            prepend-icon="account_circle"
-                            :value="false"
-                            v-if="isStudent && currentCourse"
-                    >
-                        <template v-slot:activator>
-                            <v-list-item-title>Student</v-list-item-title>
-                        </template>
-
-                        <v-list-item
-                                to="/student/available"
-                                v-if="isStudent && currentCourse"
-                        >
-                            <v-list-item-action>
-                                <v-icon>assignment</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>Available Quizzes</v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item to="/student/create">
-                            <v-list-item-action>
-                                <v-icon>create</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>Create Quiz</v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item to="/student/scan">
-                            <v-list-item-action>
-                                <v-icon>fas fa-qrcode</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>Scan</v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item to="/student/solved">
-                            <v-list-item-action>
-                                <v-icon>done</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content >Solved Quizzes</v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item to="/student/doubts">
-                            <v-list-item-action>
-                                <v-icon>question-answer</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>Doubts</v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item to="/student/questions">
-                            <v-list-item-action>
-                                <v-icon>question_answer</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>My Questions</v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item to="/student/stats">
-                            <v-list-item-action>
-                                <v-icon>fas fa-user</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>Stats</v-list-item-content>
-                        </v-list-item>
-                        <v-list-item to="/student/tournaments">
-                            <v-list-item-action>
-                                <v-icon>fas fa-trophy</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>Tournaments
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list-group>
-
-                    <v-list-item to="/courses" v-if="isLoggedIn && moreThanOneCourse">
-                        <v-list-item-action>
-                            <v-icon>fas fa-book</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>Change course</v-list-item-content>
-                    </v-list-item>
-                    <v-list-item @click="logout" v-if="isLoggedIn">
-                        <v-list-item-action>
-                            <v-icon>fas fa-sign-out-alt</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>Logout</v-list-item-content>
-                    </v-list-item>
-                    <v-list-item :href="fenixUrl" v-else>
-                        <v-list-item-action>
-                            <v-icon>fas fa-sign-in-alt</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>Login</v-list-item-content>
-                    </v-list-item>
-                </v-list>
-            </v-navigation-drawer>
-            <!-- End of mobile side menu -->
-    </nav>
-</template>
-
-<script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  @Component
-  export default class TopBar extends Vue {
-    fenixUrl: string = process.env.VUE_APP_FENIX_URL;
-    appName: string = process.env.VUE_APP_NAME;
-    drawer: boolean = false;
-    get currentCourse() {
-      return this.$store.getters.getCurrentCourse;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-    get moreThanOneCourse() {
-      return (
-        this.$store.getters.getUser.coursesNumber > 1 &&
-        this.$store.getters.getCurrentCourse
-      );
-    }
-    get isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
-    }
-    get isTeacher() {
-      return this.$store.getters.isTeacher;
-    }
-    get isAdmin() {
-      return this.$store.getters.isAdmin;
-    }
-    get isStudent() {
-      return this.$store.getters.isStudent;
-    }
-    async logout() {
-      await this.$store.dispatch('logout');
-      await this.$router.push({ name: 'home' }).catch(() => {});
+
+    return config;
+  },
+  error => Promise.reject(error)
+);
+
+export default class RemoteServices {
+  static async fenixLogin(code: string): Promise<AuthDto> {
+    return httpClient
+      .get(`/auth/fenix?code=${code}`)
+      .then(response => {
+        return new AuthDto(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async demoStudentLogin(): Promise<AuthDto> {
+    return httpClient
+      .get('/auth/demo/student')
+      .then(response => {
+        return new AuthDto(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async demoTeacherLogin(): Promise<AuthDto> {
+    return httpClient
+      .get('/auth/demo/teacher')
+      .then(response => {
+        return new AuthDto(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async demoAdminLogin(): Promise<AuthDto> {
+    return httpClient
+      .get('/auth/demo/admin')
+      .then(response => {
+        return new AuthDto(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getUserStats(): Promise<StudentStats> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/stats`
+      )
+      .then(response => {
+        return new StudentStats(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(`/courses/${Store.getters.getCurrentCourse.courseId}/questions`)
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async exportCourseQuestions(): Promise<Blob> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/export`,
+        {
+          responseType: 'blob'
+        }
+      )
+      .then(response => {
+        return new Blob([response.data], {
+          type: 'application/zip, application/octet-stream'
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getAvailableQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/available`
+      )
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async createQuestion(question: Question): Promise<Question> {
+    return httpClient
+      .post(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/`,
+        question
+      )
+      .then(response => {
+        return new Question(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static submitQuestion(question: Question): Promise<Question> {
+    return httpClient
+      .post(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/submit`,
+        question
+      )
+      .then(response => {
+        return new Question(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static getSubmittedQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/submitted`
+      )
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static getPendingQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/pending`
+      )
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static findEvaluation(question: Question): Promise<Evaluation> {
+    return httpClient
+      .get(`/evaluations/${question.id}`)
+      .then(response => {
+        return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static submitEvaluation(
+    evaluation: Evaluation,
+    question: Question
+  ): Promise<Evaluation> {
+    return httpClient
+      .put(`/evaluations/${question.id}`, evaluation)
+      .then(response => {
+        return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static updateQuestion(question: Question): Promise<Question> {
+    return httpClient
+      .put(`/questions/${question.id}`, question)
+      .then(response => {
+        return new Question(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async deleteQuestion(questionId: number) {
+    return httpClient.delete(`/questions/${questionId}`).catch(async error => {
+      throw Error(await this.errorMessage(error));
+    });
+  }
+
+  static async setQuestionStatus(
+    questionId: number,
+    status: String
+  ): Promise<Question> {
+    return httpClient
+      .post(`/questions/${questionId}/set-status`, status, {})
+      .then(response => {
+        return new Question(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async uploadImage(file: File, questionId: number): Promise<string> {
+    let formData = new FormData();
+    formData.append('file', file);
+    return httpClient
+      .put(`/questions/${questionId}/image`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(response => {
+        return response.data as string;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async updateQuestionTopics(questionId: number, topics: Topic[]) {
+    return httpClient.put(`/questions/${questionId}/topics`, topics);
+  }
+
+  static async getTopics(): Promise<Topic[]> {
+    return httpClient
+      .get(`/courses/${Store.getters.getCurrentCourse.courseId}/topics`)
+      .then(response => {
+        return response.data.map((topic: any) => {
+          return new Topic(topic);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getAvailableQuizzes(): Promise<StatementQuiz[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/quizzes/available`
+      )
+      .then(response => {
+        return response.data.map((statementQuiz: any) => {
+          return new StatementQuiz(statementQuiz);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async generateStatementQuiz(params: object): Promise<StatementQuiz> {
+    return httpClient
+      .post(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/quizzes/generate`,
+        params
+      )
+      .then(response => {
+        return new StatementQuiz(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getSolvedQuizzes(): Promise<SolvedQuiz[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/quizzes/solved`
+      )
+      .then(response => {
+        return response.data.map((solvedQuiz: any) => {
+          return new SolvedQuiz(solvedQuiz);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getQuizByQRCode(quizId: number): Promise<StatementQuiz> {
+    return httpClient
+      .get(`/quizzes/${quizId}/byqrcode`)
+      .then(response => {
+        return new StatementQuiz(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async exportQuiz(quizId: number): Promise<Blob> {
+    return httpClient
+      .get(`/quizzes/${quizId}/export`, {
+        responseType: 'blob'
+      })
+      .then(response => {
+        return new Blob([response.data], {
+          type: 'application/zip, application/octet-stream'
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async startQuiz(quizId: number) {
+    return httpClient.get(`/quizzes/${quizId}/start`).catch(async error => {
+      throw Error(await this.errorMessage(error));
+    });
+  }
+
+  static async submitAnswer(quizId: number, answer: StatementAnswer) {
+    return httpClient
+      .post(`/quizzes/${quizId}/submit`, answer)
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async concludeQuiz(
+    quizId: number
+  ): Promise<StatementCorrectAnswer[] | void> {
+    return httpClient
+      .get(`/quizzes/${quizId}/conclude`)
+      .then(response => {
+        if (response.data) {
+          return response.data.map((answer: any) => {
+            return new StatementCorrectAnswer(answer);
+          });
+        }
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async createTopic(topic: Topic): Promise<Topic> {
+    return httpClient
+      .post(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/topics/`,
+        topic
+      )
+      .then(response => {
+        return new Topic(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async updateTopic(topic: Topic): Promise<Topic> {
+    return httpClient
+      .put(`/topics/${topic.id}`, topic)
+      .then(response => {
+        return new Topic(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async deleteTopic(topic: Topic) {
+    return httpClient.delete(`/topics/${topic.id}`).catch(async error => {
+      throw Error(await this.errorMessage(error));
+    });
+  }
+
+  static async getNonGeneratedQuizzes(): Promise<Quiz[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/quizzes/non-generated`
+      )
+      .then(response => {
+        return response.data.map((quiz: any) => {
+          return new Quiz(quiz);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async deleteQuiz(quizId: number) {
+    return httpClient.delete(`/quizzes/${quizId}`).catch(async error => {
+      throw Error(await this.errorMessage(error));
+    });
+  }
+
+  static async getQuiz(quizId: number): Promise<Quiz> {
+    return httpClient
+      .get(`/quizzes/${quizId}`)
+      .then(response => {
+        return new Quiz(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getQuizAnswers(quizId: number): Promise<QuizAnswers> {
+    return httpClient
+      .get(`/quizzes/${quizId}/answers`)
+      .then(response => {
+        return new QuizAnswers(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async saveQuiz(quiz: Quiz): Promise<Quiz> {
+    if (quiz.id) {
+      return httpClient
+        .put(`/quizzes/${quiz.id}`, quiz)
+        .then(response => {
+          return new Quiz(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    } else {
+      return httpClient
+        .post(
+          `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/quizzes`,
+          quiz
+        )
+        .then(response => {
+          return new Quiz(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
     }
   }
-</script>
 
-<style lang="scss" scoped>
-    .no-active::before {
-        opacity: 0 !important;
+  static async getCourseStudents(course: Course) {
+    return httpClient
+      .get(`/executions/${course.courseExecutionId}/students`)
+      .then(response => {
+        return response.data.map((student: any) => {
+          return new Student(student);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getAssessments(): Promise<Assessment[]> {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/assessments`
+      )
+      .then(response => {
+        return response.data.map((assessment: any) => {
+          return new Assessment(assessment);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getAvailableAssessments() {
+    return httpClient
+      .get(
+        `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/assessments/available`
+      )
+      .then(response => {
+        return response.data.map((assessment: any) => {
+          return new Assessment(assessment);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async saveAssessment(assessment: Assessment) {
+    if (assessment.id) {
+      return httpClient
+        .put(`/assessments/${assessment.id}`, assessment)
+        .then(response => {
+          return new Assessment(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    } else {
+      return httpClient
+        .post(
+          `/executions/${Store.getters.getCurrentCourse.courseExecutionId}/assessments`,
+          assessment
+        )
+        .then(response => {
+          return new Assessment(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
     }
-    nav {
-        z-index: 300;
+  }
+
+  static async deleteAssessment(assessmentId: number) {
+    return httpClient
+      .delete(`/assessments/${assessmentId}`)
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async setAssessmentStatus(
+    assessmentId: number,
+    status: string
+  ): Promise<Assessment> {
+    return httpClient
+      .post(`/assessments/${assessmentId}/set-status`, status, {
+        headers: {
+          'Content-Type': 'text/html'
+        }
+      })
+      .then(response => {
+        return new Assessment(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async activateCourse(course: Course): Promise<Course> {
+    return httpClient
+      .post('/courses', course)
+      .then(response => {
+        return new Course(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async getCourses(): Promise<Course[]> {
+    return httpClient
+      .get('/admin/courses/executions')
+      .then(response => {
+        return response.data.map((course: any) => {
+          return new Course(course);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async createCourse(course: Course): Promise<Course> {
+    return httpClient
+      .post('/admin/courses/executions', course)
+      .then(response => {
+        return new Course(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async deleteCourse(courseExecutionId: number | undefined) {
+    return httpClient
+      .delete('/admin/courses/executions/' + courseExecutionId)
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async exportAll() {
+    return httpClient
+      .get('/admin/export', {
+        responseType: 'blob'
+      })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        let dateTime = new Date();
+        link.setAttribute(
+          'download',
+          `export-${dateTime.toLocaleString()}.zip`
+        );
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async errorMessage(error: any): Promise<string> {
+    if (error.message === 'Network Error') {
+      return 'Unable to connect to server';
+    } else if (error.message.split(' ')[0] === 'timeout') {
+      return 'Request timeout - Server took too long to respond';
+    } else if (error.response) {
+      return error.response.data.message;
+    } else if (error.message === 'Request failed with status code 403') {
+      await Store.dispatch('logout');
+      return 'Unauthorized access or Expired token';
+    } else {
+      console.log(error);
+      return 'Unknown Error - Contact admin';
     }
-</style>
+  }
+
+  static async getAvailableTournaments(): Promise<Tournament[]> {
+    return httpClient
+      .get(
+        `/tournament/show/${Store.getters.getUser.id}`
+      )
+      .then(response => {
+        return response.data.map((tournament: any) => {
+          return new Tournament(tournament);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async enrollStudentInTournament(tournamentId: number): Promise<Tournament> {
+    if (tournamentId)
+      return httpClient
+        .post(
+          `/tournament/enroll/${Store.getters.getUser.id}/${tournamentId}`
+        )
+        .then(response => {
+          return new Tournament(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    else
+      throw Error(await this.errorMessage('No tournament id provided.'));
+  }
+}
