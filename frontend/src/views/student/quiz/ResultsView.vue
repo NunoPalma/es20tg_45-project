@@ -71,13 +71,16 @@
           :key="doubt.id"
         >
           <div class="col">
-            {{ doubt.author }}
+            <v-chip color="blue">
+              {{ doubt.author }}
+            </v-chip>
           </div>
           <div class="col">
             {{ doubt.content }}
           </div>
           <div class="col">
-            {{ doubt.status }}
+            <v-chip v-if="!doubt.clarificationDto" color="red">{{ doubt.status }}</v-chip>
+            <v-chip v-if="doubt.clarificationDto" color="green">{{ doubt.status }}</v-chip>
           </div>
           <div class="col last-col">
             <i class="fas fa-chevron-circle-right" />
