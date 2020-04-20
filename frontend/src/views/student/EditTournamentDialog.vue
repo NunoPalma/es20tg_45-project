@@ -25,18 +25,25 @@
 									data-cy="Name"
 							/>
 						</v-flex>
-						<v-menu>
-							<template v-slot:activator="{ on }">
-								<v-text-field :value="formattedDate(start_date)" label="Start date" prepend-icon="mdi-calendar-range" v-on="on"></v-text-field>
-							</template>
-							<v-datetime-picker v-model="start_date"></v-datetime-picker>
-						</v-menu>
-							<v-menu>
-								<template v-slot:activator="{ on }">
-									<v-text-field :value="formattedDate(end_date)" label="End date" prepend-icon="mdi-calendar-range" v-on="on"></v-text-field>
-								</template>
-								<v-datetime-picker v-model="end_date"></v-datetime-picker>
-							</v-menu>
+						<v-flex xs24 sm12 md8>
+							<p v-if="isCreateTournament"><b>Start Date:</b> {{ editTournament.startDate }} </p>
+							<v-text-field
+									v-if="!isCreateTournament"
+									v-model="editTournament.startDate"
+									label="Start Date - YYYY-MM-dd HH:mm:SS"
+									data-cy="startDate"
+							/>
+						</v-flex>
+						<v-flex xs24 sm12 md8>
+							<p v-if="isCreateTournament"><b>End Date:</b> {{ editTournament.endDate }} </p>
+							<v-text-field
+									v-if="!isCreateTournament"
+									v-model="editTournament.endDate"
+									label="End Date - YYYY-MM-dd HH:mm:SS"
+									data-cy="endDate"
+							/>
+						</v-flex>
+
 						<v-card class="table">
 							<v-data-table
 									:headers="headers"
@@ -47,57 +54,26 @@
 									:mobile-breakpoint="0"
 									multi-sort
 							>
-								<template v-slot:item.action="{ item }">
-									<v-tooltip bottom>
-										<template v-slot:activator="{ on }">
-											<v-icon
-													small
-													class="mr-2"
-													v-on="on"
-													@click="createFromCourse(item)"
-													data-cy="createFromCourse"
-											>cached
-											</v-icon
-											>
-										</template>
-										<span>Create from Course</span>
-									</v-tooltip>
+								<template v-slot:item.selected="{ item }">
+									<v-checkbox
+											v-model="selectedBOis[item.name]"
+											@change="onCheckboxChange(item.name)"
+											data-cy="checkTopic"
+											primary hide-details>
+									</v-checkbox>
 								</template>
 							</v-data-table>
 						</v-card>
 							<p class="pl-0">Number of Questions</p>
 							<v-btn-toggle
-									v-model="statementManager.numberOfQuestions"
+									v-model="editTournament.numQuestions"
 									mandatory
 									class="button-group"
 							>
-								<v-btn text value="5">5</v-btn>
-								<v-btn text value="10">10</v-btn>
-								<v-btn text value="20">20</v-btn>
+								<v-btn text value="5" data-cy="Questions5">5</v-btn>
+								<v-btn text value="10" data-cy="Questions10">10</v-btn>
+								<v-btn text value="20" data-cy="Questions20">20</v-btn>
 							</v-btn-toggle>
-
-						<!--
-						<v-flex xs24 sm12 md8>
-							<p>
-								<b>Course Execution Type:</b> Merda
-								{{ editCourse.courseExecutionType }}
-							</p>
-						</v-flex>
-						<v-flex xs24 sm12 md8>
-							<v-text-field
-									v-model="editCourse.acronym"
-									label="Acronym"
-									data-cy="Acronym"
-							/>
-						</v-flex>
-						<v-flex xs24 sm12 md8>
-							<v-text-field
-									v-model="editCourse.academicTerm"
-									label="Academic Term"
-									data-cy="AcademicTerm"
-							/>
-						</v-flex>
-						-->
 					</v-layout>
 				</v-container>
 			</v-card-text>
@@ -126,59 +102,78 @@
     import Course from '@/models/user/Course';
     import Tournament from '@/models/management/Tournament';
     import Topic from '@/models/management/Topic';
-    import StatementManager from '@/models/statement/StatementManager';
     import format from 'date-fns/format'
 
     @Component
     export default class EditTournamentDialog extends Vue {
         @Model('dialog', Boolean) dialog!: boolean;
-        @Prop({type: Course, required: true}) readonly tournament!: Tournament;
-        start_date!: null;
-        end_date!: null;
         editTournament!: Tournament;
         isCreateTournament: boolean = false;
         topics: Topic[] = [];
         search: string = '';
         headers: object = [
             {text: 'Name', value: 'name', align: 'left', width: '30%'},
-            {text: 'Selected', value: 'selected', align: 'center', sortable: false, width: '20%'}
+            {text: 'Selected', value: 'selected', align: 'center', sortable: false, width: '5%'}
         ];
-        statementManager: StatementManager = StatementManager.getInstance;
+        selectedBOis: {[name: string]: boolean } = {};
+        counter: number = 0;
 
-
-        created() {
-            this.editTournament = new Tournament(this.tournament);
+        async created() {
+            this.editTournament = new Tournament();
             this.isCreateTournament = !!this.editTournament.name;
+
+			try {
+			  this.topics = await RemoteServices.getTopics();
+			  for (let i = 0; i < this.topics.length; ++i)
+			      this.selectedBOis[this.topics[i].name] = false;
+
+			  for (let i = 0; i < this.topics.length; ++i)
+			      console.log('and what we have is ' + this.selectedBOis[this.topics[i].name]);
+			} catch (error) {
+			  await this.$store.dispatch('error', error);
+			}
+
+			await this.$store.dispatch('loading');
         }
 
-		formattedDate(date: Date) {
-        	return date ? format(date, 'Pp'): ''
+		onCheckboxChange(topicName: string) {
+            if (this.counter === 0) {
+                for (let i = 0; i < this.topics.length; ++i)
+			      this.selectedBOis[this.topics[i].name] = false;
+                this.counter++;
+			}
+            this.selectedBOis[topicName] = !this.selectedBOis[topicName];
 		}
 
-        /*
         async saveTournament() {
-            if (
-                this.editCourse &&
-                (!this.editCourse.name ||
-                    !this.editCourse.acronym ||
-                    !this.editCourse.academicTerm)
-            ) {
+            if (this.editTournament) {
+                for (let i = 0; i < this.topics.length; ++i) {
+                    if (this.selectedBOis[this.topics[i].name]) {
+                        this.editTournament.topics.push(this.topics[i]);
+					}
+				}
+			}
+
+            if (this.editTournament &&
+				(!this.editTournament.startDate ||
+				!this.editTournament.endDate ||
+				!this.editTournament.topics ||
+				!this.editTournament.numQuestions)) {
                 await this.$store.dispatch(
                     'error',
-                    'Course must have name, acronym and academicTerm'
+                    'Tournament must have name, start date, end date and at least one topic!'
                 );
                 return;
-            }
-            if (this.editCourse && this.editCourse.courseExecutionId == null) {
+			}
+
+            if (this.editTournament) {
                 try {
-                    //const result = await RemoteServices.createCourse(this.editCourse);
-                    //this.$emit('new-course', result);
+                    const result = await RemoteServices.createTournament(this.editTournament);
+                    this.$emit('new-tournament', result);
                 } catch (error) {
                     await this.$store.dispatch('error', error);
                 }
-            }
+			}
         }
-
-         */
     }
 </script>
