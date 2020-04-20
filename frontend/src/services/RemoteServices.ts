@@ -15,6 +15,7 @@ import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
 import { VResponsive } from 'vuetify/lib';
+import Evaluation from '@/models/management/Evaluation';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -182,6 +183,45 @@ export default class RemoteServices {
       });
   }
 
+  static getPendingQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/pending`
+      )
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static findEvaluation(question: Question): Promise<Evaluation> {
+    return httpClient
+      .get(`/evaluations/${question.id}`)
+      .then(response => {
+        return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static submitEvaluation(
+    evaluation: Evaluation,
+    question: Question
+  ): Promise<Evaluation> {
+    return httpClient
+      .put(`/evaluations/${question.id}`, evaluation)
+      .then(response => {
+        return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
 
   static updateQuestion(question: Question): Promise<Question> {
     return httpClient
