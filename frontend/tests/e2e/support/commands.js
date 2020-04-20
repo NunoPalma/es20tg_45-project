@@ -34,8 +34,6 @@ Cypress.Commands.add('demoAdminLogin', () => {
 Cypress.Commands.add('demoStudentLogin', () => {
     cy.visit('/');
     cy.get('[data-cy="studentButton"]').click();
-    cy.get('[data-cy="Quizzes"]').click({ force: true });
-    cy.get('[data-cy="Tournaments"]').click({ force: true });
 });
 
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
@@ -81,16 +79,17 @@ Cypress.Commands.add(
 
 
 Cypress.Commands.add('viewTournaments', () => {
-
+    cy.get('[data-cy="Quizzes"]').click({ force: true });
+    cy.get('[data-cy="Tournaments"]').click({ force: true });
 });
 
 Cypress.Commands.add('createTournament', (name, startDate, endDate, topicName) => {
      cy.get('[data-cy="createButton"]').click();
 
      // insert in text fields
-     cy.get('[data-cy="Name"]').type(name);
-     cy.get('[data-cy="startDate"]').type(startDate);
-     cy.get('[data-cy="endDate"]').type(endDate);
+     cy.get('[data-cy="Name"]').click({ force: true }).type(name);
+     cy.get('[data-cy="startDate"]').click({ force: true }).type(startDate);
+     cy.get('[data-cy="endDate"]').click({ force: true }).type(endDate);
 
      // select a topic
      cy.contains(topicName)
@@ -99,13 +98,13 @@ Cypress.Commands.add('createTournament', (name, startDate, endDate, topicName) =
       .children()
       .should('have.length', 2)
       .find('[data-cy="checkTopic"]')
-      .click();
+      .click({ force: true });
 
      // select the number of questions
-     cy.get('[data-cy="Questions10"]').click();
+     cy.get('[data-cy="Questions10"]').click({ force: true });
 
      // save the tournament
-     cy.get('[data-cy="saveButton"]').click();
+     cy.get('[data-cy="saveButton"]').click({ force: true });
 });
 
 Cypress.Commands.add('createTournamentNoTopics', (name, startDate, endDate) => {
@@ -113,12 +112,17 @@ Cypress.Commands.add('createTournamentNoTopics', (name, startDate, endDate) => {
 
      // insert in text fields
      cy.get('[data-cy="Name"]').type(name);
-     cy.get('[data-cy="startDate"]').type(startDate);
-     cy.get('[data-cy="endDate"]').type(endDate);
+     cy.get('[data-cy="startDate"]').click({ force: true }).type(startDate);
+     cy.get('[data-cy="endDate"]').click({ force: true }).type(endDate);
 
      // select the number of questions
-     cy.get('[data-cy="Questions10"]').click();
+     cy.get('[data-cy="Questions10"]').click({ force: true });
 
      // save the tournament (should throw error)
-     cy.get('[data-cy="saveButton"]').click();
+     cy.get('[data-cy="saveButton"]').click({ force: true });
+});
+
+Cypress.Commands.add('enrollStudent', (tournamentName) => {
+    let search = '[data-cy="' + tournamentName + '"]';
+    cy.get(search).click({force: true});
 });
