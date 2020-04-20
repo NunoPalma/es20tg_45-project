@@ -72,6 +72,8 @@ o<template>
       'evaluate-question-dialog': EvaluateQuestionDialog
     }
   })
+  //trying to merge
+
   export default class EvaluateQuestionsView extends Vue {
     questions: Question[] = [];
     topics: Topic[] = [];

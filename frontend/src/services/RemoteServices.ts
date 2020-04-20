@@ -197,6 +197,8 @@ export default class RemoteServices {
       });
   }
 
+  //trying to merge
+
   static findEvaluation(question: Question): Promise<Evaluation> {
     return httpClient
       .get(`/evaluations/${question.id}`)

@@ -133,6 +133,8 @@ Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
 });
 
 //Commands for Evaluate Question Test
+//trying to merge
+
 
 Cypress.Commands.add('approveQuestion' , (title) => {
   cy.get('[data-cy="Management"]').click();

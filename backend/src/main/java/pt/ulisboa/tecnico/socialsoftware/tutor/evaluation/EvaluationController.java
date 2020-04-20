@@ -11,6 +11,7 @@ import java.security.Principal;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.CLARIFICATION_INVALID_USER;
+//trying to merge
 
 @RestController
 public class EvaluationController {
