@@ -14,7 +14,6 @@ import AuthDto from '@/models/user/AuthDto';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
-import { VResponsive } from 'vuetify/lib';
 import Evaluation from '@/models/management/Evaluation';
 
 const httpClient = axios.create();
