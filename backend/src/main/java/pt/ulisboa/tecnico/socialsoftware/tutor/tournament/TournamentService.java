@@ -58,19 +58,10 @@ public class TournamentService {
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
-		System.out.println("le culocas has a bunch of " + tournamentDto.getTopics().size() + "\n");
-		System.out.flush();
-
 		Set<TopicDto> topicDtos = tournamentDto.getTopics();
-
-		System.out.println("i fard and shid and camded " + topicDtos.size() + "\n");
-		System.out.flush();
 
 		if (topicDtos.isEmpty())
 			throw new TutorException(NOT_ENOUGH_TOPICS);
-
-		System.out.println("cagayme hahahahah");
-		System.out.flush();
 
 		Set<Topic> topics = new HashSet<>();
 		for (TopicDto topicDto : topicDtos) {
@@ -84,24 +75,17 @@ public class TournamentService {
 		if (user.getRole() != User.Role.STUDENT)
 			throw new TutorException(TOURNAMENT_CREATOR_IS_NOT_STUDENT);
 
-		System.out.println("she's a fraaarf she's been playlf for the sus");
-
 		Tournament tournament = new Tournament(user, courseExecution);
-
-		System.out.println("nojguglel");
 
 		tournament.setName(tournamentDto.getName());
 		tournament.setStartDate(LocalDateTime.parse(tournamentDto.getStartDate() , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		tournament.setEndDate(LocalDateTime.parse(tournamentDto.getEndDate() , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		tournament.setNumQuestions(tournamentDto.getNumQuestions());
-		System.out.println("epa fds lmao");
 		tournament.setTopics(topics);
 		tournament.setState(Tournament.State.OPEN);
 		tournament.enrollStudent(user);
 
 		tournamentRepository.save(tournament);
-
-		System.out.println("N WORD");
 
 		return new TournamentDto(tournament, true);
 	}

@@ -83,3 +83,42 @@ Cypress.Commands.add(
 Cypress.Commands.add('viewTournaments', () => {
 
 });
+
+Cypress.Commands.add('createTournament', (name, startDate, endDate, topicName) => {
+     cy.get('[data-cy="createButton"]').click();
+
+     // insert in text fields
+     cy.get('[data-cy="Name"]').type(name);
+     cy.get('[data-cy="startDate"]').type(startDate);
+     cy.get('[data-cy="endDate"]').type(endDate);
+
+     // select a topic
+     cy.contains(topicName)
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 2)
+      .find('[data-cy="checkTopic"]')
+      .click();
+
+     // select the number of questions
+     cy.get('[data-cy="Questions10"]').click();
+
+     // save the tournament
+     cy.get('[data-cy="saveButton"]').click();
+});
+
+Cypress.Commands.add('createTournamentNoTopics', (name, startDate, endDate) => {
+     cy.get('[data-cy="createButton"]').click();
+
+     // insert in text fields
+     cy.get('[data-cy="Name"]').type(name);
+     cy.get('[data-cy="startDate"]').type(startDate);
+     cy.get('[data-cy="endDate"]').type(endDate);
+
+     // select the number of questions
+     cy.get('[data-cy="Questions10"]').click();
+
+     // save the tournament (should throw error)
+     cy.get('[data-cy="saveButton"]').click();
+});
