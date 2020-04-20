@@ -9,11 +9,22 @@
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
-      <v-btn depressed small color="primary" @click="demoStudent"
-             data-cy="studentButton">
+      <v-btn
+        depressed
+        small
+        color="primary"
+        data-cy="demoStudentButton"
+        @click="demoStudent"
+      >
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
-      <v-btn depressed small color="primary" @click="demoTeacher">
+      <v-btn
+        depressed
+        small
+        color="primary"
+        data-cy="demoTeacherButton"
+        @click="demoTeacher"
+      >
         <i class="fa fa-graduation-cap" />Demo as teacher
       </v-btn>
       <v-btn
@@ -67,7 +78,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Store from '@/store';
-import RemoteServices from '@/services/RemoteServices';
 
 @Component
 export default class HomeView extends Vue {

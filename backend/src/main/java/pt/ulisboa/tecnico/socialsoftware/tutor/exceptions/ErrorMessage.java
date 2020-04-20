@@ -91,7 +91,7 @@ public enum ErrorMessage {
     DOUBT_CONTENT_IS_EMPTY("The doubt's content is empty"),
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
-    DOUBT_NOT_FOUND("Doubt with id %d is not found"),
+    DOUBT_NOT_FOUND("Doubt not found"),
 
     ACCESS_DENIED("You do not have permission to view this resource"),
 

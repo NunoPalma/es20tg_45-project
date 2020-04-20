@@ -15,6 +15,7 @@ export default class StatementQuestion {
       this.content = jsonObj.content;
       this.image = jsonObj.image;
 
+
       if (jsonObj.options) {
         this.options = _.shuffle(
           jsonObj.options.map(
