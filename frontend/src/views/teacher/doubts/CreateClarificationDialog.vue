@@ -3,13 +3,17 @@
     :value="dialog"
     @input="$emit('close-dialog')"
     @keydown.esc="$emit('close-dialog')"
-    max-width="75%"
+    max-width="45%"
     max-height="80%"
   >
     <v-card>
       <v-card-title>
-        <span v-if="creating" class="headline"> Resolver dúvida </span>
-        <span v-if="!creating" class="headline"> Detalhes da dúvida </span>
+        <span v-if="creating" class="headline"
+          >{{ doubt.questionTitle }} - Resolver dúvida
+        </span>
+        <span v-if="!creating" class="headline"
+          >{{ doubt.questionTitle }} - Detalhes da dúvida
+        </span>
       </v-card-title>
 
       <v-card-text class="text-left" v-if="newClarification">

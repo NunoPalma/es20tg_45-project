@@ -33,6 +33,7 @@ Cypress.Commands.add('demoStudentLogin', () => {
   cy.get('[data-cy="demoStudentButton"]').click();
 });
 
+
 Cypress.Commands.add('createDoubt', (content) => {
 
   cy.get('[data-cy="createDoubt"]').click();
@@ -41,17 +42,35 @@ Cypress.Commands.add('createDoubt', (content) => {
 });
 
 Cypress.Commands.add('createClarification', (status, response) => {
-  cy.contains(status)
+  cy.get('[data-cy="createButton"]').click({ multiple: true });
+  cy.get('[data-cy="Response"]').type(response);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
+Cypress.Commands.add('closeClarificationErrorMessage', () => {
+  cy.contains('Clarification must have a text')
+    .parent()
+    .find('button')
+    .click();
+});
+
+Cypress.Commands.add('createDoubt', description => {
+  cy.demoStudentLogin();
+  cy.get('[data-cy="QuizzesButton"]').click();
+  cy.contains('Solved').click();
+
+  cy.contains('Component-and-connector viewtype')
     .parent()
     .should('have.length', 1)
     .children()
     .should('have.length', 4)
-    .find('[data-cy="createButton"]')
+    .find('[data-cy="goButton"]')
     .click();
 
-  cy.get('[data-cy="Response"]').type(response);
-
+  cy.get('[data-cy="newDoubtButton"]').click();
+  cy.get('[data-cy="Content"]').type(description);
   cy.get('[data-cy="saveButton"]').click();
+  cy.contains('Logout').click();
 });
 
 Cypress.Commands.add('closeErrorMessage', () => {

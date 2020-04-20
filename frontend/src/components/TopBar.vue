@@ -159,7 +159,7 @@
                 <v-icon>done</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Solved</v-list-item-title>
+                <v-list-item-title data-cy="solved">Solved</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/student/tournaments">
@@ -280,7 +280,7 @@
               <v-icon>ballot</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title>Quizzes</v-list-item-title>
+              <v-list-item-title >Quizzes</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/assessments">
@@ -347,7 +347,7 @@
             <v-list-item-action>
               <v-icon>done</v-icon>
             </v-list-item-action>
-            <v-list-item-content>Solved Quizzes</v-list-item-content>
+            <v-list-item-content >Solved Quizzes</v-list-item-content>
           </v-list-item>
 
           <v-list-item to="/student/doubts">

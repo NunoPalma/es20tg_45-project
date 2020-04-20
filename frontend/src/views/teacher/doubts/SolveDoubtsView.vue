@@ -76,7 +76,6 @@ import { Component, Vue } from 'vue-property-decorator';
 import Doubt from '@/models/management/Doubt';
 import RemoteServices from '@/services/RemoteServices';
 import CreateClarificationDialog from '@/views/teacher/doubts/CreateClarificationDialog.vue';
-import Clarification from '@/models/management/Clarification';
 
 @Component({
   components: {
@@ -92,7 +91,7 @@ export default class SolveDoubtsView extends Vue {
   headers: object = [
     {
       text: 'Question Title',
-      value: 'questiontitle',
+      value: 'questionTitle',
       align: 'center',
       width: '10%'
     },

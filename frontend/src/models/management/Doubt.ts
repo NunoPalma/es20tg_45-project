@@ -6,6 +6,7 @@ export default class Doubt {
   status: string = 'UNSOLVED';
   content: string = '';
   clarificationDto: Clarification | null = null;
+  questionTitle: string = '';
 
   constructor(jsonObj?: Doubt) {
     if (jsonObj) {
@@ -14,6 +15,7 @@ export default class Doubt {
       this.status = jsonObj.status;
       this.content = jsonObj.content;
       this.clarificationDto = jsonObj.clarificationDto;
+      this.questionTitle = jsonObj.questionTitle;
     }
   }
 }

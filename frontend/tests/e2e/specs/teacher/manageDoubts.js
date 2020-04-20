@@ -1,5 +1,6 @@
 describe('teacher doubt management walkthrough', () => {
   beforeEach(() => {
+    cy.createDoubt('A simple default doubt');
     cy.demoTeacherLogin();
     cy.contains('Management').click();
     cy.contains('Doubts').click();
@@ -10,16 +11,20 @@ describe('teacher doubt management walkthrough', () => {
   });
 
   it('login creates a clarification for a unsolved doubt', () => {
-    cy.createClarification('UNSOLVED', 'A default clarification for a doubt');
+    cy.get('[data-cy="createButton"]').click();
+    cy.get('[data-cy="Response"]').type('A simple clarification for a doubt');
+    cy.get('[data-cy="saveButton"]').click();
   });
 
-  it('login creates a clarification for a unsolved doubt without text', () => {
-    cy.createClarification('UNSOLVED', '');
+  it('login try to creates a clarification for a unsolved doubt without text', () => {
+    cy.get('[data-cy="createButton"]').click();
+    cy.get('[data-cy="saveButton"]').click();
 
     cy.log('close error message');
-    cy.closeErrorMessage();
+    cy.closeClarificationErrorMessage();
 
-    cy.log('close dialog');
-    cy.get('[data-cy="cancelButton"]').click();
+    cy.get('[data-cy="Response"]').type('A simple clarification for a doubt');
+    cy.get('[data-cy="saveButton"]').click();
+
   });
 });

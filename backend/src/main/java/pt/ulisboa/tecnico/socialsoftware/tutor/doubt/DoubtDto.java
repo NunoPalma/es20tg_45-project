@@ -11,6 +11,7 @@ public class DoubtDto implements Serializable {
     private String author;
     private Doubt.Status status;
     private ClarificationDto clarificationDto;
+    private String questionTitle;
 
     public DoubtDto(){
     }
@@ -21,6 +22,15 @@ public class DoubtDto implements Serializable {
         this.author = doubt.getAuthor().getName();
         this.status = doubt.getStatus();
         this.clarificationDto = null;
+        this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
+    }
+
+    public String getQuestionTitle() {
+        return questionTitle;
+    }
+
+    public void setQuestionTitle(String questionTitle) {
+        this.questionTitle = questionTitle;
     }
 
     public ClarificationDto getClarificationDto() {

@@ -85,15 +85,9 @@
         </li>
       </ul>
     </div>
-    <v-btn
-      width="1040px"
-      large
-      color="primary"
-      data-cy="createDoubt"
-      dark
-      @click="newDoubt"
-    >
-      <v-icon left dark>mdi-plus</v-icon>New Doubt</v-btn
+    <v-btn width="1040px" large color="primary" dark @click="newDoubt">
+      <v-icon data-cy="newDoubtButton" left dark>mdi-plus</v-icon>New
+      Doubt</v-btn
     >
   </div>
 </template>
