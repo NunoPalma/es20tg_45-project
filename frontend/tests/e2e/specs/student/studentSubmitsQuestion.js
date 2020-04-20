@@ -36,5 +36,17 @@ describe('Student Submit Question action', () => {
     cy.deleteQuestion(title1);
   });
 
+  it('submits two questions and checks if ordered', () => {
+    let title1 = 'Test_Title' + Date.now();
+    let title2 = 'Test_Title' + Date.now();
+
+    cy.submitQuestion(title1, 'Content', 'Option');
+    cy.submitQuestion(title2, 'Content', 'Option');
+
+    cy.checkOrderTwoQuestions(title1, title2);
+
+    cy.deleteQuestion(title2);
+    cy.deleteQuestion(title1);
+  });
 
 });

@@ -114,6 +114,15 @@ Cypress.Commands.add('deleteQuestion', (title) => {
     .children()
     .should('have.length',7)
     .find('[data-cy="deleteQuestion"]')
-    .click();
+    .click({force: true});
+});
+
+Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
+  cy.contains(title1)
+    .parent()
+    .should('have.length', 1)
+    .parent()
+    .should('have.length', 1)
+    .contains(title2);
 });
 
