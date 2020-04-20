@@ -703,6 +703,25 @@ export default class RemoteServices {
     }
   }
 
+  static async createTournament(tournament: Tournament): Promise<Tournament> {
+    if (tournament) {
+      console.log(tournament);
+      console.log('espargos haha crl fds morre');
+      return httpClient
+          .post(
+              `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
+          )
+          .then(response => {
+            return new Tournament(response.data);
+          })
+          .catch(async error => {
+            throw Error(await this.errorMessage(error));
+          });
+    } else {
+      throw Error(await this.errorMessage('No tournament provided.'));
+    }
+  }
+
   static async getAvailableTournaments(): Promise<Tournament[]> {
     return httpClient
       .get(`/tournament/show/${Store.getters.getUser.id}`)

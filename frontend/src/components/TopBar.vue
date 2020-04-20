@@ -46,6 +46,28 @@
         </v-menu>
       </v-toolbar-items>
 
+
+			<v-toolbar-items class="hidden-sm-and-down" hide-details>
+				<v-menu offset-y v-if="isAdmin" open-on-hover>
+					<template v-slot:activator="{ on }">
+						<v-btn v-on="on" text dark>
+							Administration
+							<v-icon>fas fa-file-alt</v-icon>
+						</v-btn>
+					</template>
+					<v-list dense>
+						<v-list-item to="/admin/courses">
+							<v-list-item-action>
+								<v-icon>fas fa-school</v-icon>
+							</v-list-item-action>
+							<v-list-item-content>
+								<v-list-item-title>Manage Courses</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</v-toolbar-items>
+        
       <v-toolbar-items class="hidden-sm-and-down" hide-details>
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
@@ -178,8 +200,54 @@
                 <v-list-item-title>Doubts</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item to="/student/tournaments">
+							<v-list-item-action>
+								<v-icon>fas fa-trophy</v-icon>
+							</v-list-item-action>
+							<v-list-item-content>
+								<v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
           </v-list>
         </v-menu>
+				
+
+				<v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
+					Stats
+					<v-icon>fas fa-user</v-icon>
+				</v-btn>
+
+				<v-btn
+						v-if="isLoggedIn && moreThanOneCourse"
+						to="/courses"
+						active-class="no-active"
+						text
+						dark
+				>
+					Change course
+					<v-icon>fa fa-book</v-icon>
+				</v-btn>
+
+				<v-btn v-if="isLoggedIn" @click="logout" text dark data-cy="Logout">
+					Logout
+					<v-icon>fas fa-sign-out-alt</v-icon>
+				</v-btn>
+
+				<v-btn v-else :href="fenixUrl" text dark>
+					Login <v-icon>fas fa-sign-in-alt</v-icon>
+				</v-btn>
+			</v-toolbar-items>
+		</v-app-bar>
+
+		<!-- Start of mobile side menu -->
+		<v-navigation-drawer app v-model="drawer" absolute dark temporary>
+			<v-toolbar flat>
+				<v-list>
+					<v-list-item>
+						<v-list-item-title class="title">Menu</v-list-item-title>
+					</v-list-item>
+				</v-list>
+			</v-toolbar>
 
         <v-btn
           to="/student/questions"
@@ -191,10 +259,6 @@
           <v-icon>question_answer</v-icon>
         </v-btn>
 
-        <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
-          Stats
-          <v-icon>fas fa-user</v-icon>
-        </v-btn>
 
         <v-btn
           v-if="isLoggedIn && moreThanOneCourse"
@@ -203,6 +267,7 @@
           text
           dark
         >
+      
           Change course
           <v-icon>fa fa-book</v-icon>
         </v-btn>
