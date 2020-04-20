@@ -34,9 +34,9 @@ Cypress.Commands.add('demoStudentLogin', () => {
 });
 
 
-Cypress.Commands.add('createDoubt', (content) => {
+Cypress.Commands.add('createDoubt1', (content) => {
 
-  cy.get('[data-cy="createDoubt"]').click();
+  cy.get('[data-cy="newDoubtButton"]').click();
   cy.get('[data-cy=Content').type(content);
   cy.get('[data-cy="saveButton"]').click();
 });
@@ -54,7 +54,7 @@ Cypress.Commands.add('closeClarificationErrorMessage', () => {
     .click();
 });
 
-Cypress.Commands.add('createDoubt', description => {
+Cypress.Commands.add('createDoubt2', description => {
   cy.demoStudentLogin();
   cy.get('[data-cy="QuizzesButton"]').click();
   cy.contains('Solved').click();

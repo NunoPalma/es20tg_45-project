@@ -11,19 +11,19 @@ describe('Doubts walkthrough', () => {
 
   it('login creates a doubt', () => {
     cy.contains('Component').click();
-    cy.createDoubt('Input Test');
+    cy.createDoubt1('Input Test');
   });
 
   it('login creates two doubts in two different questions', () => {
     cy.contains('Component').click();
-    cy.createDoubt('Input Test1');
+    cy.createDoubt1('Input Test1');
     cy.get('[data-cy="rightButton"]').click();
-    cy.createDoubt('Input Test2');
+    cy.createDoubt1('Input Test2');
   });
 
   it('login creates an empty doubt', () => {
     cy.contains('Component').click();
-    cy.get('[data-cy="createDoubt"]').click();
+    cy.get('[data-cy="newDoubtButton"]').click();
     cy.get('[data-cy="saveButton"]').click();
     cy.contains('Doubt must have Content').parent().find('button').click();
     cy.get('[data-cy="cancelButton"]').click();

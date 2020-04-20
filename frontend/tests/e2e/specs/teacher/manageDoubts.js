@@ -1,6 +1,6 @@
 describe('teacher doubt management walkthrough', () => {
   beforeEach(() => {
-    cy.createDoubt('A simple default doubt');
+    cy.createDoubt2('A simple default doubt');
     cy.demoTeacherLogin();
     cy.contains('Management').click();
     cy.contains('Doubts').click();
