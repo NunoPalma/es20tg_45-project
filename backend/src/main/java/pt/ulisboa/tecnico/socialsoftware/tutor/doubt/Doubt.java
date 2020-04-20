@@ -26,7 +26,7 @@ public class Doubt{
 
     private String content;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt")
     private Clarification clarification = null;
 
     @JoinColumn(name = "user_id")

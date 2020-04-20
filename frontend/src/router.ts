@@ -20,6 +20,7 @@ import ResultsView from './views/student/quiz/ResultsView.vue';
 import TournamentsView from './views/student/TournamentsView.vue';
 import StatsView from './views/student/StatsView.vue';
 import ScanView from './views/student/ScanView.vue';
+import DoubtsView from '@/views/student/DoubtsView.vue';
 
 import AdminManagementView from '@/views/admin/AdminManagementView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
@@ -177,6 +178,15 @@ let router = new Router({
           component: SolvedQuizzesView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Solved Quizzes',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'doubts',
+          name: 'see-doubts',
+          component: DoubtsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Doubts',
             requiredAuth: 'Student'
           }
         },

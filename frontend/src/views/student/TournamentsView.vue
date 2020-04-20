@@ -1,5 +1,5 @@
 <template>
-  <v-card class="table">
+  <v-card class="table" data-cy="tournamentsList">
     <v-data-table
       :headers="headers"
       :items="tournaments"
@@ -62,13 +62,13 @@
 
       <template v-slot:item.enrolled="{ item }">
         <v-btn
-          :id="item.tournamentId"
           v-on:click="onEnrolledButtonClicked(item)"
           :loading="item.isLoading"
           :class="isEnrolled(item.tournamentId) ? 'green' : 'red'"
           align="left"
           x-small
           fab="true"
+          :data-cy="item.name"
         >
         </v-btn>
       </template>

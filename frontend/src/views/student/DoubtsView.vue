@@ -1,76 +1,80 @@
 <template>
   <div class="container">
-    <h2>Solved Quizzes</h2>
+    <h2>Your Doubts</h2>
     <ul>
       <li class="list-header ">
         <div class="col">Title</div>
-        <div class="col">Solved Date</div>
-        <div class="col">Score</div>
+        <div class="col">Status</div>
         <div class="col last-col"></div>
       </li>
       <li
         class="list-row"
-        v-for="quiz in quizzes"
-        :key="quiz.quizAnswerId"
-        @click="showResults(quiz)"
+        v-for="doubt in doubts"
+        :key="doubt.id"
+        @click="seeDoubt(doubt)"
       >
         <div class="col">
-          {{ quiz.statementQuiz.title }}
+          {{ doubt.questionTitle }}
         </div>
         <div class="col">
-          {{ quiz.answerDate }}
-        </div>
-        <div class="col">
-          {{ calculateScore(quiz) }}
+          <v-chip text-color="white" v-if="!doubt.clarificationDto" color="red">{{ doubt.status }}</v-chip>
+          <v-chip text-color="white" v-if="doubt.clarificationDto" color="green">{{ doubt.status }}</v-chip>
         </div>
         <div class="col last-col">
-          <i data-cy="goButton" class="fas fa-chevron-circle-right" />
+          <i class="fas fa-chevron-circle-right" />
         </div>
       </li>
     </ul>
+    <see-doubt-dialog
+      v-if="doubt"
+      v-model="seeDoubtDialog"
+      :doubt="doubt"
+      v-on:see-doubt="onSeeDoubt"
+      v-on:close-dialog="onCloseDialog"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
-import SolvedQuiz from '@/models/statement/SolvedQuiz';
-import StatementManager from '@/models/statement/StatementManager';
+import Doubt from '@/models/management/Doubt';
+import SeeDoubtDialog from '@/views/student/SeeDoubtDialog.vue';
 
-@Component
-export default class AvailableQuizzesView extends Vue {
-  quizzes: SolvedQuiz[] = [];
+@Component({
+  components: {
+    'see-doubt-dialog': SeeDoubtDialog
+  }
+})
+export default class DoubtView extends Vue {
+  doubts: Doubt[] = [];
+  doubt: Doubt | null = null;
+  seeDoubtDialog: boolean = false;
 
   async created() {
     await this.$store.dispatch('loading');
     try {
-      this.quizzes = (await RemoteServices.getSolvedQuizzes()).reverse();
+      this.doubts = await RemoteServices.getDoubts();
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
-
   }
 
-  calculateScore(quiz: SolvedQuiz) {
-    let correct = 0;
-    for (let i = 0; i < quiz.statementQuiz.questions.length; i++) {
-      if (
-        quiz.statementQuiz.answers[i] &&
-        quiz.correctAnswers[i].correctOptionId ===
-          quiz.statementQuiz.answers[i].optionId
-      ) {
-        correct += 1;
-      }
-    }
-    return `${correct}/${quiz.statementQuiz.questions.length}`;
+  seeDoubt(currentDoubt: Doubt): void {
+    console.log(currentDoubt);
+    this.doubt = currentDoubt;
+    this.seeDoubtDialog = true;
   }
 
-  async showResults(quiz: SolvedQuiz) {
-    let statementManager: StatementManager = StatementManager.getInstance;
-    statementManager.correctAnswers = quiz.correctAnswers;
-    statementManager.statementQuiz = quiz.statementQuiz;
-    await this.$router.push({ name: 'quiz-results' });
+  async onSeeDoubt() {
+    this.seeDoubtDialog = false;
+    this.doubt = null;
+  }
+
+  onCloseDialog() {
+    this.seeDoubtDialog = false;
+    this.doubt = null;
   }
 }
 </script>
