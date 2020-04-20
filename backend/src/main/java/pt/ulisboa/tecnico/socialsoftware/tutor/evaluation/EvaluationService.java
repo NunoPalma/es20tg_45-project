@@ -38,16 +38,7 @@ public class EvaluationService {
     EvaluationService() {
     }
 
-    @Retryable(
-            value = { SQLException.class },
-            backoff = @Backoff(delay = 5000))
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public EvaluationDto findEvaluationByKey(int questionId){
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
-        Evaluation evaluation = evaluationRepository.findByKey(question.getKey()).orElseThrow(() -> new TutorException(EVALUATION_NOT_AVAILABLE, question.getKey()));
-        EvaluationDto evaluationDto = new EvaluationDto(evaluation);
-        return evaluationDto;
-    }
+
     @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
@@ -67,7 +58,7 @@ public class EvaluationService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public EvaluationDto submitEvaluation(String teacherUsername, Integer questionId, EvaluationDto evaluationDto) {
+    public EvaluationDto submitEvaluation(String teacherUsername, EvaluationDto evaluationDto, Integer questionId) {
         User teacher = userRepository.findByUsername(teacherUsername);
         if(teacher == null) {
             throw new TutorException(USERNAME_NOT_FOUND, teacherUsername);

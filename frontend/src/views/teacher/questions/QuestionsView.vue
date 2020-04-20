@@ -163,7 +163,7 @@ export default class QuestionsView extends Vue {
   editQuestionDialog: boolean = false;
   questionDialog: boolean = false;
   search: string = '';
-  statusList = ['DISABLED', 'REMOVED', 'AVAILABLE'];
+  statusList = ['DISABLED', 'REMOVED', 'AVAILABLE', 'PENDING', 'REJECTED'];
 
   headers: object = [
     { text: 'Title', value: 'title', align: 'center' },
