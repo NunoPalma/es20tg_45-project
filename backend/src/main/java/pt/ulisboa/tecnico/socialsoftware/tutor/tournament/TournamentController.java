@@ -12,10 +12,12 @@ public class TournamentController {
     @Autowired
     private TournamentService tournamentService;
 
-    @PostMapping("/executions/students/{executionId}/{studentId}")
-    @PreAuthorize("(hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')) and hasPermission(#executionId, 'EXECUTION.ACCESS')")
+    @PostMapping("/tournament/create/{executionId}/{studentId}")
+    @PreAuthorize("(hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT'))")
     public TournamentDto createTournament(@PathVariable int studentId, @PathVariable int executionId,
                                  @RequestBody TournamentDto tournamentDto) {
+        System.out.println("oh god oh fuck " + tournamentDto.getTopics().size());
+        System.out.flush();
         return tournamentService.createTournament(studentId, executionId, tournamentDto);
     }
 
