@@ -16,6 +16,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepositor;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class ClarificationService{
@@ -25,6 +26,9 @@ public class ClarificationService{
 
     @Autowired
     private DoubtRepositor doubtRepository;
+
+    @Autowired
+    private ClarificationRepository clarificationRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -55,6 +59,21 @@ public class ClarificationService{
 
         return new ClarificationDto(clarification);
 
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ClarificationDto findDoubtClarification(Integer doubtId) {
+        if(doubtId == null){
+            throw new TutorException(ErrorMessage.CLARIFICATION_DOUBT_IS_EMPTY);
+        }
+
+        List<Clarification> clarification = clarificationRepository.findByDoubtID(doubtId);
+        Clarification c = clarification.size() > 0 ? clarification.get(0) : null;
+
+        return c != null ? new ClarificationDto(c) : new ClarificationDto();
     }
 
 }

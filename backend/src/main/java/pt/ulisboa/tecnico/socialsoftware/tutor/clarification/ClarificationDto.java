@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class ClarificationDto implements Serializable {
 
-    private String description;
+    private String description = "vazio";
 
-    private String author;
+    private String author = "unknown";
 
     public ClarificationDto() {}
 
