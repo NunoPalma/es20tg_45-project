@@ -30,6 +30,7 @@
         ><i class="fas fa-chevron-left"
       /></span>
       <span
+        data-cy="rightButton"
         class="right-button"
         @click="increaseOrder"
         v-if="
@@ -84,7 +85,14 @@
         </li>
       </ul>
     </div>
-    <v-btn width="1040px" large color="primary" dark @click="newDoubt">
+    <v-btn
+      width="1040px"
+      large
+      color="primary"
+      data-cy="createDoubt"
+      dark
+      @click="newDoubt"
+    >
       <v-icon left dark>mdi-plus</v-icon>New Doubt</v-btn
     >
   </div>

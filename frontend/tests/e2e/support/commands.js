@@ -28,6 +28,18 @@ Cypress.Commands.add('demoTeacherLogin', () => {
   cy.get('[data-cy="demoTeacherButton"]').click();
 });
 
+Cypress.Commands.add('demoStudentLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="demoStudentButton"]').click();
+});
+
+Cypress.Commands.add('createDoubt', (content) => {
+
+  cy.get('[data-cy="createDoubt"]').click();
+  cy.get('[data-cy=Content').type(content);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
 Cypress.Commands.add('createClarification', (status, response) => {
   cy.contains(status)
     .parent()
@@ -43,7 +55,7 @@ Cypress.Commands.add('createClarification', (status, response) => {
 });
 
 Cypress.Commands.add('closeErrorMessage', () => {
-  cy.contains('Error')
+  cy.contains('error')
     .parent()
     .find('button')
     .click();

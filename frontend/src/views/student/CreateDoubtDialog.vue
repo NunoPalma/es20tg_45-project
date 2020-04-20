@@ -6,7 +6,6 @@
     max-width="75%"
     max-height="80%"
   >
-
     <v-card>
       <v-card-title>
         <span class="headline">
@@ -61,14 +60,19 @@ export default class CreateDoubtDialog extends Vue {
     this.quizQuestionId = this.quizId;
   }
   async saveDoubt() {
-    try {
-      const result = await RemoteServices.createDoubt(
-        this.newDoubt,
-        this.quizQuestionId
-      );
-      this.$emit('new-doubt', result);
-    } catch (error) {
-      await this.$store.dispatch('error', error);
+    if (this.newDoubt && (!this.newDoubt.content || this.newDoubt.content == '')) {
+      await this.$store.dispatch('error', 'Doubt must have Content');
+      return;
+    } else {
+      try {
+        const result = await RemoteServices.createDoubt(
+          this.newDoubt,
+          this.quizQuestionId
+        );
+        this.$emit('new-doubt', result);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
     }
   }
 }
