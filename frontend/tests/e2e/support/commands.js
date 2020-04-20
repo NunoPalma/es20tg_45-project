@@ -47,7 +47,7 @@ Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="saveButton"]').click();
 });
 
-Cypress.Commands.add('closeErrorMessage', (name, acronym, academicTerm) => {
+Cypress.Commands.add('closeErrorMessage', () => {
   cy.contains('Error')
     .parent()
     .find('button')
@@ -95,6 +95,18 @@ Cypress.Commands.add('submitQuestion', (title, content, option) => {
   cy.get('[data-cy="saveButton"]').click();
 });
 
+Cypress.Commands.add('submitQuestionNoCorrect', (title, content, option) => {
+  cy.get('[data-cy="submitButton"]').click();
+  cy.get('[data-cy="Title"]').type(title,{force: true});
+  cy.get('[data-cy="Content"]').type(content);
+  cy.get('[data-cy="Option"]').eq(0).type(option);
+  cy.get('[data-cy="Option"]').eq(1).type(option);
+  cy.get('[data-cy="Option"]').eq(2).type(option);
+  cy.get('[data-cy="Option"]').eq(3).type(option);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
+
 Cypress.Commands.add('deleteQuestion', (title) => {
   cy.contains(title)
     .parent()
@@ -102,5 +114,15 @@ Cypress.Commands.add('deleteQuestion', (title) => {
     .children()
     .should('have.length',7)
     .find('[data-cy="deleteQuestion"]')
-    .click();
+    .click({force: true});
 });
+
+Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
+  cy.contains(title1)
+    .parent()
+    .should('have.length', 1)
+    .parent()
+    .should('have.length', 1)
+    .contains(title2);
+});
+
