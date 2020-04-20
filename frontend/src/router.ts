@@ -11,7 +11,7 @@ import QuestionsView from '@/views/teacher/questions/QuestionsView.vue';
 import TopicsView from '@/views/teacher/TopicsView.vue';
 import QuizzesView from '@/views/teacher/quizzes/QuizzesView.vue';
 import StudentsView from '@/views/teacher/students/StudentsView.vue';
-import EvaluateQuestionsView from './views/teacher/evaluations/EvaluateQuestionsView.vue'
+import EvaluateQuestionsView from './views/teacher/evaluations/EvaluateQuestionsView.vue';
 import StudentView from '@/views/student/StudentView.vue';
 import AvailableQuizzesView from './views/student/AvailableQuizzesView.vue';
 import SolvedQuizzesView from './views/student/SolvedQuizzesView.vue';
@@ -75,7 +75,7 @@ let router = new Router({
           }
         },
         {
-          path: 'evaluate_questions',
+          path: 'evaluations',
           name: 'evaluate-questions-management',
           component: EvaluateQuestionsView,
           meta: {
