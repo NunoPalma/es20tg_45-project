@@ -29,6 +29,11 @@
             <stringProp name="Argument.value">${__BeanShell(import org.apache.jmeter.services.FileServer fileserver.getFileServer().getBaseDir();)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="quizQuestionId" elementType="Argument">
+            <stringProp name="Argument.name">quizQuestionId</stringProp>
+            <stringProp name="Argument.value">40973</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
@@ -105,7 +110,7 @@
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">question/1392/doubts</stringProp>
+            <stringProp name="HTTPSampler.path">/quizQuestion/${quizQuestionId}/doubts</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

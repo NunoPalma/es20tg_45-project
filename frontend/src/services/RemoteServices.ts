@@ -14,7 +14,6 @@ import AuthDto from '@/models/user/AuthDto';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
-import { VResponsive } from 'vuetify/lib';
 import Evaluation from '@/models/management/Evaluation';
 
 const httpClient = axios.create();
@@ -157,8 +156,8 @@ export default class RemoteServices {
   static submitQuestion(question: Question): Promise<Question> {
     return httpClient
       .post(
-      `/courses/${Store.getters.getCurrentCourse.courseId}/questions/submit`,
-          question
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/submit`,
+        question
       )
       .then(response => {
         return new Question(response.data);
@@ -197,6 +196,8 @@ export default class RemoteServices {
         throw Error(await this.errorMessage(error));
       });
   }
+
+  //trying to merge
 
   static findEvaluation(question: Question): Promise<Evaluation> {
     return httpClient
@@ -665,31 +666,31 @@ export default class RemoteServices {
 
   static async getAvailableTournaments(): Promise<Tournament[]> {
     return httpClient
-        .get(
-            `/tournament/show/${Store.getters.getUser.id}`
-        )
-        .then(response => {
-          return response.data.map((tournament: any) => {
-            return new Tournament(tournament);
-          });
-        })
-        .catch(async error => {
-          throw Error(await this.errorMessage(error));
+      .get(
+        `/tournament/show/${Store.getters.getUser.id}`
+      )
+      .then(response => {
+        return response.data.map((tournament: any) => {
+          return new Tournament(tournament);
         });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
   }
 
   static async enrollStudentInTournament(tournamentId: number): Promise<Tournament> {
     if (tournamentId)
       return httpClient
-          .post(
-              `/tournament/enroll/${Store.getters.getUser.id}/${tournamentId}`
-          )
-          .then(response => {
-            return new Tournament(response.data);
-          })
-          .catch(async error => {
-            throw Error(await this.errorMessage(error));
-          });
+        .post(
+          `/tournament/enroll/${Store.getters.getUser.id}/${tournamentId}`
+        )
+        .then(response => {
+          return new Tournament(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
     else
       throw Error(await this.errorMessage('No tournament id provided.'));
   }

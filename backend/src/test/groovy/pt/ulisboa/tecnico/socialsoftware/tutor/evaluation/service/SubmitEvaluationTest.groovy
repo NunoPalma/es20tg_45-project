@@ -18,6 +18,7 @@ import spock.lang.Unroll
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.MUST_HAVE_JUSTIFICATION
 
+//trying to merge
 
 @DataJpaTest
 class SubmitEvaluationTest extends Specification {

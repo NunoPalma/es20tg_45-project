@@ -63,6 +63,8 @@ o<template>
     @Prop({type: Question, required: true}) readonly question!: Question;
     @Model('dialog', Boolean) dialog!: boolean;
 
+    //trying to merge
+
     evaluation!: Evaluation;
     editQuestion!: Question;
     statusDefault = false;

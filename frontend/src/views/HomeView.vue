@@ -9,6 +9,7 @@
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
+
       <v-btn depressed small color="primary" @click="demoStudent" data-cy="studentButton">
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
@@ -64,6 +65,7 @@
 </template>
 
 <script lang="ts">
+
   import { Component, Vue } from 'vue-property-decorator';
   import Store from '@/store';
   import RemoteServices from '@/services/RemoteServices';
