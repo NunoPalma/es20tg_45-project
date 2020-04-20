@@ -85,9 +85,9 @@
                 <v-list-item-title>Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/management/evaluations">
-              <v-list-item-action data-cy="Evaluate">
-                <v-icon>fas fa-check-circle</v-icon>
+            <v-list-item to="/management/evaluate_questions">
+              <v-list-item-action>
+                <v-icon>check</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Evaluate Questions</v-list-item-title>
@@ -184,14 +184,6 @@
                 <v-list-item-title data-cy="solved">Solved</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/tournaments">
-              <v-list-item-action>
-                <v-icon>fas fa-trophy</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>Tournaments</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
             <v-list-item to="/student/doubts">
               <v-list-item-action>
                 <v-icon>question_answer</v-icon>
@@ -215,6 +207,7 @@
           My Questions
           <v-icon>question_answer</v-icon>
         </v-btn>
+
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats
           <v-icon>fas fa-user</v-icon>
@@ -241,51 +234,6 @@
         </v-btn>
       </v-toolbar-items>
     </v-app-bar>
-
-    <!-- Start of mobile side menu -->
-    <v-navigation-drawer app v-model="drawer" absolute dark temporary>
-      <v-toolbar flat>
-        <v-list>
-          <v-list-item>
-            <v-list-item-title class="title">Menu</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-toolbar>
-
-      <v-btn
-              to="/student/questions"
-              v-if="isStudent && currentCourse"
-              text
-              dark
-      >
-        My Questions
-        <v-icon>question_answer</v-icon>
-      </v-btn>
-
-
-      <v-btn
-              v-if="isLoggedIn && moreThanOneCourse"
-              to="/courses"
-              active-class="no-active"
-              text
-              dark
-      >
-
-        Change course
-        <v-icon>fa fa-book</v-icon>
-      </v-btn>
-
-      <v-btn v-if="isLoggedIn" @click="logout" text dark>
-        Logout
-        <v-icon>fas fa-sign-out-alt</v-icon>
-      </v-btn>
-
-      <v-btn v-else :href="fenixUrl" text dark>
-        Login <v-icon>fas fa-sign-in-alt</v-icon>
-      </v-btn>
-      </v-toolbar-items>
-      </v-app-bar>
-    </v-navigation-drawer>
 
     <!-- Start of mobile side menu -->
     <v-navigation-drawer app v-model="drawer" absolute dark temporary>
@@ -337,7 +285,7 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/evaluations">
-            <v-list-item-action>
+            <v-list-item-action data-cy="Evaluate">
               <v-icon>fas fa-check-circle</v-icon>
             </v-list-item-action>
             <v-list-item-content>
@@ -358,6 +306,14 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title >Quizzes</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/evaluations">
+            <v-list-item-action>
+              <v-icon>fas fa-check-circle</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Evaluate Questions</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/assessments">
