@@ -18,6 +18,7 @@ import spock.lang.Unroll
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.MUST_HAVE_JUSTIFICATION
 
+//trying to merge
 
 @DataJpaTest
 class SubmitEvaluationTest extends Specification {
@@ -60,7 +61,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         evaluationRepository.count() == 1L
@@ -94,7 +95,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         evaluationRepository.count() == 1L
@@ -124,7 +125,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         evaluationRepository.count() == 1L
@@ -156,7 +157,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         def error = thrown(TutorException)

@@ -187,7 +187,7 @@ export default class RemoteServices {
       });
   }
 
-static getPendingQuestions(): Promise<Question[]> {
+  static getPendingQuestions(): Promise<Question[]> {
     return httpClient
       .get(
         `/courses/${Store.getters.getCurrentCourse.courseId}/questions/pending`
@@ -750,15 +750,15 @@ static getPendingQuestions(): Promise<Question[]> {
       console.log(tournament);
       console.log('espargos haha crl fds morre');
       return httpClient
-          .post(
-              `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
-          )
-          .then(response => {
-            return new Tournament(response.data);
-          })
-          .catch(async error => {
-            throw Error(await this.errorMessage(error));
-          });
+        .post(
+          `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
+        )
+        .then(response => {
+          return new Tournament(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
     } else {
       throw Error(await this.errorMessage('No tournament provided.'));
     }
