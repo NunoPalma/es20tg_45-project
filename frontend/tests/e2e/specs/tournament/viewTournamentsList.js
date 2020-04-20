@@ -1,15 +1,11 @@
-describe('Administration walkthrough', () => {
+describe('View Tournaments walkthrough', () => {
   beforeEach(() => {
     cy.demoStudentLogin();
   });
 
-  /*
-  YOU MIGHT WANT THIS ONE SIR
-
   afterEach(() => {
-    cy.contains('Logout').click();
+    cy.contains('Logout').click({ force: true });
   });
-   */
 
   it('view tournaments', () => {
     cy.viewTournaments();
