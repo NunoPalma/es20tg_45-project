@@ -24,7 +24,7 @@
           {{ calculateScore(quiz) }}
         </div>
         <div class="col last-col">
-          <i class="fas fa-chevron-circle-right" />
+          <i data-cy="goButton" class="fas fa-chevron-circle-right" />
         </div>
       </li>
     </ul>
@@ -49,6 +49,7 @@ export default class AvailableQuizzesView extends Vue {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
+
   }
 
   calculateScore(quiz: SolvedQuiz) {

@@ -26,6 +26,27 @@
       <v-spacer />
 
       <v-toolbar-items class="hidden-sm-and-down" hide-details>
+        <v-menu offset-y v-if="isAdmin" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" text dark>
+              Administration
+              <v-icon>fas fa-file-alt</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/admin/courses">
+              <v-list-item-action>
+                <v-icon>fas fa-school</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Manage Courses</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-toolbar-items>
+
+      <v-toolbar-items class="hidden-sm-and-down" hide-details>
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" text dark>
@@ -40,6 +61,14 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Questions</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/management/evaluate_questions">
+              <v-list-item-action>
+                <v-icon>check</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Evaluate Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/management/topics">
@@ -82,12 +111,20 @@
                 <v-list-item-title>ImpExp</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item to="/management/doubts">
+              <v-list-item-action>
+                <v-icon>question_answer</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Doubts</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-menu>
 
         <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn v-on="on" text dark data-cy="QuizzesButton">
               Quizzes
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
@@ -122,11 +159,37 @@
                 <v-icon>done</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Solved</v-list-item-title>
+                <v-list-item-title data-cy="solved">Solved</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/tournaments">
+              <v-list-item-action>
+                <v-icon>fas fa-trophy</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Tournaments</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/doubts">
+              <v-list-item-action>
+                <v-icon>question_answer</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Doubts</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-menu>
+
+        <v-btn
+          to="/student/questions"
+          v-if="isStudent && currentCourse"
+          text
+          dark
+        >
+          My Questions
+          <v-icon>question_answer</v-icon>
+        </v-btn>
 
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats
@@ -166,6 +229,27 @@
       </v-toolbar>
 
       <v-list class="pt-0" dense>
+        <!-- Administration Group-->
+        <v-list-group
+          prepend-icon="fas fa-file-alt"
+          :value="false"
+          v-if="isAdmin"
+        >
+          <template v-slot:activator>
+            <v-list-item-title data-cy="Administration"
+              >Administration</v-list-item-title
+            >
+          </template>
+          <v-list-item to="/admin/courses">
+            <v-list-item-action>
+              <v-icon>fas fa-school</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Manage Courses</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+
         <!-- Management Group-->
         <v-list-group
           prepend-icon="fas fa-file-alt"
@@ -196,7 +280,7 @@
               <v-icon>ballot</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title>Quizzes</v-list-item-title>
+              <v-list-item-title >Quizzes</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/assessments">
@@ -263,7 +347,21 @@
             <v-list-item-action>
               <v-icon>done</v-icon>
             </v-list-item-action>
-            <v-list-item-content>Solved Quizzes</v-list-item-content>
+            <v-list-item-content >Solved Quizzes</v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/student/doubts">
+            <v-list-item-action>
+              <v-icon>question-answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Doubts</v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/student/questions">
+            <v-list-item-action>
+              <v-icon>question_answer</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>My Questions</v-list-item-content>
           </v-list-item>
 
           <v-list-item to="/student/stats">
@@ -300,40 +398,32 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-
 @Component
 export default class TopBar extends Vue {
   fenixUrl: string = process.env.VUE_APP_FENIX_URL;
   appName: string = process.env.VUE_APP_NAME;
   drawer: boolean = false;
-
   get currentCourse() {
     return this.$store.getters.getCurrentCourse;
   }
-
   get moreThanOneCourse() {
     return (
       this.$store.getters.getUser.coursesNumber > 1 &&
       this.$store.getters.getCurrentCourse
     );
   }
-
   get isLoggedIn() {
     return this.$store.getters.isLoggedIn;
   }
-
   get isTeacher() {
     return this.$store.getters.isTeacher;
   }
-
   get isAdmin() {
     return this.$store.getters.isAdmin;
   }
-
   get isStudent() {
     return this.$store.getters.isStudent;
   }
-
   async logout() {
     await this.$store.dispatch('logout');
     await this.$router.push({ name: 'home' }).catch(() => {});
@@ -345,7 +435,6 @@ export default class TopBar extends Vue {
 .no-active::before {
   opacity: 0 !important;
 }
-
 nav {
   z-index: 300;
 }

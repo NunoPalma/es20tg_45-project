@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
@@ -21,20 +20,20 @@ public class TopicController {
     private TopicService topicService;
 
     @GetMapping("/courses/{courseId}/topics")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public List<TopicDto> getCourseTopics(@PathVariable int courseId) {
         logger.debug("courseId {}", courseId);
         return this.topicService.findTopics(courseId);
     }
 
     @PostMapping(value = "/courses/{courseId}/topics")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public TopicDto createTopic(@PathVariable int courseId, @Valid @RequestBody TopicDto topicDto) {
         return this.topicService.createTopic(courseId, topicDto);
     }
 
     @PutMapping(value = "/topics/{topicId}")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#topicId, 'TOPIC.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_STUDENT') and hasPermission(#topicId, 'TOPIC.ACCESS')")
     public TopicDto updateTopic(@PathVariable Integer topicId, @Valid @RequestBody TopicDto topic) {
         return this.topicService.updateTopic(topicId, topic);
     }

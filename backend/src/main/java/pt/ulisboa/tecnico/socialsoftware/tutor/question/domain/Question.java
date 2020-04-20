@@ -1,11 +1,13 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.Evaluation;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
@@ -13,10 +15,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -27,8 +26,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
         indexes = {
                 @Index(name = "question_indx_0", columnList = "key")
         })
-public class Question {
 
+public class Question {
+    @SuppressWarnings("unused")
     public enum Status {
         DISABLED, REMOVED, AVAILABLE, PENDING, REJECTED
     }
@@ -37,7 +37,6 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique=true, nullable = false)
     private Integer key;
 
     @Column(columnDefinition = "TEXT")
@@ -82,9 +81,6 @@ public class Question {
     @JoinColumn(name = "evaluation_id")
     private Evaluation evaluation;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Doubt> doubts = new ArrayList<>();
-
 
     public Question() {
     }
@@ -95,6 +91,7 @@ public class Question {
         this.key = questionDto.getKey();
         this.content = questionDto.getContent();
         this.status = Status.valueOf(questionDto.getStatus());
+        this.creationDate = LocalDateTime.parse(questionDto.getCreationDate(), Course.formatter);
 
         this.course = course;
         course.addQuestion(this);
@@ -114,6 +111,10 @@ public class Question {
         }
     }
 
+    public void accept(Visitor visitor) {
+        visitor.visitQuestion(this);
+    }
+
     public Integer getId() {
         return id;
     }
@@ -123,10 +124,29 @@ public class Question {
     }
 
     public Integer getKey() {
+        if (this.key == null)
+            generateKeys();
+
         return key;
     }
 
-    public void setKey(Integer key) {
+    private void generateKeys() {
+        Integer max = this.course.getQuestions().stream()
+                .filter(question -> question.key != null)
+                .map(Question::getKey)
+                .max(Comparator.comparing(Integer::valueOf))
+                .orElse(0);
+
+        List<Question> nullKeyQuestions = this.course.getQuestions().stream()
+            .filter(question -> question.key == null).collect(Collectors.toList());
+
+        for (Question question: nullKeyQuestions) {
+                max = max + 1;
+                question.key = max;
+        }
+    }
+
+   public void setKey(Integer key) {
         this.key = key;
     }
 
@@ -157,10 +177,6 @@ public class Question {
     public void setImage(Image image) {
         this.image = image;
         image.setQuestion(this);
-    }
-
-    public List<Doubt> getDoubts() {
-        return doubts;
     }
 
     public String getTitle() {
@@ -239,10 +255,6 @@ public class Question {
         getTopics().clear();
     }
 
-    public void addDoubt(Doubt doubt){
-        this.doubts.add(doubt);
-    }
-
     @Override
     public String toString() {
         return "Question{" +
@@ -276,19 +288,6 @@ public class Question {
 
 
     public Integer getDifficulty() {
-        // required because the import is done directly in the database
-        if (numberOfAnswers == null || numberOfAnswers == 0) {
-            numberOfAnswers = getQuizQuestions().stream()
-                    .flatMap(quizQuestion -> quizQuestion.getQuestionAnswers().stream())
-                    .filter(questionAnswer -> questionAnswer.getQuizAnswer().getCompleted())
-                    .map(e -> 1).reduce(0, Integer::sum);
-            numberOfCorrect = getQuizQuestions().stream()
-                    .flatMap(quizQuestion -> quizQuestion.getQuestionAnswers().stream())
-                    .filter(questionAnswer -> questionAnswer.getQuizAnswer().getCompleted())
-                    .filter(questionAnswer -> questionAnswer.getOption() != null && questionAnswer.getOption().getCorrect())
-                    .map(e -> 1).reduce(0, Integer::sum);
-        }
-
         if (numberOfAnswers == 0) {
             return null;
         }
@@ -310,9 +309,6 @@ public class Question {
             option.setContent(optionDto.getContent());
             option.setCorrect(optionDto.getCorrect());
         });
-
-        // TODO: not yet implemented
-        //new Image(questionDto.getImage());
     }
 
     private void checkConsistentQuestion(QuestionDto questionDto) {

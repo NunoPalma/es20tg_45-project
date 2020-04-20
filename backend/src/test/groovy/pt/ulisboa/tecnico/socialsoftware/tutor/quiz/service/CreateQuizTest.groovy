@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.AnswerService
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.AnswersXmlImport
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
@@ -70,6 +73,8 @@ class CreateQuizTest extends Specification {
         availableDate = LocalDateTime.now()
         conclusionDate = LocalDateTime.now().plusDays(1)
         quiz.setScramble(true)
+        quiz.setOneWay(true)
+        quiz.setQrCodeOnly(true)
         quiz.setAvailableDate(availableDate.format(formatter))
         quiz.setConclusionDate(conclusionDate.format(formatter))
         quiz.setSeries(1)
@@ -105,6 +110,8 @@ class CreateQuizTest extends Specification {
         result.getId() != null
         result.getKey() != null
         result.getScramble()
+        result.isOneWay()
+        result.isQrCodeOnly()
         result.getTitle() == QUIZ_TITLE
         result.getCreationDate() != null
         result.getAvailableDate().format(formatter) == availableDate.format(formatter)
@@ -180,6 +187,21 @@ class CreateQuizTest extends Specification {
         @Bean
         QuizService quizService() {
             return new QuizService()
+        }
+
+        @Bean
+        AnswerService answerService() {
+            return new AnswerService()
+        }
+
+        @Bean
+        QuestionService questionService() {
+            return new QuestionService()
+        }
+
+        @Bean
+        AnswersXmlImport xmlImporter() {
+            return new AnswersXmlImport()
         }
     }
 

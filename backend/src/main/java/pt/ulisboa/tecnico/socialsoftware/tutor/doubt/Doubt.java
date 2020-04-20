@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
 import org.hibernate.annotations.JoinColumnOrFormula;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
@@ -25,7 +26,7 @@ public class Doubt{
 
     private String content;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt")
     private Clarification clarification = null;
 
     @JoinColumn(name = "user_id")
@@ -33,29 +34,31 @@ public class Doubt{
     private User author;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Question question;
+    private QuestionAnswer questionAnswer;
 
     public Doubt(){
     }
 
-    public Doubt(Question question, User user, String content){
+    public Doubt(QuestionAnswer questionAnswer, User user, String content){
         this.author = user;
         this.author.addDoubt(this);
         if (content == null || content.trim().isEmpty()) {
             throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
         }
         this.content = content;
-        this.question = question;
-        this.question.addDoubt(this);
+        this.questionAnswer = questionAnswer;
+        this.questionAnswer.addDoubt(this);
     }
 
 
-    public Question getQuestion() {
-        return question;
+
+
+    public QuestionAnswer getQuestionAnswer() {
+        return questionAnswer;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestionAnswer(QuestionAnswer questionAnswer) {
+        this.questionAnswer = questionAnswer;
     }
 
     public User getAuthor() {
@@ -96,6 +99,10 @@ public class Doubt{
 
     public void setStatus(Status status){
         this.status = status;
+    }
+
+    public Question getQuestion(){
+        return questionAnswer.getQuizQuestion().getQuestion();
     }
 }
 

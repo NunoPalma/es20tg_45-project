@@ -1,15 +1,20 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.evaluation;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 
 
 public class EvaluationDto {
+
     private boolean approvedEvaluation = false;
 
     private Integer id;
+
     private Integer key;
 
     private String justification;
+
+    private String teacherUsername;
 
     private QuestionDto submittedQuestion;
 
@@ -17,14 +22,12 @@ public class EvaluationDto {
 
     }
 
-    public EvaluationDto(Evaluation evaluation, QuestionDto questionDto) {
+    public EvaluationDto(Evaluation evaluation) {
         if (evaluation.getEvaluation()) {
             approvedEvaluation = true;
         }
         this.id = evaluation.getId();
-        this.key = questionDto.getKey();
         this.justification = evaluation.getJustification();
-        this.submittedQuestion = questionDto;
     }
 
     public void setId(int questionId) { id = questionId; }
@@ -37,9 +40,20 @@ public class EvaluationDto {
 
     public QuestionDto getSubmittedQuestionDto() { return submittedQuestion; }
 
-    public void setSubmittedQuestionDto(QuestionDto questionDto) { this.submittedQuestion = questionDto; }
+    public void setSubmittedQuestionDto(QuestionDto questionDto) {
+        this.submittedQuestion = questionDto;
+        this.setKey(this.submittedQuestion.getKey());
+    }
 
-    public void setJustification(String message) { justification  = message; }
+    public boolean getApprovedEvaluation() { return this.approvedEvaluation;}
+
+    public String getTeacherUsername() { return this.teacherUsername;}
+
+    public void setTeacherUsername(String username) { teacherUsername = username; }
+
+    public void setJustification(String message) { justification = message; }
 
     public void approveEvaluationDto() { approvedEvaluation = true; }
+
+    public String getJustification() { return  this.justification; }
 }

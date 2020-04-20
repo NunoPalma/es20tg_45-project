@@ -18,13 +18,14 @@ public enum ErrorMessage {
     TOPIC_NOT_FOUND("Topic not found with id %d"),
     ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     TOPIC_CONJUNCTION_NOT_FOUND("Topic Conjunction not found with id %d"),
-    COURSE_EXECUTION_NOT_FOUND("Course execution not found with name %d"),
+    COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
 
-    COURSE_NOT_FOUND("Course not found with id %s"),
+    COURSE_NOT_FOUND("Course not found with name %s"),
     COURSE_NAME_IS_EMPTY("The course name is empty"),
     COURSE_TYPE_NOT_DEFINED("The course type is not defined"),
     COURSE_EXECUTION_ACRONYM_IS_EMPTY("The course execution acronym is empty"),
     COURSE_EXECUTION_ACADEMIC_TERM_IS_EMPTY("The course execution academic term is empty"),
+    CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
     USERNAME_NOT_FOUND("Username %s not found"),
 
     QUIZ_USER_MISMATCH("Quiz %s is not assigned to student %s"),
@@ -48,12 +49,14 @@ public enum ErrorMessage {
     QUIZ_NO_LONGER_AVAILABLE("This quiz is no longer available"),
     QUIZ_NOT_YET_AVAILABLE("This quiz is not yet available"),
 
+    NO_CORRECT_OPTION("Question does not have a correct option"),
     NOT_ENOUGH_QUESTIONS("Not enough questions to create a quiz"),
-    QUESTION_MISSING_DATA("Missing information for quiz"), // TODO check me
+    QUESTION_MISSING_DATA("Missing information for quiz"),
     QUESTION_MULTIPLE_CORRECT_OPTIONS("Questions can only have 1 correct option"),
     QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
     QUIZ_HAS_ANSWERS("Quiz already has answers"),
     QUIZ_ALREADY_COMPLETED("Quiz already completed"),
+    QUIZ_ALREADY_STARTED("Quiz was already started"),
     QUIZ_QUESTION_HAS_ANSWERS("Quiz question has answers"),
     FENIX_ERROR("Fenix Error"),
     AUTHENTICATION_ERROR("Authentication Error"),
@@ -72,13 +75,12 @@ public enum ErrorMessage {
     TOURNAMENT_DATES_OVERLAP("The tournament's start and end dates overlap"),
     TOURNAMENT_NOT_ENOUGH_QUESTIONS("Not enough questions to create a tournament"),
     NOT_ENOUGH_TOPICS("Not enough topics to create a tournament"),
-    EMPTY_TOURNAMENT_CREATOR("The tournament creator is empty"),
     TOURNAMENT_CREATOR_IS_NOT_STUDENT("The tournament creator is not a student"),
-    EMPTY_COURSE_EXECUTION("The tournament course execution is empty"),
     INVALID_ENROLLMENT_CLOSED_TOURNAMENT("The tournament is closed"),
     INVALID_ENROLLMENT_CREATED_TOURNAMENT("The tournament hasn't been open yet"),
     INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
-    TOURNAMENT_NOT_FOUND("Tournament with id %d wasn't found"),
+    TOURNAMENT_NOT_FOUND("Tournament with id %d not found"),
+    TOPIC_WITH_NAME_NOT_FOUND("Topic with name %s not found"),
 
     INVALID_USER_ID("Invalid user ID"),
     INVALID_TOURNAMENT_ID("Invalid tournament ID"),
@@ -89,13 +91,14 @@ public enum ErrorMessage {
     DOUBT_CONTENT_IS_EMPTY("The doubt's content is empty"),
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
-    DOUBT_NOT_FOUND("Doubt with id %d is not found"),
+    DOUBT_NOT_FOUND("Doubt not found"),
 
     ACCESS_DENIED("You do not have permission to view this resource"),
 
-    CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request");
+    CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request"),
 
 
+    CANNOT_OPEN_FILE("Cannot open file");
 
     public final String label;
 

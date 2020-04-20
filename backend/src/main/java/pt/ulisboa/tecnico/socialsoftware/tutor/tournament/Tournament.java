@@ -14,20 +14,12 @@ import java.util.Set;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Entity
-@Table(
-        name = "tournaments",
-        indexes = {
-                @Index(name = "tournaments_idx_0", columnList = "key")
-        }
-)
+@Table(name = "tournaments")
 public class Tournament {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(unique=true, nullable = false)
-    private Integer key;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -67,8 +59,10 @@ public class Tournament {
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+
     private Set<User> participants;
 
+    @Enumerated(EnumType.STRING)
     private State state = State.CREATED;
 
     public enum State {
@@ -77,6 +71,7 @@ public class Tournament {
 
     public Tournament() {
         this.participants = new HashSet<>();
+        this.topics = new HashSet<>();
     }
 
     public Tournament(User creator, CourseExecution courseExecution) {
@@ -85,33 +80,12 @@ public class Tournament {
         this.courseExecution = courseExecution;
     }
 
-    public Tournament(TournamentDto tournamentDto) {
-        this.key = tournamentDto.getKey();
-        this.creator = tournamentDto.getCreator();
-        this.courseExecution = tournamentDto.getCourseExecution();
-        this.state = tournamentDto.getState();
-        this.participants = new HashSet<>();
-        setName(tournamentDto.getName());
-        setStartDate(tournamentDto.getStartDateDate());
-        setEndDate(tournamentDto.getEndDateDate());
-        setNumQuestions(tournamentDto.getNumQuestions());
-        this.topics = new HashSet<>();
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getKey() {
-        return key;
-    }
-
-    public void setKey(Integer key) {
-        this.key = key;
     }
 
     public User getCreator() {
@@ -165,6 +139,10 @@ public class Tournament {
         this.topics = topics;
     }
 
+    public void addTopic(Topic topic) {
+        topics.add(topic);
+    }
+
     public Integer getNumQuestions() {
         return numQuestions;
     }
@@ -191,36 +169,29 @@ public class Tournament {
     }
 
     private void checkName(String name) {
-        if (name == null || name.trim().length() == 0) {
+        if (name == null || name.trim().length() == 0)
             throw new TutorException(TOURNAMENT_NAME_EMPTY);
-        }
     }
 
     private void checkStartDate(LocalDateTime startDate) {
-        if (startDate == null) {
+        if (startDate == null)
             throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
-        }
     }
 
     private void checkEndDate(LocalDateTime endDate) {
-        if (this.startDate == null) {
+        if (this.startDate == null)
             throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
-        }
-        if (endDate == null) {
+        if (endDate == null)
             throw new TutorException(TOURNAMENT_END_DATE_EMPTY);
-        }
-        if (endDate.isBefore(this.startDate)) {
+        if (endDate.isBefore(this.startDate))
             throw new TutorException(TOURNAMENT_INVALID_END_DATE);
-        }
-        if (endDate.isEqual(this.startDate)) {
+        if (endDate.isEqual(this.startDate))
             throw new TutorException(TOURNAMENT_DATES_OVERLAP);
-        }
     }
 
-    private void checkNumQuestions(int numQuestions) {
-        if (numQuestions < 1) {
+    private void checkNumQuestions(Integer numQuestions) {
+        if (numQuestions < 1)
             throw new TutorException(TOURNAMENT_NOT_ENOUGH_QUESTIONS);
-        }
     }
 
     public void addParticipant(User user) {
