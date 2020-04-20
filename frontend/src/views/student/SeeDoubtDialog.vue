@@ -36,7 +36,7 @@
           </span>
         </v-card-title>
 
-        <v-card-text class="text-left" v-if="!Doubt.clarification">
+        <v-card-text class="text-left" v-if="!Doubt.clarificationDto">
           <v-container grid-list-md fluid>
             <v-layout column wrap>
               <v-flex xs24 sm12 md8>
@@ -46,11 +46,11 @@
           </v-container>
         </v-card-text>
 
-        <v-card-text class="text-left" v-if="Doubt.clarification">
+        <v-card-text class="text-left" v-if="Doubt.clarificationDto">
           <v-container grid-list-md fluid>
             <v-layout column wrap>
               <v-flex xs24 sm12 md8>
-                <v-card-text v-model="Doubt.clarification.description" />
+                <v-card-subtitle>{{Doubt.clarificationDto.description}}</v-card-subtitle>
               </v-flex>
             </v-layout>
           </v-container>
