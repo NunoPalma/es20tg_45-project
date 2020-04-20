@@ -9,11 +9,20 @@
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
-      <v-btn depressed small color="primary" @click="demoStudent">
+      <v-btn depressed small color="primary" @click="demoStudent" data-cy="studentButton">
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
       <v-btn depressed small color="primary" @click="demoTeacher">
         <i class="fa fa-graduation-cap" />Demo as teacher
+      </v-btn>
+      <v-btn
+        depressed
+        small
+        color="primary"
+        @click="demoAdmin"
+        data-cy="adminButton"
+      >
+        <i class="fa fa-user-cog" />Demo as administrator
       </v-btn>
     </div>
 
@@ -82,6 +91,16 @@ export default class HomeView extends Vue {
     await this.$store.dispatch('loading');
     try {
       await this.$store.dispatch('demoTeacherLogin');
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
+  }
+
+  async demoAdmin() {
+    await this.$store.dispatch('loading');
+    try {
+      await this.$store.dispatch('demoAdminLogin');
     } catch (error) {
       await this.$store.dispatch('error', error);
     }

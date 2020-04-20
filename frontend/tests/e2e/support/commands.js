@@ -21,5 +21,108 @@
 // Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
 //
 //
-// -- This is will overwrite an existing command --
+// -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+/// <reference types="Cypress" />
+Cypress.Commands.add('demoAdminLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="adminButton"]').click();
+  cy.contains('Administration').click();
+  cy.contains('Manage Courses').click();
+});
+
+Cypress.Commands.add('demoStudentLogin', () => {
+  cy.visit('/');
+  cy.get('[data-cy="studentButton"]').click();
+  cy.contains('My Questions').click();
+});
+
+// Commands for Course Execution test
+
+Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
+  cy.get('[data-cy="createButton"]').click();
+  cy.get('[data-cy="Name"]').type(name);
+  cy.get('[data-cy="Acronym"]').type(acronym);
+  cy.get('[data-cy="AcademicTerm"]').type(academicTerm);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
+Cypress.Commands.add('closeErrorMessage', () => {
+  cy.contains('Error')
+    .parent()
+    .find('button')
+    .click();
+});
+
+Cypress.Commands.add('deleteCourseExecution', acronym => {
+  cy.contains(acronym)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="deleteCourse"]')
+    .click();
+});
+
+Cypress.Commands.add(
+  'createFromCourseExecution',
+  (name, acronym, academicTerm) => {
+    cy.contains(name)
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 7)
+      .find('[data-cy="createFromCourse"]')
+      .click();
+    cy.get('[data-cy="Acronym"]').type(acronym);
+    cy.get('[data-cy="AcademicTerm"]').type(academicTerm);
+    cy.get('[data-cy="saveButton"]').click();
+  }
+);
+
+
+//Commands for Submit Question Test
+
+Cypress.Commands.add('submitQuestion', (title, content, option) => {
+  cy.get('[data-cy="submitButton"]').click();
+  cy.get('[data-cy="Title"]').type(title,{force: true});
+  cy.get('[data-cy="Content"]').type(content);
+  cy.get('[data-cy="Correct"]').eq(0).click({force: true});
+  cy.get('[data-cy="Option"]').eq(0).type(option);
+  cy.get('[data-cy="Option"]').eq(1).type(option);
+  cy.get('[data-cy="Option"]').eq(2).type(option);
+  cy.get('[data-cy="Option"]').eq(3).type(option);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
+Cypress.Commands.add('submitQuestionNoCorrect', (title, content, option) => {
+  cy.get('[data-cy="submitButton"]').click();
+  cy.get('[data-cy="Title"]').type(title,{force: true});
+  cy.get('[data-cy="Content"]').type(content);
+  cy.get('[data-cy="Option"]').eq(0).type(option);
+  cy.get('[data-cy="Option"]').eq(1).type(option);
+  cy.get('[data-cy="Option"]').eq(2).type(option);
+  cy.get('[data-cy="Option"]').eq(3).type(option);
+  cy.get('[data-cy="saveButton"]').click();
+});
+
+
+Cypress.Commands.add('deleteQuestion', (title) => {
+  cy.contains(title)
+    .parent()
+    .should('have.length',1)
+    .children()
+    .should('have.length',7)
+    .find('[data-cy="deleteQuestion"]')
+    .click({force: true});
+});
+
+Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
+  cy.contains(title1)
+    .parent()
+    .should('have.length', 1)
+    .parent()
+    .should('have.length', 1)
+    .contains(title2);
+});
+

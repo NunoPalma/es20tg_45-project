@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class TournamentDto implements Serializable {
 
 	private Integer id;
+	private Integer tournamentId;
 	private UserDto creator;
 	private Integer courseExecutionId;
 	private String name;
@@ -54,6 +55,7 @@ public class TournamentDto implements Serializable {
 					.map(TopicDto::new)
 					.collect(Collectors.toSet());
 		}
+		this.tournamentId = tournament.getId();
 	}
 
 	public Integer getId() {
@@ -148,5 +150,13 @@ public class TournamentDto implements Serializable {
 			return null;
 		}
 		return LocalDateTime.parse(getEndDate(), formatter);
+	}
+
+	public Integer getTournamentId() {
+		return tournamentId;
+	}
+
+	public void setTournamentId(Integer tournamentId) {
+		this.tournamentId = tournamentId;
 	}
 }

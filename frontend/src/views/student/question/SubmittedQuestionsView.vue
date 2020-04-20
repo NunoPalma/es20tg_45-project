@@ -20,7 +20,7 @@ o<template>
                     />
 
                     <v-spacer />
-                    <v-btn color="primary" dark @click="newQuestion">New Question</v-btn>
+                    <v-btn color="primary" dark @click="newQuestion" data-cy="submitButton">New Question</v-btn>
                 </v-card-title>
             </template>
 
@@ -89,6 +89,7 @@ o<template>
                                 v-on="on"
                                 @click="deleteQuestion(item)"
                                 color="red"
+                                data-cy="deleteQuestion"
                         >delete</v-icon
                         >
                     </template>
