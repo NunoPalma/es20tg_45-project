@@ -11,13 +11,17 @@ describe('teacher doubt management walkthrough', () => {
   });
 
   it('login creates a clarification for a unsolved doubt', () => {
-    cy.get('[data-cy="createButton"]').click();
+    cy.get('[data-cy="createButton"]')
+      .first()
+      .click({ force: true });
     cy.get('[data-cy="Response"]').type('A simple clarification for a doubt');
     cy.get('[data-cy="saveButton"]').click();
   });
 
   it('login try to creates a clarification for a unsolved doubt without text', () => {
-    cy.get('[data-cy="createButton"]').click();
+    cy.get('[data-cy="createButton"]')
+      .first()
+      .click({ force: true });
     cy.get('[data-cy="saveButton"]').click();
 
     cy.log('close error message');
@@ -25,6 +29,5 @@ describe('teacher doubt management walkthrough', () => {
 
     cy.get('[data-cy="Response"]').type('A simple clarification for a doubt');
     cy.get('[data-cy="saveButton"]').click();
-
   });
 });
