@@ -3,10 +3,8 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.statement.dto;
 import java.io.Serializable;
 
 public class StatementCreationDto implements Serializable {
-    private Integer numberOfQuestions = 5;
-    private String questionType;
-    private String assessment;
-//    private String[] topics;
+    private Integer numberOfQuestions;
+    private Integer assessment;
 
     public Integer getNumberOfQuestions() {
         return numberOfQuestions;
@@ -16,36 +14,19 @@ public class StatementCreationDto implements Serializable {
         this.numberOfQuestions = numberOfQuestions;
     }
 
-    public String getQuestionType() {
-        return questionType;
-    }
-
-    public void setQuestionType(String questionType) {
-        this.questionType = questionType;
-    }
-
-    public String getAssessment() {
+    public Integer getAssessment() {
         return assessment;
     }
 
-    public void setAssessment(String assessment) {
+    public void setAssessment(Integer assessment) {
         this.assessment = assessment;
     }
-
-    /*    public String[] getTopics() {
-        return topics;
-    }
-
-    public void setTopics(String[] topics) {
-        this.topics = topics;
-    }*/
 
     @Override
     public String toString() {
         return "StatementCreationDto{" +
                 "numberOfQuestions=" + numberOfQuestions +
-                ", questionType='" + questionType + '\'' +
-                ", assessment='" + assessment + '\'' +
+                ", assessment=" + assessment +
                 '}';
     }
 }

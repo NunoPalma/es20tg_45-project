@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationController;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.administration.AdministrationService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtController;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService;
@@ -38,6 +39,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DO
 
 @Component
 public class TutorPermissionEvaluator implements PermissionEvaluator {
+
+    @Autowired
+    private AdministrationService administrationService;
 
     @Autowired
     private UserService userService;
@@ -91,6 +95,9 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
             int id = (int) targetDomainObject;
             String permissionValue = (String) permission;
             switch (permissionValue) {
+                case "DEMO.ACCESS":
+                    CourseDto courseDto = administrationService.getCourseExecutionById(id);
+                    return courseDto.getName().equals("Demo Course");
                 case "COURSE.ACCESS":
                     return userHasAnExecutionOfTheCourse(username, id);
                 case "EXECUTION.ACCESS":

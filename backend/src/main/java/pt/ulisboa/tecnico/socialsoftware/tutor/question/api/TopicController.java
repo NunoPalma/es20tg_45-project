@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
@@ -21,7 +20,7 @@ public class TopicController {
     private TopicService topicService;
 
     @GetMapping("/courses/{courseId}/topics")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS') or hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
     public List<TopicDto> getCourseTopics(@PathVariable int courseId) {
         logger.debug("courseId {}", courseId);
         return this.topicService.findTopics(courseId);
