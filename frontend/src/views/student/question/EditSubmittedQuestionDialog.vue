@@ -15,32 +15,39 @@
         <v-container grid-list-md fluid>
           <v-layout column wrap>
             <v-flex xs24 sm12 md8>
-              <v-text-field v-model="editQuestion.title" label="Title" />
+              <v-text-field
+                      v-model="editQuestion.title"
+                      label="Title"
+                      data-cy="Title"/>
             </v-flex>
             <v-flex xs24 sm12 md12>
-              <vue-simplemde
-                v-model="editQuestion.content"
-                class="question-textarea"
-                :configs="markdownConfigs"
-              />
+              <v-textarea
+                      outline
+                      rows="10"
+                      v-model="editQuestion.content"
+                      label="Question"
+                      data-cy="Content"
+              ></v-textarea>
             </v-flex>
             <v-flex
-              xs24
-              sm12
-              md12
-              v-for="index in editQuestion.options.length"
-              :key="index"
+                    xs24
+                    sm12
+                    md12
+                    v-for="index in editQuestion.options.length"
+                    :key="index"
             >
               <v-switch
-                v-model="editQuestion.options[index - 1].correct"
-                class="ma-4"
-                label="Correct"
+                      v-model="editQuestion.options[index - 1].correct"
+                      class="ma-4"
+                      label="Correct"
+                      data-cy="Correct"
               />
-              <vue-simplemde
-                v-model="editQuestion.options[index - 1].content"
-                class="option-textarea"
-                :configs="markdownConfigs"
-              />
+              <v-textarea
+                      outline
+                      rows="10"
+                      v-model="editQuestion.options[index - 1].content"
+                      data-cy="Option"
+              ></v-textarea>
             </v-flex>
           </v-layout>
         </v-container>
@@ -48,22 +55,22 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="blue darken-1" @click="closeDialogue">Cancel</v-btn>
-        <v-btn color="blue darken-1" @click="saveQuestion">Save</v-btn>
+        <v-btn color="blue darken-1" @click="closeDialogue" data-cy="cancelButton">Cancel</v-btn>
+        <v-btn color="blue darken-1" @click="saveQuestion" data-cy="saveButton">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+  import { Component, Model, Prop, Vue } from 'vue-property-decorator';
 import Question from '@/models/management/Question';
 import RemoteServices from '@/services/RemoteServices';
 
 @Component
 export default class EditSubmittedQuestionDialog extends Vue {
+  @Model('dialog', Boolean) dialog!: boolean;
   @Prop({ type: Question, required: true }) readonly question!: Question;
-  @Prop({ type: Boolean, required: true }) readonly dialog!: boolean;
 
   editQuestion!: Question;
 
