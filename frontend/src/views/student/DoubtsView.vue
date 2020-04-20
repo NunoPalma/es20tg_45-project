@@ -4,6 +4,7 @@
     <ul>
       <li class="list-header ">
         <div class="col">Author</div>
+        <div class="col">Content</div>
         <div class="col">Status</div>
         <div class="col last-col"></div>
       </li>
@@ -15,6 +16,9 @@
       >
         <div class="col">
           {{ doubt.author }}
+        </div>
+        <div class="col">
+          {{ doubt.content }}
         </div>
         <div class="col">
           {{ doubt.status }}
