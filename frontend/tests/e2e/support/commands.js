@@ -30,16 +30,9 @@ Cypress.Commands.add('demoTeacherLogin', () => {
 
 Cypress.Commands.add('demoStudentLogin', () => {
   cy.visit('/');
-  cy.get('[data-cy="studentButton"]').click();
-  cy.contains('My Questions').click();
+  cy.get('[data-cy="demoStudentButton"]').click();
 });
 
-Cypress.Commands.add('demoTeacherLogin', () => {
-  cy.visit('/');
-  cy.get('[data-cy="teacherButton"]').click();
-  cy.contains('Management').click();
-});
- 
 
 Cypress.Commands.add('createDoubt1', (content) => {
 
@@ -61,13 +54,6 @@ Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="Acronym"]').type(acronym);
   cy.get('[data-cy="AcademicTerm"]').type(academicTerm);
   cy.get('[data-cy="saveButton"]').click();
-});
-
-Cypress.Commands.add('closeErrorMessage', () => {
-  cy.contains('Error')
-    .parent()
-    .find('button')
-    .click();
 });
 
 Cypress.Commands.add('closeClarificationErrorMessage', () => {
@@ -119,79 +105,6 @@ Cypress.Commands.add(
 );
 
 
-//Commands for Submit Question Test
-
-Cypress.Commands.add('submitQuestion', (title, content, option) => {
-  cy.get('[data-cy="submitButton"]').click();
-  cy.get('[data-cy="Title"]').type(title,{force: true});
-  cy.get('[data-cy="Content"]').type(content);
-  cy.get('[data-cy="Correct"]').eq(0).click({force: true});
-  cy.get('[data-cy="Option"]').eq(0).type(option);
-  cy.get('[data-cy="Option"]').eq(1).type(option);
-  cy.get('[data-cy="Option"]').eq(2).type(option);
-  cy.get('[data-cy="Option"]').eq(3).type(option);
-  cy.get('[data-cy="saveButton"]').click();
-});
-
-Cypress.Commands.add('submitQuestionNoCorrect', (title, content, option) => {
-  cy.get('[data-cy="submitButton"]').click();
-  cy.get('[data-cy="Title"]').type(title,{force: true});
-  cy.get('[data-cy="Content"]').type(content);
-  cy.get('[data-cy="Option"]').eq(0).type(option);
-  cy.get('[data-cy="Option"]').eq(1).type(option);
-  cy.get('[data-cy="Option"]').eq(2).type(option);
-  cy.get('[data-cy="Option"]').eq(3).type(option);
-  cy.get('[data-cy="saveButton"]').click();
-});
-
-
-Cypress.Commands.add('deleteQuestion', (title) => {
-  cy.contains(title)
-    .parent()
-    .should('have.length',1)
-    .children()
-    .should('have.length',7)
-    .find('[data-cy="deleteQuestion"]')
-    .click({force: true});
-});
-
-Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
-  cy.contains(title1)
-    .parent()
-    .should('have.length', 1)
-    .parent()
-    .should('have.length', 1)
-    .contains(title2);
-});
-
-//Commands for Evaluate Question Test
-
-Cypress.Commands.add('approveQuestion' , (title) => {
-  cy.get('[data-cy="Management"]').click();
-  cy.get('[data-cy="Evaluate"]').click();
-  cy.contains(title)
-    .parent()
-    .should('have.length',1)
-    .children()
-    .should('have.length',7)
-    .find('[data-cy="evaluateQuestion"]')
-    .click({force: true});
-  cy.get('[data-cy="approve"]').click({force: true});
-  cy.get('[data-cy="saveEvaluation"]').click({force: true});
-});
-
-Cypress.Commands.add('rejectQuestion', (title,justification) => {
-  cy.contains(title)
-    .parent()
-    .should('have.length',1)
-    .children()
-    .should('have.length',7)
-    .find('[data-cy="evaluateQuestion"]')
-    .click({force: true});
-  cy.get('[data-cy="justification"]').type(justification);
-  cy.get('[data-cy="saveEvaluation"]').click({force: true});
-});
-
 Cypress.Commands.add('viewTournaments', () => {
     cy.get('[data-cy="Quizzes"]').click({ force: true });
     cy.get('[data-cy="Tournaments"]').click({ force: true });
@@ -240,4 +153,3 @@ Cypress.Commands.add('enrollStudent', (tournamentName) => {
     let search = '[data-cy="' + tournamentName + '"]';
     cy.get(search).click({force: true});
 });
-
