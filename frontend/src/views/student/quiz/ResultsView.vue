@@ -134,6 +134,7 @@ export default class ResultsView extends Vue {
         );
       }
       console.log(this.doubts);
+      console.log(this.quizQuestionId);
       this.createDoubtList = true;
     }
   }

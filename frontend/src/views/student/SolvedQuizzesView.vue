@@ -49,6 +49,7 @@ export default class AvailableQuizzesView extends Vue {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
+
   }
 
   calculateScore(quiz: SolvedQuiz) {

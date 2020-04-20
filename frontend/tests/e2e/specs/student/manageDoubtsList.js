@@ -14,7 +14,7 @@ describe('Doubts List walkthrough', () => {
     cy.createDoubt1('List Test');
     cy.get('[data-cy="QuizzesButton"]').click();
     cy.contains('Doubts').click();
-    cy.contains('List Test').click({force:true});
+    cy.contains('Providing a').click({force:true});
     cy.contains('Back').click();
   });
 

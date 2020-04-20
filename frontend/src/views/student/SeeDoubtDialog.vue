@@ -24,7 +24,7 @@
           <v-container grid-list-md fluid>
             <v-layout column wrap>
               <v-flex xs24 sm12 md8>
-                <v-card-subtitle>{{Doubt.content}}</v-card-subtitle>
+                <v-card>{{Doubt.content}}</v-card>
               </v-flex>
             </v-layout>
           </v-container>
@@ -40,7 +40,7 @@
           <v-container grid-list-md fluid>
             <v-layout column wrap>
               <v-flex xs24 sm12 md8>
-                <v-card-subtitle> Ainda não existe uma resposta a sua duvida...</v-card-subtitle>
+                <v-card> Ainda não existe uma resposta a sua duvida...</v-card>
               </v-flex>
             </v-layout>
           </v-container>
@@ -50,7 +50,7 @@
           <v-container grid-list-md fluid>
             <v-layout column wrap>
               <v-flex xs24 sm12 md8>
-                <v-card-subtitle>{{Doubt.clarificationDto.description}}</v-card-subtitle>
+                <v-card>{{Doubt.clarificationDto.description}}</v-card>
               </v-flex>
             </v-layout>
           </v-container>

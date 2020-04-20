@@ -21,7 +21,9 @@ public class DoubtDto implements Serializable {
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
         this.status = doubt.getStatus();
-        this.clarificationDto = null;
+        if(doubt.getClarification() != null) {
+            this.clarificationDto = new ClarificationDto(doubt.getClarification());
+        }
         this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
     }
 
