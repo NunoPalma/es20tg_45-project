@@ -14,6 +14,8 @@ import AuthDto from '@/models/user/AuthDto';
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
+import Evaluation from '@/models/management/Evaluation';
+
 
 
 import Doubt from '@/models/management/Doubt';
@@ -179,6 +181,46 @@ export default class RemoteServices {
         return response.data.map((question: any) => {
           return new Question(question);
         });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static getPendingQuestions(): Promise<Question[]> {
+    return httpClient
+      .get(
+        `/courses/${Store.getters.getCurrentCourse.courseId}/questions/pending`
+      )
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static findEvaluation(question: Question): Promise<Evaluation> {
+    return httpClient
+      .get(`/evaluations/${question.id}`)
+      .then(response => {
+        return new Evaluation(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static submitEvaluation(
+    evaluation: Evaluation,
+    question: Question
+  ): Promise<Evaluation> {
+    return httpClient
+      .put(`/evaluations/${question.id}`, evaluation)
+      .then(response => {
+        return new Evaluation(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));
@@ -708,15 +750,15 @@ export default class RemoteServices {
       console.log(tournament);
       console.log('espargos haha crl fds morre');
       return httpClient
-          .post(
-              `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
-          )
-          .then(response => {
-            return new Tournament(response.data);
-          })
-          .catch(async error => {
-            throw Error(await this.errorMessage(error));
-          });
+        .post(
+          `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
+        )
+        .then(response => {
+          return new Tournament(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
     } else {
       throw Error(await this.errorMessage('No tournament provided.'));
     }
