@@ -20,7 +20,7 @@ o<template>
                     />
 
                     <v-spacer />
-                    <v-btn color="primary" dark @click="newQuestion">New Question</v-btn>
+                    <v-btn color="primary" dark @click="newQuestion" data-cy="submitButton">New Question</v-btn>
                 </v-card-title>
             </template>
 
@@ -89,6 +89,7 @@ o<template>
                                 v-on="on"
                                 @click="deleteQuestion(item)"
                                 color="red"
+                                data-cy="deleteQuestion"
                         >delete</v-icon
                         >
                     </template>
@@ -124,7 +125,6 @@ o<template>
   import EditSubmittedQuestionDialog from '@/views/student/question/EditSubmittedQuestionDialog.vue';
   import ShowSubmittedQuestionDialog from '@/views/student/question/ShowSubmittedQuestionDialog.vue';
   import EditSubmittedQuestionTopics from '@/views/student/question/EditSubmittedQuestionTopics.vue';
-
   @Component({
     components: {
       'show-question-dialog': ShowSubmittedQuestionDialog,
@@ -139,7 +139,6 @@ o<template>
     editQuestionDialog: boolean = false;
     questionDialog: boolean = false;
     search: string = '';
-
     headers: object = [
       { text: 'Question', value: 'content', align: 'left' },
       {
@@ -168,7 +167,6 @@ o<template>
         sortable: false
       }
     ];
-
     async created() {
       await this.$store.dispatch('loading');
       try {
@@ -181,7 +179,6 @@ o<template>
       }
       await this.$store.dispatch('clearLoading');
     }
-
     customFilter(value: string, search: string, question: Question) {
       // noinspection SuspiciousTypeOfGuard,SuspiciousTypeOfGuard
       return (
@@ -191,11 +188,9 @@ o<template>
           .indexOf(search.toLowerCase()) !== -1
       );
     }
-
     convertMarkDownNoFigure(text: string, image: Image | null = null): string {
       return convertMarkDownNoFigure(text, image);
     }
-
     onQuestionChangedTopics(questionId: Number, changedTopics: Topic[]) {
       let question = this.questions.find(
         (question: Question) => question.id == questionId
@@ -204,7 +199,6 @@ o<template>
         question.topics = changedTopics;
       }
     }
-
     getStatusColor(status: string) {
       if (status === 'REMOVED') return 'red';
       else if (status === 'DISABLED') return 'orange';
@@ -212,7 +206,6 @@ o<template>
       else if (status === 'PENDING') return 'yellow';
       else return 'green';
     }
-
     async handleFileUpload(event: File, question: Question) {
       if (question.id) {
         try {
@@ -225,21 +218,17 @@ o<template>
         }
       }
     }
-
     showQuestionDialog(question: Question) {
       this.currentQuestion = question;
       this.questionDialog = true;
     }
-
     onCloseShowQuestionDialog() {
       this.questionDialog = false;
     }
-
     newQuestion() {
       this.currentQuestion = new Question();
       this.editQuestionDialog = true;
     }
-
     editQuestion(question: Question) {
       if(question.status === 'REJECTED'){
         this.currentQuestion = question;
@@ -248,18 +237,15 @@ o<template>
         alert('You can only edit a Rejected Question for resubmission');
       }
     }
-
     async onSaveQuestion(question: Question) {
       this.questions = this.questions.filter(q => q.id !== question.id);
       this.questions.unshift(question);
       this.onCloseEditQuestionDialogue();
     }
-
     onCloseEditQuestionDialogue() {
       this.editQuestionDialog = false;
       this.currentQuestion = null;
     }
-
     async deleteQuestion(toDeletequestion: Question) {
       if (
         toDeletequestion.id &&
@@ -281,7 +267,6 @@ o<template>
 <style lang="scss" scoped>
     .question-textarea {
         text-align: left;
-
         .CodeMirror,
         .CodeMirror-scroll {
             min-height: 200px !important;
@@ -289,7 +274,6 @@ o<template>
     }
     .option-textarea {
         text-align: left;
-
         .CodeMirror,
         .CodeMirror-scroll {
             min-height: 100px !important;
