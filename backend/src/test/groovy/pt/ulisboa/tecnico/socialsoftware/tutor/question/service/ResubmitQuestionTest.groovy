@@ -21,6 +21,7 @@ import spock.lang.Unroll
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_MISSING_DATA
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_MULTIPLE_CORRECT_OPTIONS
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_NOT_ALTERED
 
 @DataJpaTest
 class ResubmitQuestionTest extends Specification {
@@ -58,7 +59,7 @@ class ResubmitQuestionTest extends Specification {
         given: "create a question"
         question = new Question()
         question.setKey(1)
-        question.setContent(QUESTION_TITLE)
+        question.setTitle(QUESTION_TITLE)
         question.setContent(QUESTION_CONTENT)
         question.setStatus(Question.Status.REJECTED)
         and: 'an image'
@@ -135,13 +136,13 @@ class ResubmitQuestionTest extends Specification {
         questionDto.setStatus(Question.Status.REJECTED.name())
         and: 'a optionId'
         def optionDto = new OptionDto()
-        optionDto.setId(optionOK.getId())
+        optionDto.setId(optionKO.getId())
         optionDto.setContent(OPTION_CONTENT)
         optionDto.setCorrect(false)
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         optionDto = new OptionDto()
-        optionDto.setId(optionKO.getId())
+        optionDto.setId(optionOK.getId())
         optionDto.setContent(OPTION_CONTENT)
         optionDto.setCorrect(true)
         options.add(optionDto)
@@ -150,21 +151,9 @@ class ResubmitQuestionTest extends Specification {
         when:
         questionService.resubmitQuestion(question.getId(), questionDto)
 
-        then: "the question did not change, still rejected"
-        questionRepository.count() == 1L
-        def result = questionRepository.findAll().get(0)
-        result.getId() == question.getId()
-        result.getTitle() == QUESTION_TITLE
-        result.getContent() == QUESTION_CONTENT
-        result.getStatus() == Question.Status.REJECTED
-        result.getImage() != null
-        result.getOptions().size() == 2
-        def resOptionOne = result.getOptions().stream().filter({option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
-        resOptionOne.getContent() == OPTION_CONTENT
-        !resOptionOne.getCorrect()
-        def resOptionTwo = result.getOptions().stream().filter({option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
-        resOptionTwo.getContent() == OPTION_CONTENT
-        resOptionTwo.getCorrect()
+        then:  "a TutorException is thrown"
+        def error = thrown(TutorException)
+        error.errorMessage == QUESTION_NOT_ALTERED
     }
 
     @Unroll("invalid arguments: #newTitle | #newContent | #optionContent | #correctOption || errorMessage ")

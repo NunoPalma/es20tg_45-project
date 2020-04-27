@@ -54,6 +54,8 @@ public enum ErrorMessage {
     QUESTION_MISSING_DATA("Missing information for quiz"),
     QUESTION_MULTIPLE_CORRECT_OPTIONS("Questions can only have 1 correct option"),
     QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
+    QUESTION_NOT_PENDING("Expected Question to be in pending status"),
+    QUESTION_NOT_ALTERED("Expected alterations on question for resubmission"),
     QUIZ_HAS_ANSWERS("Quiz already has answers"),
     QUIZ_ALREADY_COMPLETED("Quiz already completed"),
     QUIZ_ALREADY_STARTED("Quiz was already started"),
@@ -61,9 +63,6 @@ public enum ErrorMessage {
     FENIX_ERROR("Fenix Error"),
     AUTHENTICATION_ERROR("Authentication Error"),
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
-
-
-    QUESTION_NOT_PENDING("Expected Question to be in pending status"),
 
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
     MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),

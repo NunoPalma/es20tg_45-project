@@ -185,6 +185,16 @@ public class QuestionService {
         return new QuestionDto(question);
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public QuestionDto resubmitQuestion(Integer questionId, QuestionDto questionDto) {
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
+        question.resubmit(questionDto);
+        return new QuestionDto(question);
+    }
+
 
     @Retryable(
       value = { SQLException.class },

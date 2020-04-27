@@ -311,6 +311,14 @@ public class Question {
         });
     }
 
+    public void resubmit(QuestionDto questionDto) {
+        checkAlteredQuestion(questionDto);
+
+        update(questionDto);
+        setStatus(Status.PENDING);
+    }
+
+
     private void checkConsistentQuestion(QuestionDto questionDto) {
         if (questionDto.getTitle() == null ||
                 questionDto.getContent() == null ||
@@ -331,6 +339,30 @@ public class Question {
             throw new TutorException(QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS);
         }
 
+    }
+
+    private void checkAlteredQuestion(QuestionDto questionDto) {
+        List<OptionDto> currentOptions = this.getOptions().stream().map(OptionDto::new).collect(Collectors.toList());
+        List<OptionDto> newOptions = questionDto.getOptions();
+
+
+        if (questionDto.getTitle() == this.getTitle() &&
+                questionDto.getContent() == this.getContent()) {
+
+            if(newOptions.size() == currentOptions.size() && checkIfSameOptions(currentOptions,newOptions)) {
+                    throw new TutorException(QUESTION_NOT_ALTERED);
+                }
+            }
+        }
+
+    private boolean checkIfSameOptions(List<OptionDto> list1, List<OptionDto> list2) {
+        for(int i = 0; i < list1.size(); i++){
+            if(!list1.get(i).getContent().equals(list2.get(i).getContent()) ||
+                    list1.get(i).getCorrect() != list2.get(i).getCorrect()){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void updateTopics(Set<Topic> newTopics) {
