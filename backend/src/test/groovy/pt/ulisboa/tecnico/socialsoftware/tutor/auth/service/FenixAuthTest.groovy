@@ -461,5 +461,4 @@ class FenixAuthTest extends Specification {
             return new QuestionService()
         }
     }
-
 }

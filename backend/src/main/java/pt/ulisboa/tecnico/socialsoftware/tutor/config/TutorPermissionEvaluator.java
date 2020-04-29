@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+<<<<<<< HEAD
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
@@ -18,6 +19,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtController;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+=======
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseService;
+>>>>>>> reference/master
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.AssessmentService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.QuestionService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.TopicService;
@@ -41,7 +46,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DO
 public class TutorPermissionEvaluator implements PermissionEvaluator {
 
     @Autowired
-    private AdministrationService administrationService;
+    private CourseService courseService;
 
     @Autowired
     private UserService userService;
@@ -63,15 +68,19 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+<<<<<<< HEAD
 
         String username = ((User) authentication.getPrincipal()).getUsername();
+=======
+        int userId = ((User) authentication.getPrincipal()).getId();
+>>>>>>> reference/master
 
         if (targetDomainObject instanceof CourseDto) {
             CourseDto courseDto = (CourseDto) targetDomainObject;
             String permissionValue = (String) permission;
             switch (permissionValue) {
                 case "EXECUTION.CREATE":
-                    return userService.getEnrolledCoursesAcronyms(username).contains(courseDto.getAcronym() + courseDto.getAcademicTerm());
+                    return userService.getEnrolledCoursesAcronyms(userId).contains(courseDto.getAcronym() + courseDto.getAcademicTerm());
                 case "DEMO.ACCESS":
                     return courseDto.getName().equals("Demo Course");
                 default:
@@ -96,24 +105,32 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
             String permissionValue = (String) permission;
             switch (permissionValue) {
                 case "DEMO.ACCESS":
-                    CourseDto courseDto = administrationService.getCourseExecutionById(id);
+                    CourseDto courseDto = courseService.getCourseExecutionById(id);
                     return courseDto.getName().equals("Demo Course");
                 case "COURSE.ACCESS":
-                    return userHasAnExecutionOfTheCourse(username, id);
+                    return userHasAnExecutionOfTheCourse(userId, id);
                 case "EXECUTION.ACCESS":
-                    return userHasThisExecution(username, id);
+                    return userHasThisExecution(userId, id);
                 case "QUESTION.ACCESS":
+<<<<<<< HEAD
                     return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(id).getCourseId());
                 case "QUESTION.ANSWERED":
                     return hasAnsweredQuestion(username, id);
+=======
+                    return userHasAnExecutionOfTheCourse(userId, questionService.findQuestionCourse(id).getCourseId());
+>>>>>>> reference/master
                 case "TOPIC.ACCESS":
-                    return userHasAnExecutionOfTheCourse(username, topicService.findTopicCourse(id).getCourseId());
+                    return userHasAnExecutionOfTheCourse(userId, topicService.findTopicCourse(id).getCourseId());
                 case "ASSESSMENT.ACCESS":
-                    return userHasThisExecution(username, assessmentService.findAssessmentCourseExecution(id).getCourseExecutionId());
+                    return userHasThisExecution(userId, assessmentService.findAssessmentCourseExecution(id).getCourseExecutionId());
                 case "QUIZ.ACCESS":
+<<<<<<< HEAD
                     return userHasThisExecution(username, quizService.findQuizCourseExecution(id).getCourseExecutionId());
                 case "CLARIFICATION.CREATE":
                     return userHasAnExecutionOfTheCourse(username, questionService.findQuestionCourse(doubtService.getDoubtQuestion(id).getId()).getCourseId());
+=======
+                    return userHasThisExecution(userId, quizService.findQuizCourseExecution(id).getCourseExecutionId());
+>>>>>>> reference/master
                 default: return false;
             }
         }
@@ -121,6 +138,7 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
         return false;
     }
 
+<<<<<<< HEAD
     private boolean userHasAnExecutionOfTheCourse(String username, int id) {
         return userService.getCourseExecutions(username).stream().anyMatch(course -> course.getCourseId() == id);
     }
@@ -135,11 +153,20 @@ public class TutorPermissionEvaluator implements PermissionEvaluator {
     private boolean userHasThisExecution(String username, int id) {
         return userService.getCourseExecutions(username).stream()
                 .anyMatch(course -> course.getCourseExecutionId() == id);
+=======
+    private boolean userHasAnExecutionOfTheCourse(int userId, int courseId) {
+        return userService.getCourseExecutions(userId).stream()
+                .anyMatch(course -> course.getCourseId() == courseId);
+    }
+
+    private boolean userHasThisExecution(int userId, int courseExecutionId) {
+        return userService.getCourseExecutions(userId).stream()
+                .anyMatch(course -> course.getCourseExecutionId() == courseExecutionId);
+>>>>>>> reference/master
     }
 
      @Override
     public boolean hasPermission(Authentication authentication, Serializable serializable, String s, Object o) {
         return false;
     }
-
 }
