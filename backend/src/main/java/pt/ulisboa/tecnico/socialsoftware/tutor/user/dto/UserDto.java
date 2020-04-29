@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
+<<<<<<< HEAD
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
@@ -7,6 +8,12 @@ import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
+=======
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+
+import java.io.Serializable;
+>>>>>>> reference/master
 
 public class UserDto implements Serializable {
     private int id;
@@ -20,17 +27,11 @@ public class UserDto implements Serializable {
         this.username = user.getUsername();
         this.name = user.getName();
         this.role = user.getRole();
-
-        if (user.getCreationDate() != null)
-            this.creationDate = user.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        this.creationDate = DateHandler.toISOString(user.getCreationDate());
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {
