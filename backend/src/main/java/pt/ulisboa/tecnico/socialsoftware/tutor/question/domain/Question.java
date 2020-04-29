@@ -22,19 +22,14 @@ import java.util.stream.Collectors;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Entity
-<<<<<<< HEAD
 @Table(
         name = "questions",
         indexes = {
                 @Index(name = "question_indx_0", columnList = "key")
         })
 
-public class Question {
-    @SuppressWarnings("unused")
-=======
-@Table(name = "questions")
+
 public class Question implements DomainEntity {
->>>>>>> reference/master
     public enum Status {
         DISABLED, REMOVED, AVAILABLE, PENDING, REJECTED
     }
@@ -69,13 +64,8 @@ public class Question implements DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
     private final List<Option> options = new ArrayList<>();
 
-<<<<<<< HEAD
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
-    private Set<QuizQuestion> quizQuestions = new HashSet<>();
-=======
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
     private final Set<QuizQuestion> quizQuestions = new HashSet<>();
->>>>>>> reference/master
 
     @ManyToMany(mappedBy = "questions")
     private final Set<Topic> topics = new HashSet<>();
@@ -226,7 +216,6 @@ public class Question implements DomainEntity {
         }
     }
 
-<<<<<<< HEAD
     public User getUser() { return user; }
 
     public void setUser(User user) { this.user = user; }
@@ -235,12 +224,8 @@ public class Question implements DomainEntity {
 
     public void setEvaluation(Evaluation evaluation) { this.evaluation = evaluation; }
 
-    public void addOption(Option option) {
-        options.add(option);
-=======
     public Set<QuizQuestion> getQuizQuestions() {
         return quizQuestions;
->>>>>>> reference/master
     }
 
     public void addQuizQuestion(QuizQuestion quizQuestion) {
@@ -324,7 +309,6 @@ public class Question implements DomainEntity {
         return chosenAssessment.getTopicConjunctions().stream().map(TopicConjunction::getTopics).collect(Collectors.toList()).contains(this.topics);
     }
 
-<<<<<<< HEAD
     private void checkConsistentQuestion(QuestionDto questionDto) {
         if (questionDto.getTitle() == null ||
                 questionDto.getContent() == null ||
@@ -343,11 +327,13 @@ public class Question implements DomainEntity {
                 && getQuizQuestions().stream().flatMap(quizQuestion -> quizQuestion.getQuestionAnswers().stream())
                 .findAny().isPresent()) {
             throw new TutorException(QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS);
-=======
+
+        }
+    }
+
     public void update(QuestionDto questionDto) {
         if (getQuizQuestions().stream().flatMap(quizQuestion -> quizQuestion.getQuestionAnswers().stream()).findAny().isPresent()) {
             throw new TutorException(CANNOT_CHANGE_ANSWERED_QUESTION);
->>>>>>> reference/master
         }
 
         setTitle(questionDto.getTitle());

@@ -9,8 +9,6 @@
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
-<<<<<<< HEAD
-
       <v-btn depressed small color="primary" @click="demoStudent" data-cy="studentButton">
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
@@ -23,32 +21,6 @@
               color="primary"
               @click="demoAdmin"
               data-cy="adminButton"
-=======
-      <v-btn
-        depressed
-        small
-        color="primary"
-        @click="demoStudent"
-        data-cy="demoStudentLoginButton"
-      >
-        <i class="fa fa-graduation-cap" />Demo as student
-      </v-btn>
-      <v-btn
-        depressed
-        small
-        color="primary"
-        @click="demoTeacher"
-        data-cy="demoTeacherLoginButton"
-      >
-        <i class="fa fa-graduation-cap" />Demo as teacher
-      </v-btn>
-      <v-btn
-        depressed
-        small
-        color="primary"
-        @click="demoAdmin"
-        data-cy="demoAdminLoginButton"
->>>>>>> reference/master
       >
         <i class="fa fa-user-cog" />Demo as administrator
       </v-btn>
@@ -92,17 +64,6 @@
 </template>
 
 <script lang="ts">
-<<<<<<< HEAD
-  import { Component, Vue } from 'vue-property-decorator';
-  import Store from '@/store';
-  import RemoteServices from '@/services/RemoteServices';
-  @Component
-  export default class HomeView extends Vue {
-    appName: string = process.env.VUE_APP_NAME;
-    fenixUrl: string = process.env.VUE_APP_FENIX_URL;
-    get isLoggedIn() {
-      return Store.state.token;
-=======
 import { Component, Vue } from 'vue-property-decorator';
 import Store from '@/store';
 
@@ -115,14 +76,6 @@ export default class HomeView extends Vue {
     return Store.state.token;
   }
 
-  async demoStudent() {
-    await this.$store.dispatch('loading');
-    try {
-      await this.$store.dispatch('demoStudentLogin');
-    } catch (error) {
-      await this.$store.dispatch('error', error);
->>>>>>> reference/master
-    }
     async demoStudent() {
       await this.$store.dispatch('loading');
       try {

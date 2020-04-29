@@ -89,7 +89,6 @@ public class Topic implements DomainEntity {
 
     public void setCourse(Course course) {
         this.course = course;
-<<<<<<< HEAD
     }
 
     public Set<Tournament> getTournaments() {
@@ -98,17 +97,6 @@ public class Topic implements DomainEntity {
 
     public void setTournaments(Set<Tournament> tournaments) {
         this.tournaments = tournaments;
-    }
-
-    public void addTopicConjunction(TopicConjunction topicConjunction) {
-        this.topicConjunctions.add(topicConjunction);
-    }
-
-    public void addQuestion(Question question) {
-        this.questions.add(question);
-=======
-        course.addTopic(this);
->>>>>>> reference/master
     }
 
     @Override

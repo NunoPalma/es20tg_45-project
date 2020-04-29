@@ -4,11 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
-<<<<<<< HEAD
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
-=======
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
->>>>>>> reference/master
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
@@ -340,14 +337,14 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectStudentAnswers = numberOfCorrectStudentAnswers;
     }
 
-<<<<<<< HEAD
     public Set<Tournament> getTournaments() {
         return tournaments;
     }
 
     public void setTournaments(Set<Tournament> tournaments) {
         this.tournaments = tournaments;
-=======
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -369,7 +366,6 @@ public class User implements UserDetails, DomainEntity {
                 ", creationDate=" + creationDate +
                 ", lastAccess=" + lastAccess +
                 '}';
->>>>>>> reference/master
     }
 
     public void increaseNumberOfQuizzes(Quiz.QuizType type) {

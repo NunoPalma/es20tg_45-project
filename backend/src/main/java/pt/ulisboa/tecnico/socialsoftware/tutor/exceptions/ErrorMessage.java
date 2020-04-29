@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.exceptions;
 
 public enum ErrorMessage {
 
-<<<<<<< HEAD
     CLARIFICATION_EMPTY("A clarification cannot be empty"),
     CLARIFICATION_INVALID_USER("User is not a teacher"),
     CLARIFICATION_NOT_ALLOWED("This doubt is already solved"),
@@ -13,7 +12,6 @@ public enum ErrorMessage {
     QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
     QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
     QUESTION_ANSWER_NOT_FOUND("Question answer not found with id %d"),
-=======
     INVALID_ACADEMIC_TERM_FOR_COURSE_EXECUTION("Invalid academic term for course execution"),
     INVALID_ACRONYM_FOR_COURSE_EXECUTION("Invalid acronym for course execution"),
     INVALID_CONTENT_FOR_OPTION("Invalid content for option"),
@@ -36,17 +34,13 @@ public enum ErrorMessage {
 
     ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
->>>>>>> reference/master
     OPTION_NOT_FOUND("Option not found with id %d"),
-    QUESTION_ANSWER_NOT_FOUND("Question answer not found with id %d"),
     QUESTION_NOT_FOUND("Question not found with id %d"),
-    QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
-    QUIZ_NOT_FOUND("Quiz not found with id %d"),
-    QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
     TOPIC_CONJUNCTION_NOT_FOUND("Topic Conjunction not found with id %d"),
     TOPIC_NOT_FOUND("Topic not found with id %d"),
     USER_NOT_FOUND("User not found with id %d"),
     COURSE_NOT_FOUND("Course not found with name %s"),
+    COURSE_NAME_IS_EMPTY("The course name is empty"),
 
     CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
     USERNAME_NOT_FOUND("Username %d not found"),
@@ -85,6 +79,10 @@ public enum ErrorMessage {
 
 
     QUESTION_NOT_PENDING("Expected Question to be in pending status"),
+    QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
+    QUESTION_MISSING_DATA("Missing information for quiz"),
+    QUESTION_MULTIPLE_CORRECT_OPTIONS("Questions can only have 1 correct option"),
+    QUESTION_NOT_ALTERED("Expected alterations on question for resubmission"),
 
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
     MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),

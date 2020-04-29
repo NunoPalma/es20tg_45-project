@@ -184,14 +184,6 @@
                 <v-list-item-title data-cy="solved">Solved</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/tournaments">
-              <v-list-item-action>
-                <v-icon>fas fa-trophy</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>Tournaments</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
             <v-list-item to="/student/doubts">
               <v-list-item-action>
                 <v-icon>question_answer</v-icon>
@@ -231,9 +223,6 @@
           <v-icon>fa fa-book</v-icon>
         </v-btn>
 
-<<<<<<< HEAD
-        <v-btn v-if="isLoggedIn" @click="logout" text dark data-cy="Logout">
-=======
         <v-btn
           v-if="isLoggedIn"
           @click="logout"
@@ -241,7 +230,6 @@
           text
           dark
         >
->>>>>>> reference/master
           Logout
           <v-icon>fas fa-sign-out-alt</v-icon>
         </v-btn>
