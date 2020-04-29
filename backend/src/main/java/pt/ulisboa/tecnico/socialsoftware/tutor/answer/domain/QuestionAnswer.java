@@ -127,13 +127,10 @@ public class QuestionAnswer implements DomainEntity {
         return getOption() != null && getOption().getCorrect();
     }
 
-<<<<<<< HEAD
-
     public void addDoubt(Doubt doubt){
         this.doubts.add(doubt);
     }
 
-=======
     public void remove() {
         quizAnswer.getQuestionAnswers().remove(this);
         quizAnswer = null;
@@ -146,5 +143,4 @@ public class QuestionAnswer implements DomainEntity {
             option = null;
         }
     }
->>>>>>> reference/master
 }

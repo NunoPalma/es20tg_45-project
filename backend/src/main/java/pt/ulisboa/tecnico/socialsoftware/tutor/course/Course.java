@@ -7,6 +7,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic;
 
 import javax.persistence.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +18,8 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.IN
 @Entity
 @Table(name = "courses")
 public class Course implements DomainEntity {
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     public enum Type {TECNICO, EXTERNAL}
 
     @Id
@@ -29,13 +32,8 @@ public class Course implements DomainEntity {
     @Column(nullable = false)
     private String name;
 
-<<<<<<< HEAD
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch=FetchType.EAGER, orphanRemoval=true)
     private Set<CourseExecution> courseExecutions = new HashSet<>();
-=======
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch=FetchType.LAZY, orphanRemoval=true)
-    private final Set<CourseExecution> courseExecutions = new HashSet<>();
->>>>>>> reference/master
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch=FetchType.LAZY, orphanRemoval=true)
     private final Set<Question> questions = new HashSet<>();
@@ -54,7 +52,6 @@ public class Course implements DomainEntity {
     public void accept(Visitor visitor) {
         visitor.visitCourse(this);
     }
-
 
     public Integer getId() {
         return id;

@@ -61,16 +61,16 @@ const converter = new showdown.Converter({
 });
 
 export function convertMarkDown(
-  text: string,
-  image: Image | null = null
+    text: string,
+    image: Image | null = null
 ): string {
   if (image && image.url) {
     text +=
-      '  \n  \n  \n[image]: ' +
-      process.env.VUE_APP_ROOT_API +
-      '/images/questions/' +
-      image.url +
-      ' "Image"';
+        '  \n  \n  \n[image]: ' +
+        process.env.VUE_APP_ROOT_API +
+        '/images/questions/' +
+        image.url +
+        ' "Image"';
   }
 
   return sanitizeHtml(converter.makeHtml(text), sanitizeParams);
