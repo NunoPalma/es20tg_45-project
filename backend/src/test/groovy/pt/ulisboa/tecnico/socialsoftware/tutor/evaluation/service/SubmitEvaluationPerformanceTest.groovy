@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepos
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
+//trying to merge
 
 @DataJpaTest
 class SubmitEvaluationPerformanceTest extends Specification {
@@ -53,7 +54,7 @@ class SubmitEvaluationPerformanceTest extends Specification {
         userRepository.save(user)
 
         when:
-        1.upto(10000,{
+        1.upto(2,{
             def evaluationDto = new EvaluationDto()
             def pendingQuestion = new Question()
             pendingQuestion.setStatus(Question.Status.PENDING)
@@ -63,7 +64,7 @@ class SubmitEvaluationPerformanceTest extends Specification {
             def evaluationDto1 = evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
             evaluationDto1.setJustification(JUSTIFICATION)
             def questionId = pendingQuestion.getId()
-            evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+            evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
         })
 
         then:

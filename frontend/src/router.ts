@@ -76,7 +76,7 @@ let router = new Router({
           }
         },
         {
-          path: 'evaluate_questions',
+          path: 'evaluations',
           name: 'evaluate-questions-management',
           component: EvaluateQuestionsView,
           meta: {

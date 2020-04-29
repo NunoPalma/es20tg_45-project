@@ -4,6 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import javax.persistence.*;
 
+//trying to merge
 @Entity
 @Table(name = "evaluations")
 public class Evaluation {
