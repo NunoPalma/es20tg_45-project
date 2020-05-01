@@ -14,7 +14,7 @@ export default class Doubt {
       this.author = jsonObj.author;
       this.status = jsonObj.status;
       this.content = jsonObj.content;
-      this.clarificationDto = jsonObj.clarificationDto;
+      this.clarificationDto = jsonObj.clarificationDto; // you need to create the Clarification object, not simply attribute from the json
       this.questionTitle = jsonObj.questionTitle;
     }
   }

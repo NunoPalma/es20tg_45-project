@@ -7,6 +7,7 @@ describe('Enroll student in tournament walkthrough', () => {
     cy.contains('Logout').click({ force: true });
   });
 
+  // no error cases/invalid inputs
   it('enroll student', () => {
     let name = 'New Tournament - 1 minute speedrun, a short movie';
     cy.viewTournaments();

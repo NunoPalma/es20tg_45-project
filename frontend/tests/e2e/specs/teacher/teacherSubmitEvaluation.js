@@ -18,6 +18,9 @@ describe('Student Submit Question action', () => {
     cy.contains('Logout').click();
   });
 
+  // no error cases/invalid inputs
+
+
   it('approves Question', (title) => {
     cy.approveQuestion(title1);
   });

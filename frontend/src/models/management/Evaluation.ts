@@ -14,7 +14,7 @@ export default class Evaluation {
       this.approvedEvaluation = jsonObj.approvedEvaluation;
       this.justification = jsonObj.justification;
       this.teacherUsername = jsonObj.teacherUsername;
-      this.submittedQuestion = jsonObj.submittedQuestion;
+      this.submittedQuestion = jsonObj.submittedQuestion; // you should create a Question, not attribute a jsonObject
     }
   }
 }

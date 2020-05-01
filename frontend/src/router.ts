@@ -183,7 +183,7 @@ let router = new Router({
         },
         {
           path: 'doubts',
-          name: 'see-doubts',
+          name: 'see-doubts', // why not simply 'doubts'? it would be more consistent with the rest
           component: DoubtsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Doubts',

@@ -83,6 +83,8 @@ import CreateClarificationDialog from '@/views/teacher/doubts/CreateClarificatio
   }
 })
 export default class SolveDoubtsView extends Vue {
+  // the teacher is not able to see the question (content and options)
+  // a 'show question' button would do the trick, how is the teacher able to give a clarification only with the question title?
   doubts: Doubt[] = [];
   createClarificationDialog: boolean = false;
   creating: boolean = false;

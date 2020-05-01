@@ -25,6 +25,7 @@
 									data-cy="Name"
 							/>
 						</v-flex>
+<!--						insert the date by hand (even the seconds...)? should have used a v-date-picker-->
 						<v-flex xs24 sm12 md8>
 							<p v-if="isCreateTournament"><b>Start Date:</b> {{ editTournament.startDate }} </p>
 							<v-text-field
@@ -70,6 +71,7 @@
 									mandatory
 									class="button-group"
 							>
+<!--								why only 5,10 or 20 questions? this is copy-paste from the quiz-->
 								<v-btn text value="5" data-cy="Questions5">5</v-btn>
 								<v-btn text value="10" data-cy="Questions10">10</v-btn>
 								<v-btn text value="20" data-cy="Questions20">20</v-btn>
@@ -103,6 +105,10 @@
     import Tournament from '@/models/management/Tournament';
     import Topic from '@/models/management/Topic';
     import format from 'date-fns/format'
+
+	// when I save it doesn't give me any feedback, if I cancel it stays loading, when I come back it created the tournament
+	// (or multiple if i clicked multiple times)
+	// if I make a mistake I simply get an 'Unexpected error'
 
     @Component
     export default class EditTournamentDialog extends Vue {

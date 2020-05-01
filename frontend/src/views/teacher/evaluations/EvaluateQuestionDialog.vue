@@ -28,6 +28,7 @@ o<template>
       </v-card-text>
 
       <v-card-text class="text-left">
+<!--        this is not ideal, could it be a radio button with approved, rejected? or a select-->
         <v-switch
                 v-model="statusDefault"
                 label="Question Approved"

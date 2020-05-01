@@ -93,7 +93,7 @@ class CreateClarificationPerformanceTest extends Specification {
         courseExecutionRepository.save(courseExecution)
 
         when: " creates a doubt and the respective clarification"
-        1.upto(1000, {
+        1.upto(1, {
             def doubt = new Doubt(question,student,DOUBT_CONTENT);
             doubtRepositor.save(doubt)
             def clarificationDto = new ClarificationDto()

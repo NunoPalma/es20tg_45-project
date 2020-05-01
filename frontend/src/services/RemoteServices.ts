@@ -144,6 +144,7 @@ export default class RemoteServices {
       });
   }
 
+  // why did you remove async?
   static createQuestion(question: Question): Promise<Question> {
     return httpClient
       .post(
@@ -158,6 +159,7 @@ export default class RemoteServices {
       });
   }
 
+  // RemoteServices methods should be async, no point in returning a Promise otherwise
   static submitQuestion(question: Question): Promise<Question> {
     return httpClient
       .post(
@@ -407,6 +409,7 @@ export default class RemoteServices {
       });
   }
 
+  // RemoteServices methods should be async, no point in returning a Promise otherwise
   static getDoubts(): Promise<Doubt[]> {
     return httpClient
       .get('/doubts')
@@ -702,6 +705,7 @@ export default class RemoteServices {
       });
   }
 
+  // get doubts? why manage?
   static manageDoubts(): Promise<Doubt[]> {
     return httpClient
       .get('/doubts/all')

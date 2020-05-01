@@ -19,7 +19,7 @@ export default class Tournament {
     constructor(jsonObj?: Tournament) {
         if (jsonObj) {
             this.tournamentId = jsonObj.tournamentId;
-            this.creator = jsonObj.creator;
+            this.creator = jsonObj.creator; // you need to create the User object, no simply attribute from the json
             this.courseExecutionId = jsonObj.courseExecutionId;
             this.name = jsonObj.name;
             this.startDate = jsonObj.startDate;
@@ -30,7 +30,7 @@ export default class Tournament {
                 );
             }
             this.numQuestions = jsonObj.numQuestions;
-            this.quiz = jsonObj.quiz;
+            this.quiz = jsonObj.quiz; // you need to create the Quiz object, no simply attribute from the json
             this.state = jsonObj.state;
         }
     }

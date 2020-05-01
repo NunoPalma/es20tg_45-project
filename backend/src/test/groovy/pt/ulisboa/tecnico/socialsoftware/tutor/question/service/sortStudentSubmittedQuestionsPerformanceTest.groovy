@@ -71,7 +71,7 @@ class sortStudentSubmittedQuestionsPerformanceTest extends Specification {
         })
 
         when:
-        1.upto(20, {questionService.sortStudentSubmittedQuestionsByCreationDate(student.getUsername())})
+        1.upto(2, {questionService.sortStudentSubmittedQuestionsByCreationDate(student.getUsername())})
 
         then:
         true

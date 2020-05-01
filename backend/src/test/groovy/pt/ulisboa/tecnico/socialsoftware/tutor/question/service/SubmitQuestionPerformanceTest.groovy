@@ -73,7 +73,7 @@ class SubmitQuestionPerformanceTest extends Specification {
         })
 
         when:
-        1.upto(20, {questionService.findPendingQuestions(COURSE_ID)})
+        1.upto(2, {questionService.findPendingQuestions(COURSE_ID)})
 
         then:
         true

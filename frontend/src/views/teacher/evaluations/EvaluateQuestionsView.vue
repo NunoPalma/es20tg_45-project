@@ -1,4 +1,4 @@
-o<template>
+<template>
     <v-card class="table">
         <v-data-table
                 :headers="headers"

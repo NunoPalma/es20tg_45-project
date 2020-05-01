@@ -7,6 +7,7 @@ export default class Question {
   title: string = '';
   status: string = 'PENDING';
   //POR ENQUANTO não faz sentido, talvez criar uma pergunta nova com este json quando é avaliado
+  // I agree that this does not make sense, this is a copy-paste from the teacher question
   numberOfAnswers!: number;
   numberOfCorrect!: number;
   difficulty!: number | null;
