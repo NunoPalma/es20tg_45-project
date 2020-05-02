@@ -9,7 +9,6 @@
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
-
       <v-btn depressed small color="primary" @click="demoStudent" data-cy="studentButton">
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
@@ -65,19 +64,17 @@
 </template>
 
 <script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Store from '@/store';
 
-  import { Component, Vue } from 'vue-property-decorator';
-  import Store from '@/store';
-  import RemoteServices from '@/services/RemoteServices';
+@Component
+export default class HomeView extends Vue {
+  appName: string = process.env.VUE_APP_NAME;
+  fenixUrl: string = process.env.VUE_APP_FENIX_URL;
 
-  @Component
-  export default class HomeView extends Vue {
-    appName: string = process.env.VUE_APP_NAME;
-    fenixUrl: string = process.env.VUE_APP_FENIX_URL;
-
-    get isLoggedIn() {
-      return Store.state.token;
-    }
+  get isLoggedIn() {
+    return Store.state.token;
+  }
 
     async demoStudent() {
       await this.$store.dispatch('loading');
@@ -88,7 +85,6 @@
       }
       await this.$store.dispatch('clearLoading');
     }
-
     async demoTeacher() {
       await this.$store.dispatch('loading');
       try {
@@ -98,7 +94,6 @@
       }
       await this.$store.dispatch('clearLoading');
     }
-
     async demoAdmin() {
       await this.$store.dispatch('loading');
       try {
@@ -119,7 +114,6 @@
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-
     #home-title {
       box-sizing: border-box;
       color: rgb(255, 255, 255);
@@ -141,16 +135,13 @@
       outline: rgb(255, 255, 255) none 0;
       padding: 10px 20px;
     }
-
     .demo-buttons {
       margin-top: 40px;
       padding-bottom: 30px;
-
       button {
         margin: 10px;
       }
     }
-
     .footer {
       background-color: rgba(0, 0, 0, 0) !important;
       display: flex; /* or inline-flex */
@@ -163,7 +154,6 @@
       position: absolute;
       bottom: 0;
       overflow: hidden;
-
       .logo {
         flex-shrink: 1;
         width: 20%;

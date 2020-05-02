@@ -61,7 +61,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         evaluationRepository.count() == 1L
@@ -95,7 +95,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         evaluationRepository.count() == 1L
@@ -125,7 +125,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         evaluationRepository.count() == 1L
@@ -157,7 +157,7 @@ class SubmitEvaluationTest extends Specification {
         userRepository.save(user)
 
         when:
-        evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+        evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
 
         then:
         def error = thrown(TutorException)

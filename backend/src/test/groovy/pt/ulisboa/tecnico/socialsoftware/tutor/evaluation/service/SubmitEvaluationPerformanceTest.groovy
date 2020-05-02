@@ -64,7 +64,7 @@ class SubmitEvaluationPerformanceTest extends Specification {
             def evaluationDto1 = evaluationService.createEvaluation(evaluationDto, pendingQuestionDto)
             evaluationDto1.setJustification(JUSTIFICATION)
             def questionId = pendingQuestion.getId()
-            evaluationService.submitEvaluation(user.getUsername(), evaluationDto1, questionId)
+            evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto1)
         })
 
         then:

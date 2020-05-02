@@ -64,60 +64,53 @@
 
 <script lang="ts">
   import { Component, Model, Prop, Vue } from 'vue-property-decorator';
-import Question from '@/models/management/Question';
-import RemoteServices from '@/services/RemoteServices';
-
-@Component
-export default class EditSubmittedQuestionDialog extends Vue {
-  @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: Question, required: true }) readonly question!: Question;
-
-  editQuestion!: Question;
-
-  created() {
-    this.editQuestion = new Question(this.question);
-  }
-
-  // https://github.com/F-loat/vue-simplemde/blob/master/doc/configuration_en.md
-  markdownConfigs: object = {
-    status: false,
-    spellChecker: false,
-    insertTexts: {
-      image: ['![image][image]', '']
+  import Question from '@/models/management/Question';
+  import RemoteServices from '@/services/RemoteServices';
+  @Component
+  export default class EditSubmittedQuestionDialog extends Vue {
+    @Model('dialog', Boolean) dialog!: boolean;
+    @Prop({ type: Question, required: true }) readonly question!: Question;
+    editQuestion!: Question;
+    created() {
+      this.editQuestion = new Question(this.question);
     }
-  };
-
-  closeDialogue() {
-    this.$emit('close-edit-question-dialog');
-  }
-
-  async saveQuestion() {
-    if (
-      this.editQuestion &&
-      (!this.editQuestion.title || !this.editQuestion.content)
-    ) {
-      await this.$store.dispatch(
-        'error',
-        'Question must have title and content'
-      );
-      return;
-    }
-
-    if (this.editQuestion && this.editQuestion.id != null) {
-      try {
-        const result = await RemoteServices.updateQuestion(this.editQuestion);
-        this.$emit('save-question', result);
-      } catch (error) {
-        await this.$store.dispatch('error', error);
+    // https://github.com/F-loat/vue-simplemde/blob/master/doc/configuration_en.md
+    markdownConfigs: object = {
+      status: false,
+      spellChecker: false,
+      insertTexts: {
+        image: ['![image][image]', '']
       }
-    } else if (this.editQuestion) {
-      try {
-        const result = await RemoteServices.submitQuestion(this.editQuestion);
-        this.$emit('save-question', result);
-      } catch (error) {
-        await this.$store.dispatch('error', error);
+    };
+    closeDialogue() {
+      this.$emit('close-edit-question-dialog');
+    }
+    async saveQuestion() {
+      if (
+              this.editQuestion &&
+              (!this.editQuestion.title || !this.editQuestion.content)
+      ) {
+        await this.$store.dispatch(
+                'error',
+                'Question must have title and content'
+        );
+        return;
+      }
+      if (this.editQuestion && this.editQuestion.id != null) {
+        try {
+          const result = await RemoteServices.updateQuestion(this.editQuestion);
+          this.$emit('save-question', result);
+        } catch (error) {
+          await this.$store.dispatch('error', error);
+        }
+      } else if (this.editQuestion) {
+        try {
+          const result = await RemoteServices.submitQuestion(this.editQuestion);
+          this.$emit('save-question', result);
+        } catch (error) {
+          await this.$store.dispatch('error', error);
+        }
       }
     }
   }
-}
 </script>

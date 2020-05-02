@@ -1,15 +1,13 @@
 import Option from '@/models/management/Option';
 import Image from '@/models/management/Image';
 import Topic from '@/models/management/Topic';
-import { ISOtoString } from '@/services/ConvertDateService';
 
 export default class Question {
   id: number | null = null;
   title: string = '';
-  status: string = 'AVAILABLE';
+  status: string = 'PENDING';
+  //POR ENQUANTO não faz sentido, talvez criar uma pergunta nova com este json quando é avaliado
   numberOfAnswers!: number;
-  numberOfGeneratedQuizzes!: number;
-  numberOfNonGeneratedQuizzes!: number;
   numberOfCorrect!: number;
   difficulty!: number | null;
   content: string = '';
@@ -26,13 +24,11 @@ export default class Question {
       this.title = jsonObj.title;
       this.status = jsonObj.status;
       this.numberOfAnswers = jsonObj.numberOfAnswers;
-      this.numberOfGeneratedQuizzes = jsonObj.numberOfGeneratedQuizzes;
-      this.numberOfNonGeneratedQuizzes = jsonObj.numberOfNonGeneratedQuizzes;
       this.numberOfCorrect = jsonObj.numberOfCorrect;
       this.difficulty = jsonObj.difficulty;
       this.content = jsonObj.content;
-      this.creationDate = ISOtoString(jsonObj.creationDate);
       this.image = jsonObj.image;
+      this.creationDate = jsonObj.creationDate;
 
       this.options = jsonObj.options.map(
         (option: Option) => new Option(option)
