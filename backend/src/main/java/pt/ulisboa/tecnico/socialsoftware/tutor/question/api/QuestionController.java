@@ -161,6 +161,12 @@ public class QuestionController {
         return questionService.submitQuestion(user.getId(), courseId, question);
     }
 
+    @PutMapping("/questions/{questionId}/resubmit")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    public QuestionDto resubmitQuestion(@PathVariable Integer questionId, @Valid @RequestBody QuestionDto question) {
+        return this.questionService.resubmitQuestion(questionId, question);
+    }
+
     @GetMapping("/courses/{courseId}/questions/submitted")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public List<QuestionDto> sortStudentSubmittedQuestionsByCreationDate(Principal principal, @PathVariable Integer courseId){
