@@ -7,9 +7,15 @@ export default class Doubt {
   content: string = '';
   clarificationDto: Clarification | null = null;
   questionTitle: string = '';
+  title: string = '';
+  creationDate!: String | null;
+  isNew: Boolean = false;
 
   constructor(jsonObj?: Doubt) {
     if (jsonObj) {
+      this.creationDate = jsonObj.creationDate;
+      this.title = jsonObj.title;
+      this.isNew = jsonObj.isNew;
       this.id = jsonObj.id;
       this.author = jsonObj.author;
       this.status = jsonObj.status;

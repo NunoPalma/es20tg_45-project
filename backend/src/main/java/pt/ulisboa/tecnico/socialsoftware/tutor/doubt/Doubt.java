@@ -1,11 +1,13 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
 import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.Type;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -36,11 +38,21 @@ public class Doubt{
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private QuestionAnswer questionAnswer;
 
+    private String creationDate;
+
+    private String title;
+
+    @Column(name="is_new")
+    @Type(type="true_false")
+    private boolean isNew = false;
+
     public Doubt(){
     }
 
-    public Doubt(QuestionAnswer questionAnswer, User user, String content){
+    public Doubt(QuestionAnswer questionAnswer, User user, String creationDate, String title, String content, boolean isNew){
         this.author = user;
+        this.title = title;
+        this.creationDate = creationDate;
         this.author.addDoubt(this);
         if (content == null || content.trim().isEmpty()) {
             throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
@@ -48,10 +60,34 @@ public class Doubt{
         this.content = content;
         this.questionAnswer = questionAnswer;
         this.questionAnswer.addDoubt(this);
+        this.isNew = isNew;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
     }
 
 
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public QuestionAnswer getQuestionAnswer() {
         return questionAnswer;

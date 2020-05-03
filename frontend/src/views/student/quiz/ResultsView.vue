@@ -61,7 +61,7 @@
       <ul>
         <li class="list-header ">
           <div class="col">Author</div>
-          <div class="col">Content</div>
+          <div class="col">Title</div>
           <div class="col">Status</div>
           <div class="col last-col"></div>
         </li>
@@ -76,7 +76,7 @@
             </v-chip>
           </div>
           <div class="col">
-            {{ doubt.content }}
+            {{ doubt.title }}
           </div>
           <div class="col">
             <v-chip v-if="!doubt.clarificationDto" color="red">{{ doubt.status }}</v-chip>

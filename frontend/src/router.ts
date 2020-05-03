@@ -4,6 +4,7 @@ import Store from '@/store';
 
 import LoginView from '@/views/LoginView.vue';
 import CourseSelectionView from '@/views/CourseSelectionView.vue';
+import DoubtsViewTest from '@/views/student/DoubtsViewTest.vue';
 
 import HomeView from '@/views/HomeView.vue';
 import ManagementView from '@/views/teacher/ManagementView.vue';
@@ -184,7 +185,7 @@ let router = new Router({
         {
           path: 'doubts',
           name: 'see-doubts',
-          component: DoubtsView,
+          component: DoubtsViewTest,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Doubts',
             requiredAuth: 'Student'

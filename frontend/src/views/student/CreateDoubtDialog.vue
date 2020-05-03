@@ -18,6 +18,20 @@
           <v-layout column wrap>
             <v-flex xs24 sm12 md8>
               <v-text-field
+                v-model="newDoubt.title"
+                label="Title"
+                data-cy="Title"
+              />
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card-text>
+
+      <v-card-text class="text-left" v-if="isCreateDoubt">
+        <v-container grid-list-md fluid>
+          <v-layout column wrap>
+            <v-flex xs24 sm12 md8>
+              <v-text-field
                 v-model="newDoubt.content"
                 label="Content"
                 data-cy="Content"
@@ -60,10 +74,18 @@ export default class CreateDoubtDialog extends Vue {
     this.quizQuestionId = this.quizId;
   }
   async saveDoubt() {
-    if (this.newDoubt && (!this.newDoubt.content || this.newDoubt.content == '')) {
+    if (
+      this.newDoubt &&
+      (!this.newDoubt.content ||
+        this.newDoubt.content == '' ||
+        this.newDoubt.title == '')
+    ) {
       await this.$store.dispatch('error', 'Doubt must have Content');
       return;
     } else {
+      this.newDoubt.creationDate = new Date(Date.now()).toLocaleString();
+      console.log(this.newDoubt.creationDate);
+      this.newDoubt.isNew = true;
       try {
         const result = await RemoteServices.createDoubt(
           this.newDoubt,
