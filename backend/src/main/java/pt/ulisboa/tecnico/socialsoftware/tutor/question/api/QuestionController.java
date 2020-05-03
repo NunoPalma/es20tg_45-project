@@ -179,6 +179,18 @@ public class QuestionController {
         return questionService.sortStudentSubmittedQuestionsByCreationDate(user.getUsername());
     }
 
+    @GetMapping("/questions/stats")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public List<Integer> calculateApprovedVersusProposed(Principal principal){
+        User user = (User) ((Authentication) principal).getPrincipal();
+
+        if (user == null) {
+            throw new TutorException(AUTHENTICATION_ERROR);
+        }
+
+        return questionService.calculateApprovedVersusProposed(user.getUsername());
+    }
+
     private Path getTargetLocation(String url) {
         String fileLocation = figuresDir + url;
         return Paths.get(fileLocation);
