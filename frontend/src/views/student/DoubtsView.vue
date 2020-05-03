@@ -3,8 +3,10 @@
     <h2>Your Doubts</h2>
     <ul>
       <li class="list-header ">
+        <div class="col">Question</div>
         <div class="col">Title</div>
         <div class="col">Status</div>
+        <div class="col">Date</div>
         <div class="col last-col"></div>
       </li>
       <li
@@ -17,8 +19,14 @@
           {{ doubt.questionTitle }}
         </div>
         <div class="col">
+          {{ doubt.title }}
+        </div>
+        <div class="col">
           <v-chip text-color="white" v-if="!doubt.clarificationDto" color="red">{{ doubt.status }}</v-chip>
           <v-chip text-color="white" v-if="doubt.clarificationDto" color="green">{{ doubt.status }}</v-chip>
+        </div>
+        <div class="col">
+          {{ doubt.creationDate }}
         </div>
         <div class="col last-col">
           <i class="fas fa-chevron-circle-right" />
@@ -64,6 +72,7 @@ export default class DoubtView extends Vue {
   seeDoubt(currentDoubt: Doubt): void {
     console.log(currentDoubt);
     this.doubt = currentDoubt;
+    this.doubt.isNew = false;
     this.seeDoubtDialog = true;
   }
 

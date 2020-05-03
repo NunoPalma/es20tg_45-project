@@ -19,12 +19,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.*;
-
-
-import java.util.Set;
 
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -63,6 +59,12 @@ public class DoubtService {
 
         String content = doubtdto.getContent();
 
+        String title = doubtdto.getTitle();
+
+        boolean isNew = doubtdto.isNew();
+
+        String creationDate = doubtdto.getCreationDate();
+
         User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
 
         if(student.getRole() != User.Role.STUDENT){
@@ -73,7 +75,7 @@ public class DoubtService {
 
         QuestionAnswer questionAnswer = quizQuestion.getQuestionAnswerofUser(studentId);
 
-        Doubt doubt = new Doubt(questionAnswer, student, content);
+        Doubt doubt = new Doubt(questionAnswer, student, creationDate, title,  content, isNew);
         this.entityManager.persist(doubt);
 
         return new DoubtDto(doubt);
@@ -98,7 +100,8 @@ public class DoubtService {
         if (userId == null){
             throw new TutorException(DOUBT_USER_IS_EMPTY);
         }
-        return doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
+        List<DoubtDto> userDoubts = doubtRepository.findUserDoubts(userId).stream().map(DoubtDto::new).collect(Collectors.toList());
+        return userDoubts;
     }
 
 

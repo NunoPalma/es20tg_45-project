@@ -30,6 +30,7 @@ import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import SolveDoubtsView from '@/views/teacher/doubts/SolveDoubtsView.vue';
 import SubmittedQuestionsView from '@/views/student/question/SubmittedQuestionsView.vue';
+import DoubtsViewTest from "@/views/student/DoubtsViewTest.vue";
 
 Vue.use(Router);
 
@@ -184,7 +185,7 @@ let router = new Router({
         {
           path: 'doubts',
           name: 'see-doubts',
-          component: DoubtsView,
+          component: DoubtsViewTest,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Doubts',
             requiredAuth: 'Student'
