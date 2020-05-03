@@ -79,8 +79,8 @@ export default new Vuex.Store({
       const authResponse = await RemoteServices.demoStudentLogin();
       commit('login', authResponse);
       commit(
-        'currentCourse',
-        (Object.values(authResponse.user.courses)[0] as Course[])[0]
+          'currentCourse',
+          (Object.values(authResponse.user.courses)[0] as Course[])[0]
       );
       // localStorage.setItem("token", authResponse.token);
       // localStorage.setItem("userRole", authResponse.user.role);
@@ -89,8 +89,8 @@ export default new Vuex.Store({
       const authResponse = await RemoteServices.demoTeacherLogin();
       commit('login', authResponse);
       commit(
-        'currentCourse',
-        (Object.values(authResponse.user.courses)[0] as Course[])[0]
+          'currentCourse',
+          (Object.values(authResponse.user.courses)[0] as Course[])[0]
       );
       // localStorage.setItem("token", authResponse.token);
       // localStorage.setItem("userRole", authResponse.user.role);
@@ -119,19 +119,19 @@ export default new Vuex.Store({
     },
     isAdmin(state): boolean {
       return (
-        !!state.token &&
-        state.user !== null &&
-        (state.user.role == 'ADMIN' || state.user.role == 'DEMO_ADMIN')
+          !!state.token &&
+          state.user !== null &&
+          (state.user.role == 'ADMIN' || state.user.role == 'DEMO_ADMIN')
       );
     },
     isTeacher(state): boolean {
       return (
-        !!state.token && state.user !== null && state.user.role == 'TEACHER'
+          !!state.token && state.user !== null && state.user.role == 'TEACHER'
       );
     },
     isStudent(state): boolean {
       return (
-        !!state.token && state.user !== null && state.user.role == 'STUDENT'
+          !!state.token && state.user !== null && state.user.role == 'STUDENT'
       );
     },
     getToken(state): string {

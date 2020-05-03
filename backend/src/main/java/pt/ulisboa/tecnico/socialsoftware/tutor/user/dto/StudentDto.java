@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class StudentDto implements Serializable {
     private String username;
@@ -29,15 +31,15 @@ public class StudentDto implements Serializable {
     public StudentDto(User user) {
         this.username = user.getUsername();
         this.name = user.getName();
-
         this.numberOfTeacherQuizzes = user.getNumberOfTeacherQuizzes();
         this.numberOfInClassQuizzes = user.getNumberOfInClassQuizzes();
         this.numberOfStudentQuizzes = user.getNumberOfStudentQuizzes();
-
         this.numberOfAnswers = user.getNumberOfTeacherAnswers() + user.getNumberOfInClassAnswers() + user.getNumberOfStudentAnswers();
         this.numberOfTeacherAnswers = user.getNumberOfTeacherAnswers();
         this.numberOfInClassAnswers = user.getNumberOfInClassAnswers();
         this.numberOfStudentAnswers = user.getNumberOfStudentAnswers();
+        this.lastAccess = DateHandler.toISOString(user.getLastAccess());
+        this.creationDate = DateHandler.toISOString(user.getCreationDate());
 
         if (this.numberOfTeacherAnswers != 0)
             this.percentageOfCorrectTeacherAnswers = user.getNumberOfCorrectTeacherAnswers() * 100 / this.numberOfTeacherAnswers;

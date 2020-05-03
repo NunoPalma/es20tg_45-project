@@ -1,12 +1,13 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.evaluation.Evaluation;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
+import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
@@ -27,8 +28,8 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
                 @Index(name = "question_indx_0", columnList = "key")
         })
 
-public class Question {
-    @SuppressWarnings("unused")
+
+public class Question implements DomainEntity {
     public enum Status {
         DISABLED, REMOVED, AVAILABLE, PENDING, REJECTED
     }
@@ -42,6 +43,7 @@ public class Question {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
     private String title;
 
     @Column(name = "number_of_answers", columnDefinition = "integer default 0")
@@ -60,13 +62,13 @@ public class Question {
     private LocalDateTime creationDate;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", fetch = FetchType.EAGER, orphanRemoval=true)
-    private List<Option> options = new ArrayList<>();
+    private final List<Option> options = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
-    private Set<QuizQuestion> quizQuestions = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval=true)
+    private final Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @ManyToMany(mappedBy = "questions")
-    private Set<Topic> topics = new HashSet<>();
+    private final Set<Topic> topics = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "course_id")
@@ -86,29 +88,16 @@ public class Question {
     }
 
     public Question(Course course, QuestionDto questionDto) {
-        checkConsistentQuestion(questionDto);
-        this.title = questionDto.getTitle();
-        this.key = questionDto.getKey();
-        this.content = questionDto.getContent();
-        this.status = Status.valueOf(questionDto.getStatus());
-        this.creationDate = LocalDateTime.parse(questionDto.getCreationDate(), Course.formatter);
+        setTitle(questionDto.getTitle());
+        setKey(questionDto.getKey());
+        setContent(questionDto.getContent());
+        setStatus(Status.valueOf(questionDto.getStatus()));
+        setCreationDate(DateHandler.toLocalDateTime(questionDto.getCreationDate()));
+        setCourse(course);
+        setOptions(questionDto.getOptions());
 
-        this.course = course;
-        course.addQuestion(this);
-
-        if (questionDto.getImage() != null) {
-            Image img = new Image(questionDto.getImage());
-            setImage(img);
-            img.setQuestion(this);
-        }
-
-        int index = 0;
-        for (OptionDto optionDto : questionDto.getOptions()) {
-            optionDto.setSequence(index++);
-            Option option = new Option(optionDto);
-            this.options.add(option);
-            option.setQuestion(this);
-        }
+        if (questionDto.getImage() != null)
+            setImage(new Image(questionDto.getImage()));
     }
 
     public void accept(Visitor visitor) {
@@ -119,31 +108,11 @@ public class Question {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Integer getKey() {
         if (this.key == null)
             generateKeys();
 
         return key;
-    }
-
-    private void generateKeys() {
-        Integer max = this.course.getQuestions().stream()
-                .filter(question -> question.key != null)
-                .map(Question::getKey)
-                .max(Comparator.comparing(Integer::valueOf))
-                .orElse(0);
-
-        List<Question> nullKeyQuestions = this.course.getQuestions().stream()
-            .filter(question -> question.key == null).collect(Collectors.toList());
-
-        for (Question question: nullKeyQuestions) {
-                max = max + 1;
-                question.key = max;
-        }
     }
 
    public void setKey(Integer key) {
@@ -155,6 +124,9 @@ public class Question {
     }
 
     public void setContent(String content) {
+        if (content == null || content.isBlank())
+            throw new TutorException(INVALID_CONTENT_FOR_QUESTION);
+
         this.content = content;
     }
 
@@ -168,6 +140,33 @@ public class Question {
 
     public List<Option> getOptions() {
         return options;
+    }
+
+    public void setOptions(List<OptionDto> options) {
+        if (options.stream().filter(OptionDto::getCorrect).count() != 1) {
+            throw new TutorException(ONE_CORRECT_OPTION_NEEDED);
+        }
+
+        int index = 0;
+        for (OptionDto optionDto : options) {
+            if (optionDto.getId() == null) {
+                optionDto.setSequence(index++);
+                new Option(optionDto).setQuestion(this);
+            } else {
+                Option option = getOptions()
+                        .stream()
+                        .filter(op -> op.getId().equals(optionDto.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new TutorException(OPTION_NOT_FOUND, optionDto.getId()));
+
+                option.setContent(optionDto.getContent());
+                option.setCorrect(optionDto.getCorrect());
+            }
+        }
+    }
+
+    public void addOption(Option option) {
+        options.add(option);
     }
 
     public Image getImage() {
@@ -184,11 +183,9 @@ public class Question {
     }
 
     public void setTitle(String title) {
+        if (title == null || title.isBlank())
+            throw new TutorException(INVALID_TITLE_FOR_QUESTION);
         this.title = title;
-    }
-
-    public Set<QuizQuestion> getQuizQuestions() {
-        return quizQuestions;
     }
 
     public Integer getNumberOfAnswers() {
@@ -207,24 +204,16 @@ public class Question {
         this.numberOfCorrect = numberOfCorrect;
     }
 
-    public Set<Topic> getTopics() {
-        return topics;
-    }
-
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
+        if (this.creationDate == null) {
+            this.creationDate = DateHandler.now();
+        } else {
+            this.creationDate = creationDate;
+        }
     }
 
     public User getUser() { return user; }
@@ -235,24 +224,30 @@ public class Question {
 
     public void setEvaluation(Evaluation evaluation) { this.evaluation = evaluation; }
 
-    public void addOption(Option option) {
-        options.add(option);
+    public Set<QuizQuestion> getQuizQuestions() {
+        return quizQuestions;
     }
 
     public void addQuizQuestion(QuizQuestion quizQuestion) {
         quizQuestions.add(quizQuestion);
     }
 
-    public void addTopic(Topic topic) {
-        topics.add(topic);
+    public Set<Topic> getTopics() {
+        return topics;
     }
 
-    public void remove() {
-        canRemove();
-        getCourse().getQuestions().remove(this);
-        course = null;
-        getTopics().forEach(topic -> topic.getQuestions().remove(this));
-        getTopics().clear();
+    public void addTopic(Topic topic) {
+        topics.add(topic);
+        topic.getQuestions().add(this);
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+        course.addQuestion(this);
     }
 
     @Override
@@ -271,6 +266,22 @@ public class Question {
                 '}';
     }
 
+    private void generateKeys() {
+        int max = this.course.getQuestions().stream()
+                .filter(question -> question.key != null)
+                .map(Question::getKey)
+                .max(Comparator.comparing(Integer::valueOf))
+                .orElse(0);
+
+        List<Question> nullKeyQuestions = this.course.getQuestions().stream()
+                .filter(question -> question.key == null).collect(Collectors.toList());
+
+        for (Question question: nullKeyQuestions) {
+            max = max + 1;
+            question.key = max;
+        }
+    }
+
     public Integer getCorrectOptionId() {
         return this.getOptions().stream()
                 .filter(Option::getCorrect)
@@ -286,7 +297,6 @@ public class Question {
         }
     }
 
-
     public Integer getDifficulty() {
         if (numberOfAnswers == 0) {
             return null;
@@ -295,20 +305,8 @@ public class Question {
         return numberOfCorrect * 100 / numberOfAnswers;
     }
 
-    public void update(QuestionDto questionDto) {
-        checkConsistentQuestion(questionDto);
-
-        setTitle(questionDto.getTitle());
-        setContent(questionDto.getContent());
-
-        questionDto.getOptions().forEach(optionDto -> {
-            Option option = getOptionById(optionDto.getId());
-            if (option == null) {
-                throw new TutorException(OPTION_NOT_FOUND, optionDto.getId());
-            }
-            option.setContent(optionDto.getContent());
-            option.setCorrect(optionDto.getCorrect());
-        });
+    public boolean belongsToAssessment(Assessment chosenAssessment) {
+        return chosenAssessment.getTopicConjunctions().stream().map(TopicConjunction::getTopics).collect(Collectors.toList()).contains(this.topics);
     }
 
     private void checkConsistentQuestion(QuestionDto questionDto) {
@@ -329,8 +327,18 @@ public class Question {
                 && getQuizQuestions().stream().flatMap(quizQuestion -> quizQuestion.getQuestionAnswers().stream())
                 .findAny().isPresent()) {
             throw new TutorException(QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS);
+
+        }
+    }
+
+    public void update(QuestionDto questionDto) {
+        if (getQuizQuestions().stream().flatMap(quizQuestion -> quizQuestion.getQuestionAnswers().stream()).findAny().isPresent()) {
+            throw new TutorException(CANNOT_CHANGE_ANSWERED_QUESTION);
         }
 
+        setTitle(questionDto.getTitle());
+        setContent(questionDto.getContent());
+        setOptions(questionDto.getOptions());
     }
 
     public void updateTopics(Set<Topic> newTopics) {
@@ -341,30 +349,18 @@ public class Question {
             topic.getQuestions().remove(this);
         });
 
-        newTopics.stream().filter(topic -> !this.topics.contains(topic)).forEach(topic -> {
-            this.topics.add(topic);
-            topic.getQuestions().add(this);
-        });
+        newTopics.stream().filter(topic -> !this.topics.contains(topic)).forEach(this::addTopic);
     }
 
-    private Option getOptionById(Integer id) {
-        return getOptions().stream().filter(option -> option.getId().equals(id)).findAny().orElse(null);
-    }
-
-    private void canRemove() {
+    public void remove() {
         if (!getQuizQuestions().isEmpty()) {
             throw new TutorException(QUESTION_IS_USED_IN_QUIZ, getQuizQuestions().iterator().next().getQuiz().getTitle());
         }
-    }
 
-    public void setOptionsSequence() {
-        int index = 0;
-        for (Option option: getOptions()) {
-            option.setSequence(index++);
-        }
-    }
+        getCourse().getQuestions().remove(this);
+        course = null;
 
-    public boolean belongsToAssessment(Assessment chosenAssessment) {
-        return chosenAssessment.getTopicConjunctions().stream().map(TopicConjunction::getTopics).collect(Collectors.toList()).contains(this.topics);
+        getTopics().forEach(topic -> topic.getQuestions().remove(this));
+        getTopics().clear();
     }
 }
