@@ -233,4 +233,8 @@ public class Tournament {
                 throw new TutorException(INVALID_ENROLLMENT_CANCELLED_TOURNAMENT);
         }
     }
+
+    public boolean isCreator(User user) {
+        return this.creator.equals(user);
+    }
 }

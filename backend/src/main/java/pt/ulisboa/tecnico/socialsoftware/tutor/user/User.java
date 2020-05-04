@@ -498,4 +498,12 @@ public class User implements UserDetails, DomainEntity {
 
         return result;
     }
+
+    public boolean isEqual(Object obj) {
+        if (getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+
+        // ol' == won't work for wrapper types because it compares references
+        return this.getId().equals(user.getId());
+    }
 }

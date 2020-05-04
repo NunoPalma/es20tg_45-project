@@ -141,6 +141,25 @@ public class TournamentService {
 		return tournamentsDto.stream()
 				.sorted(Comparator.comparing(TournamentDto::getName))
 				.collect(Collectors.toList());
+	}
 
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public TournamentDto cancelTournament(Integer userId, Integer tournamentId) {
+		if (userId == null)
+			throw new TutorException(INVALID_USER_ID);
+		else if (tournamentId == null)
+			throw new TutorException(INVALID_TOURNAMENT_ID);
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
+
+		if (!tournament.getCreator().equals(user))
+			throw new TutorException(USER_NOT_TOURNAMENT_CREATOR, user.getId());
+
+		tournament.setState(Tournament.State.CANCELLED);
+
+		tournamentRepository.save(tournament);
+
+		return new TournamentDto(tournament, true);
 	}
 }
