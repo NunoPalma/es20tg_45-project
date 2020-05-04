@@ -192,20 +192,16 @@
                 <v-list-item-title>Doubts</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/tournaments">
-              <v-list-item-action>
-                <v-icon>fas fa-trophy</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
           </v-list>
         </v-menu>
 
         <v-btn to="/student/questions" v-if="isStudent && currentCourse" text dark>
           My Questions
           <v-icon>question_answer</v-icon>
+        </v-btn>
+        <v-btn to="/student/tournaments" v-if="isStudent && currentCourse" text dark>
+          Tournaments
+          <v-icon>fas fa-trophy</v-icon>
         </v-btn>
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats
