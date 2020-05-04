@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import org.slf4j.Logger;
@@ -34,6 +35,17 @@ public class DoubtController {
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     public DoubtDto changeVisibility(@PathVariable int doubtId, @PathVariable Doubt.Visibility status) {
         return doubtService.changeVisibility(doubtId, status);
+    }
+
+    @PostMapping("/doubts/{doubtId}/discussion")
+    public DiscussionDto addDoubtToDiscussion(@PathVariable int doubtId, @RequestBody DoubtDto doubtDto) {
+        return doubtService.addDiscussionToDoubt(doubtId, doubtDto);
+    }
+
+    @PostMapping("/doubts/discussion/{doubtId}")
+    public DoubtDto solveOptDoubt(Principal principal, @PathVariable int doubtId, @RequestBody ClarificationDto clarificationDto) {
+        User user = (User) ((Authentication) principal).getPrincipal();
+        return doubtService.solveOptionalDoubt(doubtId,user.getId(),clarificationDto);
     }
 
     @GetMapping("/doubts")
