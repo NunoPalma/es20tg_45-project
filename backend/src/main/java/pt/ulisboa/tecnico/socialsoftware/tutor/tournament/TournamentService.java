@@ -131,6 +131,5 @@ public class TournamentService {
 		return tournamentsDto.stream()
 				.sorted(Comparator.comparing(TournamentDto::getName))
 				.collect(Collectors.toList());
-
 	}
 }

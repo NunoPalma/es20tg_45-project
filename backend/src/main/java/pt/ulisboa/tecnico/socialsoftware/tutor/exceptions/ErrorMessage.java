@@ -100,6 +100,7 @@ public enum ErrorMessage {
     INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
     TOURNAMENT_NOT_FOUND("Tournament with id %d not found"),
     TOPIC_WITH_NAME_NOT_FOUND("Topic with name %s not found"),
+    USER_NOT_TOURNAMENT_CREATOR("User %d is not the creator of the tournament"),
 
     INVALID_USER_ID("Invalid user ID"),
     INVALID_TOURNAMENT_ID("Invalid tournament ID"),
