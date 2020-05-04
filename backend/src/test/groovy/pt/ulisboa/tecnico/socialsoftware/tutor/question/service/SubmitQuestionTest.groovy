@@ -18,9 +18,14 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_CONTENT_FOR_OPTION
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_CONTENT_FOR_QUESTION
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_CONTENT_FOR_QUESTION
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_TITLE_FOR_QUESTION
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_TITLE_FOR_QUESTION
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.ONE_CORRECT_OPTION_NEEDED
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_MISSING_DATA
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_MULTIPLE_CORRECT_OPTIONS
-//trying to merge
 
 @DataJpaTest
 class SubmitQuestionTest extends Specification {
@@ -169,13 +174,13 @@ class SubmitQuestionTest extends Specification {
         error.errorMessage == errorMessage
 
         where:
-        questionTitle  | questionContent  | optionContent1 | correctOption1 || errorMessage
-             null      | QUESTION_CONTENT | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
-              ""       | QUESTION_CONTENT | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
-        QUESTION_TITLE |       null       | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
-        QUESTION_TITLE |        ""        | OPTION_CONTENT |      true      || QUESTION_MISSING_DATA
-        QUESTION_TITLE | QUESTION_CONTENT |       ""       |      true      || QUESTION_MISSING_DATA
-        QUESTION_TITLE | QUESTION_CONTENT | OPTION_CONTENT |      false     || QUESTION_MULTIPLE_CORRECT_OPTIONS
+        questionTitle   | questionContent   | optionContent1 | correctOption1 || errorMessage
+        null            | QUESTION_CONTENT  | OPTION_CONTENT |      true      || INVALID_TITLE_FOR_QUESTION
+        ""              | QUESTION_CONTENT  | OPTION_CONTENT |      true      || INVALID_TITLE_FOR_QUESTION
+        QUESTION_TITLE  |       null        | OPTION_CONTENT |      true      || INVALID_CONTENT_FOR_QUESTION
+        QUESTION_TITLE  |        ""         | OPTION_CONTENT |      true      || INVALID_CONTENT_FOR_QUESTION
+        QUESTION_TITLE  | QUESTION_CONTENT  |       ""       |      true      || INVALID_CONTENT_FOR_OPTION
+        QUESTION_TITLE  | QUESTION_CONTENT  | OPTION_CONTENT |      false     || ONE_CORRECT_OPTION_NEEDED
     }
 
     @TestConfiguration
