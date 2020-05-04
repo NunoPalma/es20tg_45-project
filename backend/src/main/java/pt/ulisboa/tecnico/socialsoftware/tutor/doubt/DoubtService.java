@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
@@ -143,4 +144,36 @@ public class DoubtService {
             return new ArrayList<DoubtDto>();
         }
     }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public DiscussionDto getDoubtDiscussion(Integer doubtId) {
+        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
+        return new DiscussionDto(doubt.getDiscussion());
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public DiscussionDto addDiscussionToDoubt(Integer doubtId, DoubtDto doubtDto) {
+        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
+        Doubt optDoubt = new Doubt();
+        optDoubt.setVisibility(doubtDto.getVisibility());
+        optDoubt.setStatus(doubtDto.getStatus());
+        optDoubt.setAuthor(doubt.getAuthor());
+        optDoubt.setDiscussion(null);
+        optDoubt.setNew(doubt.isNew());
+        optDoubt.setContent(doubtDto.getContent());
+        optDoubt.setTitle(doubt.getTitle());
+        optDoubt.setQuestionAnswer(doubt.getQuestionAnswer());
+        doubt.getDiscussion().addOptionalDoubt(optDoubt);
+        return new DiscussionDto(doubt.getDiscussion());
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public DoubtDto solveOptionalDoubt(Integer optDoubtId, Integer userId, ClarificationDto clarificationDto) {
+        Doubt doubt = doubtRepository.findById(optDoubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
+        clarificationService.createClarification(clarificationDto, doubt.getId(), userId);
+        DoubtDto res = new DoubtDto(doubt);
+        res.setClarificationDto(clarificationService.findDoubtClarification(doubt.getId()));
+        return res;
+    }
+
 }

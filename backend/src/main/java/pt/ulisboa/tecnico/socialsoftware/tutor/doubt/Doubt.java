@@ -40,6 +40,9 @@ public class Doubt{
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private QuestionAnswer questionAnswer;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Discussion discussion = null;
+
     private String creationDate;
 
     private String title;
@@ -63,6 +66,14 @@ public class Doubt{
         this.questionAnswer = questionAnswer;
         this.questionAnswer.addDoubt(this);
         this.isNew = isNew;
+    }
+
+    public Discussion getDiscussion() {
+        return discussion;
+    }
+
+    public void setDiscussion(Discussion discussion) {
+        this.discussion = discussion;
     }
 
     public void setId(Integer id) {
