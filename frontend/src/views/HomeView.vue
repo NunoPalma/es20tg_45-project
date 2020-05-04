@@ -9,7 +9,6 @@
     </v-btn>
 
     <div class="demo-buttons" v-if="!isLoggedIn">
-
       <v-btn depressed small color="primary" @click="demoStudent" data-cy="studentButton">
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
@@ -65,16 +64,18 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import Store from '@/store';
-  import RemoteServices from '@/services/RemoteServices';
-  @Component
-  export default class HomeView extends Vue {
-    appName: string = process.env.VUE_APP_NAME;
-    fenixUrl: string = process.env.VUE_APP_FENIX_URL;
-    get isLoggedIn() {
-      return Store.state.token;
-    }
+import { Component, Vue } from 'vue-property-decorator';
+import Store from '@/store';
+
+@Component
+export default class HomeView extends Vue {
+  appName: string = process.env.VUE_APP_NAME;
+  fenixUrl: string = process.env.VUE_APP_FENIX_URL;
+
+  get isLoggedIn() {
+    return Store.state.token;
+  }
+
     async demoStudent() {
       await this.$store.dispatch('loading');
       try {

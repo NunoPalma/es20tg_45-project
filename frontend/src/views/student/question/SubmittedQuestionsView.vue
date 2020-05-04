@@ -118,7 +118,7 @@ o<template>
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
   import RemoteServices from '@/services/RemoteServices';
-  import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
+  import { convertMarkDown } from '@/services/ConvertMarkdownService';
   import Question from '@/models/management/Question';
   import Image from '@/models/management/Image';
   import Topic from '@/models/management/Topic';
@@ -127,7 +127,7 @@ o<template>
   import EditSubmittedQuestionTopics from '@/views/student/question/EditSubmittedQuestionTopics.vue';
   @Component({
     components: {
-      'show-question-dialog': ShowSubmittedQuestionDialog,
+    'show-question-dialog': ShowSubmittedQuestionDialog,
       'edit-question-dialog': EditSubmittedQuestionDialog,
       'edit-question-topics': EditSubmittedQuestionTopics
     }
@@ -188,9 +188,9 @@ o<template>
           .indexOf(search.toLowerCase()) !== -1
       );
     }
-    convertMarkDownNoFigure(text: string, image: Image | null = null): string {
-      return convertMarkDownNoFigure(text, image);
-    }
+      convertMarkDown(text: string, image: Image | null = null): string {
+          return convertMarkDown(text, image);
+      }
     onQuestionChangedTopics(questionId: Number, changedTopics: Topic[]) {
       let question = this.questions.find(
         (question: Question) => question.id == questionId

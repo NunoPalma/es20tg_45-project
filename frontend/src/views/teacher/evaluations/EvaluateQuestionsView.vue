@@ -61,7 +61,6 @@ o<template>
 <script lang = "ts">
   import { Component, Vue } from 'vue-property-decorator';
   import RemoteServices from '@/services/RemoteServices';
-  import { convertMarkDownNoFigure } from '@/services/ConvertMarkdownService';
   import Question from '@/models/management/Question';
   import Image from '@/models/management/Image';
   import Topic from '@/models/management/Topic';
@@ -72,7 +71,6 @@ o<template>
       'evaluate-question-dialog': EvaluateQuestionDialog
     }
   })
-  //trying to merge
 
   export default class EvaluateQuestionsView extends Vue {
     questions: Question[] = [];
@@ -132,10 +130,6 @@ o<template>
           .toLowerCase()
           .indexOf(search.toLowerCase()) !== -1
       );
-    }
-
-    convertMarkDownNoFigure(text: string, image: Image | null = null): string {
-      return convertMarkDownNoFigure(text, image);
     }
 
     getStatusColor(status: string) {

@@ -3,9 +3,9 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
@@ -33,7 +33,7 @@ public class User implements UserDetails, DomainEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-    
+
     @Column(unique=true)
     private String username;
 
@@ -49,6 +49,9 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectTeacherAnswers;
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
+
+    @Column(name = "privacy")
+    private Boolean privacy;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -86,7 +89,7 @@ public class User implements UserDetails, DomainEntity {
         setUsername(username);
         this.key = key;
         this.role = role;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = DateHandler.now();
         this.numberOfTeacherQuizzes = 0;
         this.numberOfInClassQuizzes = 0;
         this.numberOfStudentQuizzes = 0;
@@ -96,6 +99,7 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+        this.privacy = false;
     }
 
     public void addClarification(Clarification clarification) {
@@ -116,10 +120,6 @@ public class User implements UserDetails, DomainEntity {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Integer getKey() {
@@ -210,7 +210,7 @@ public class User implements UserDetails, DomainEntity {
     }
 
     public Integer getNumberOfStudentQuizzes() {
-        if(this.numberOfStudentQuizzes == null)
+        if (this.numberOfStudentQuizzes == null)
             this.numberOfStudentQuizzes = (int) getQuizAnswers().stream()
                     .filter(QuizAnswer::isCompleted)
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.GENERATED))
@@ -263,7 +263,7 @@ public class User implements UserDetails, DomainEntity {
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.IN_CLASS))
                     .mapToInt(quizAnswer -> quizAnswer.getQuiz().getQuizQuestions().size())
                     .sum();
-            return numberOfInClassAnswers;
+        return numberOfInClassAnswers;
     }
 
     public void setNumberOfInClassAnswers(Integer numberOfInClassAnswers) {
@@ -300,7 +300,7 @@ public class User implements UserDetails, DomainEntity {
                             questionAnswer.getOption().getCorrect())
                     .count();
 
-            return numberOfCorrectTeacherAnswers;
+        return numberOfCorrectTeacherAnswers;
     }
 
     public void setNumberOfCorrectTeacherAnswers(Integer numberOfCorrectTeacherAnswers) {
@@ -314,7 +314,7 @@ public class User implements UserDetails, DomainEntity {
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.IN_CLASS))
                     .flatMap(quizAnswer -> quizAnswer.getQuestionAnswers().stream())
                     .filter(questionAnswer -> questionAnswer.getOption() != null &&
-                        questionAnswer.getOption().getCorrect())
+                            questionAnswer.getOption().getCorrect())
                     .count();
 
         return numberOfCorrectInClassAnswers;
@@ -331,7 +331,7 @@ public class User implements UserDetails, DomainEntity {
                     .filter(quizAnswer -> quizAnswer.getQuiz().getType().equals(Quiz.QuizType.GENERATED))
                     .flatMap(quizAnswer -> quizAnswer.getQuestionAnswers().stream())
                     .filter(questionAnswer -> questionAnswer.getOption() != null &&
-                        questionAnswer.getOption().getCorrect())
+                            questionAnswer.getOption().getCorrect())
                     .count();
 
         return numberOfCorrectStudentAnswers;
@@ -347,6 +347,38 @@ public class User implements UserDetails, DomainEntity {
 
     public void setTournaments(Set<Tournament> tournaments) {
         this.tournaments = tournaments;
+    }
+
+    public boolean getPrivacy() {
+        if (this.privacy == null){
+            this.privacy = false;
+        }
+        return this.privacy;
+    }
+
+    public void togglePrivacy() { this.privacy = !this.privacy; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", key=" + key +
+                ", role=" + role +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", enrolledCoursesAcronyms='" + enrolledCoursesAcronyms + '\'' +
+                ", numberOfTeacherQuizzes=" + numberOfTeacherQuizzes +
+                ", numberOfStudentQuizzes=" + numberOfStudentQuizzes +
+                ", numberOfInClassQuizzes=" + numberOfInClassQuizzes +
+                ", numberOfTeacherAnswers=" + numberOfTeacherAnswers +
+                ", numberOfInClassAnswers=" + numberOfInClassAnswers +
+                ", numberOfStudentAnswers=" + numberOfStudentAnswers +
+                ", numberOfCorrectTeacherAnswers=" + numberOfCorrectTeacherAnswers +
+                ", numberOfCorrectInClassAnswers=" + numberOfCorrectInClassAnswers +
+                ", numberOfCorrectStudentAnswers=" + numberOfCorrectStudentAnswers +
+                ", creationDate=" + creationDate +
+                ", lastAccess=" + lastAccess +
+                '}';
     }
 
     public void increaseNumberOfQuizzes(Quiz.QuizType type) {
@@ -471,7 +503,7 @@ public class User implements UserDetails, DomainEntity {
         Random rand = new Random(System.currentTimeMillis());
         while (numberOfAddedQuestions < numberOfQuestions) {
             int next = rand.nextInt(studentAnsweredQuestions.size());
-            if(!result.contains(studentAnsweredQuestions.get(next))) {
+            if (!result.contains(studentAnsweredQuestions.get(next))) {
                 result.add(studentAnsweredQuestions.get(next));
                 numberOfAddedQuestions++;
             }

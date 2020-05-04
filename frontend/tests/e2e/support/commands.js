@@ -23,10 +23,14 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+<<<<<<< HEAD
 Cypress.Commands.add('demoTeacherLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="demoTeacherButton"]').click();
 });
+=======
+/// <reference types="Cypress" />
+>>>>>>> reference/master
 
 Cypress.Commands.add('demoStudentLogin', () => {
   cy.visit('/');
@@ -57,9 +61,9 @@ Cypress.Commands.add('createClarification', (status, response) => {
 
 Cypress.Commands.add('createCourseExecution', (name, acronym, academicTerm) => {
   cy.get('[data-cy="createButton"]').click();
-  cy.get('[data-cy="Name"]').type(name);
-  cy.get('[data-cy="Acronym"]').type(acronym);
-  cy.get('[data-cy="AcademicTerm"]').type(academicTerm);
+  cy.get('[data-cy="courseExecutionNameInput"]').type(name);
+  cy.get('[data-cy="courseExecutionAcronymInput"]').type(acronym);
+  cy.get('[data-cy="courseExecutionAcademicTermInput"]').type(academicTerm);
   cy.get('[data-cy="saveButton"]').click();
 });
 
@@ -152,6 +156,7 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .should('have.length', 1)
       .children()
       .should('have.length', 7)
+<<<<<<< HEAD
       .find('[data-cy="deleteQuestion"]')
       .click({ force: true });
   });
@@ -242,3 +247,12 @@ Cypress.Commands.add('closeErrorMessage', () => {
     cy.get(search).click({ force: true });
   });
 
+=======
+      .find('[data-cy="createFromCourse"]')
+      .click();
+    cy.get('[data-cy="courseExecutionAcronymInput"]').type(acronym);
+    cy.get('[data-cy="courseExecutionAcademicTermInput"]').type(academicTerm);
+    cy.get('[data-cy="saveButton"]').click();
+  }
+);
+>>>>>>> reference/master
