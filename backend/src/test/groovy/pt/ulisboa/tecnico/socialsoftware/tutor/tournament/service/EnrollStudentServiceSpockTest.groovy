@@ -59,8 +59,6 @@ class EnrollStudentServiceSpockTest extends Specification {
         formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
         courseExecution = new CourseExecution()
-        courseExecution.setId(COURSE_EXECUTION_ID)
-        courseExecutionRepository.save(courseExecution)
     }
 
 
