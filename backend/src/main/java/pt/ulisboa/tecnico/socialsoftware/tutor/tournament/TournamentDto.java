@@ -27,7 +27,7 @@ public class TournamentDto implements Serializable {
 	private Tournament.State state;
 
 	@Transient
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	public TournamentDto() {}
 

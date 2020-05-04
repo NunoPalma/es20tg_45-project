@@ -64,7 +64,7 @@ class EnrollStudentTimeConstraintServiceSpockTest extends Specification {
 
         then: "an exception is thrown"
         def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.TOURNAMENT_IS_CLOSED
+        exception.getErrorMessage() == ErrorMessage.INVALID_ENROLLMENT_CLOSED_TOURNAMENT
 
 
     }
@@ -89,7 +89,7 @@ class EnrollStudentTimeConstraintServiceSpockTest extends Specification {
 
         then: "an exception is thrown"
         def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.TOURNAMENT_IS_CREATED
+        exception.getErrorMessage() == ErrorMessage.INVALID_ENROLLMENT_CREATED_TOURNAMENT
     }
 
     def "a student tries to enroll in a tournament that is open"() {

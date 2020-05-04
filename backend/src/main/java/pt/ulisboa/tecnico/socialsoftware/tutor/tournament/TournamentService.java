@@ -64,6 +64,12 @@ public class TournamentService {
 		if (topicDtos.isEmpty())
 			throw new TutorException(NOT_ENOUGH_TOPICS);
 
+		if (tournamentDto.getStartDate() == null)
+			throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
+
+		if (tournamentDto.getEndDate() == null)
+			throw new TutorException(TOURNAMENT_END_DATE_EMPTY);
+
 		Set<Topic> topics = new HashSet<>();
 		for (TopicDto topicDto : topicDtos) {
 			Topic topic = topicRepository.findTopicByName(courseExecution.getCourse().getId(), topicDto.getName());
@@ -108,11 +114,6 @@ public class TournamentService {
 		if (Duration.between(LocalDateTime.now(), tournament.getEndDate()).toMillis() < 0 && tournament.getState() != Tournament.State.CLOSED)
 			tournament.setState(Tournament.State.CLOSED);
 
-		if (tournament.getState() == Tournament.State.CLOSED)
-			throw new TutorException(TOURNAMENT_IS_CLOSED);
-
-		if (tournament.getState() == Tournament.State.CREATED)
-			throw new TutorException(TOURNAMENT_IS_CREATED);
 
 		tournament.enrollStudent(user);
 

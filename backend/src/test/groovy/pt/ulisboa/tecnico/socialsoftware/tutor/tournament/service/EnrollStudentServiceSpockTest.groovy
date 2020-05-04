@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
@@ -28,6 +30,7 @@ class EnrollStudentServiceSpockTest extends Specification {
     static final String USER_NAME = "UserName"
     static final String USER_NICKNAME = "UserNickname"
     static final LocalDateTime USER_CREATION_DATE = LocalDateTime.now().withSecond(0).withNano(0)
+    static Tournament tournament = new Tournament()
     static final int TOURNAMENT_ID = 1
     static final String TOURNAMENT_NAME = "NewTournament"
     static final LocalDateTime START_DATE = LocalDateTime.now()
@@ -37,6 +40,7 @@ class EnrollStudentServiceSpockTest extends Specification {
     static closedTournamentState = Tournament.State.CLOSED
     static createdTournamentState = Tournament.State.CREATED
     static cancelledTournamentState = Tournament.State.CANCELLED
+    static final String COURSE_NAME = "Course"
 
     static final user = new User()
 
@@ -53,17 +57,34 @@ class EnrollStudentServiceSpockTest extends Specification {
     TournamentRepository tournamentRepository
 
     @Autowired
+    CourseRepository courseRepository
+
+    @Autowired
     CourseExecutionRepository courseExecutionRepository
 
     def setup() {
         formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
         courseExecution = new CourseExecution()
+
+        tournament.setState(Tournament.State.OPEN)
+        tournament.setStartDate(START_DATE)
+        tournament.setEndDate(END_DATE)
+        tournament.setCreator(user)
+        tournament.setCourseExecution(courseExecution)
+        tournament.setNumQuestions(1)
+
     }
 
 
     def "a user that isn't a student tries to enroll"() {
         given: "a user that isn't a student"
+        def course = new Course()
+        course.setName(COURSE_NAME)
+        courseRepository.save(course)
+        def courseExecution = new CourseExecution()
+        courseExecution.setCourse(course)
+        courseExecutionRepository.save(courseExecution)
         user.setRole(User.Role.TEACHER)
         user.setKey(USER_ID)
         userRepository.save(user)
@@ -73,6 +94,7 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
+        tournament.setCourseExecution(courseExecution)
         tournamentRepository.save(tournament)
 
 
@@ -86,6 +108,12 @@ class EnrollStudentServiceSpockTest extends Specification {
 
     def "the student is already enrolled in the tournament"() {
         given: "an user that is a student"
+        def course = new Course()
+        course.setName(COURSE_NAME)
+        courseRepository.save(course)
+        def courseExecution = new CourseExecution()
+        courseExecution.setCourse(course)
+        courseExecutionRepository.save(courseExecution)
         def user = new User()
         user.setRole(User.Role.STUDENT)
         user.setKey(USER_ID)
@@ -97,6 +125,8 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
         tournament.setState(Tournament.State.OPEN)
+        tournament.setCreator(user)
+        tournament.setCourseExecution(courseExecution)
         tournamentRepository.save(tournament)
 
         when:
@@ -161,6 +191,9 @@ class EnrollStudentServiceSpockTest extends Specification {
         user.setName(USER_NAME)
         user.setUsername(USER_NICKNAME)
         user.setCreationDate(USER_CREATION_DATE)
+        def courseExecutions = new HashSet<CourseExecution>()
+        courseExecutions.add(courseExecution)
+        user.setCourseExecutions(courseExecutions)
         userRepository.save(user)
         and: "a tournament"
         def tournament = new Tournament()
@@ -169,15 +202,20 @@ class EnrollStudentServiceSpockTest extends Specification {
         tournament.setEndDate(END_DATE)
         tournament.setNumQuestions(ONE_QUESTION)
         tournament.setState(Tournament.State.OPEN)
-        def creator = userRepository.findById(667).get(0)
-        tournament.setCreator(creator)
+        tournament.setCreator(user)
+        tournament.setCourseExecution(courseExecution)
         tournamentRepository.save(tournament)
 
         when:
-        tournamentService.enrollStudent(user.getId(), tournament.getId())
+        def newUser = new User()
+        newUser.setRole(User.Role.STUDENT)
+        newUser.setKey(USER_ID + 1)
+        newUser.setCourseExecutions(courseExecutions)
+        userRepository.save(newUser)
+        tournamentService.enrollStudent(newUser.getId(), tournament.getId())
 
         then:
-        tournament.getParticipants().contains(user) == true
+        tournament.getParticipants().contains(newUser) == true
     }
 
     @TestConfiguration
