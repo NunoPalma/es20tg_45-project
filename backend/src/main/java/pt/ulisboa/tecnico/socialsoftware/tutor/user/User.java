@@ -51,7 +51,7 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectStudentAnswers;
 
     @Column(name = "privacy")
-    private boolean privacy = false;
+    private Boolean privacy;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -349,7 +349,12 @@ public class User implements UserDetails, DomainEntity {
         this.tournaments = tournaments;
     }
 
-    public boolean getPrivacy() { return this.privacy; }
+    public boolean getPrivacy() {
+        if (this.privacy == null){
+            this.privacy = false;
+        }
+        return this.privacy;
+    }
 
     public void togglePrivacy() { this.privacy = !this.privacy; }
 
