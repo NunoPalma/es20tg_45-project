@@ -114,6 +114,10 @@ public class QuestionAnswer implements DomainEntity {
         this.sequence = sequence;
     }
 
+    public List<Doubt> getDoubts() {
+        return doubts;
+    }
+
     @Override
     public String toString() {
         return "QuestionAnswer{" +

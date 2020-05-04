@@ -11,7 +11,7 @@ import javax.persistence.*;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DOUBT_CONTENT_IS_EMPTY;
 
 @Entity
-@Table(name = "Doubts")
+@Table(name = "doubts")
 public class Doubt{
 
     public enum Status {SOLVED, UNSOLVED}
