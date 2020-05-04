@@ -19,6 +19,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -103,6 +104,15 @@ public class TournamentService {
 			throw new TutorException(INVALID_ENROLLMENT_ATTEMPT_NOT_STUDENT);
 
 		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
+
+		if (Duration.between(LocalDateTime.now(), tournament.getEndDate()).toMillis() < 0 && tournament.getState() != Tournament.State.CLOSED)
+			tournament.setState(Tournament.State.CLOSED);
+
+		if (tournament.getState() == Tournament.State.CLOSED)
+			throw new TutorException(TOURNAMENT_IS_CLOSED);
+
+		if (tournament.getState() == Tournament.State.CREATED)
+			throw new TutorException(TOURNAMENT_IS_CREATED);
 
 		tournament.enrollStudent(user);
 
