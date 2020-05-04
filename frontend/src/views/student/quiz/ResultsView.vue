@@ -75,12 +75,16 @@
               {{ doubt.author }}
             </v-chip>
           </div>
-          <div class="col">
+          <div class="col" @click="showQuestionDoubt(doubt)">
             {{ doubt.title }}
           </div>
           <div class="col">
-            <v-chip v-if="!doubt.clarificationDto" color="red">{{ doubt.status }}</v-chip>
-            <v-chip v-if="doubt.clarificationDto" color="green">{{ doubt.status }}</v-chip>
+            <v-chip v-if="!doubt.clarificationDto" color="red">{{
+              doubt.status
+            }}</v-chip>
+            <v-chip v-if="doubt.clarificationDto" color="green">{{
+              doubt.status
+            }}</v-chip>
           </div>
           <div class="col last-col">
             <i class="fas fa-chevron-circle-right" />
@@ -92,6 +96,13 @@
       <v-icon data-cy="newDoubtButton" left dark>mdi-plus</v-icon>New
       Doubt</v-btn
     >
+    <see-question-doubt-dialog
+      v-if="seeingDoubt"
+      v-model="seeQuestionDoubt"
+      :doubt="seeingDoubt"
+      v-on:see-question-doubt="onQuestionSeeDoubt"
+      v-on:close-question-dialog="onCloseSeeDialog"
+    />
   </div>
 </template>
 
@@ -102,11 +113,13 @@ import ResultComponent from '@/views/student/quiz/ResultComponent.vue';
 import Doubt from '@/models/management/Doubt';
 import CreateDoubtDialog from '@/views/student/CreateDoubtDialog.vue';
 import RemoteServices from '@/services/RemoteServices';
+import SeeQuestionDoubtDialog from '@/views/student/SeeQuestionDoubtDialog.vue';
 
 @Component({
   components: {
     'result-component': ResultComponent,
-    'new-doubt-dialog': CreateDoubtDialog
+    'new-doubt-dialog': CreateDoubtDialog,
+    'see-question-doubt-dialog': SeeQuestionDoubtDialog
   }
 })
 export default class ResultsView extends Vue {
@@ -115,6 +128,9 @@ export default class ResultsView extends Vue {
   questionOrder: number = 0;
   createDoubtDialog: boolean = false;
   createDoubtList: boolean = false;
+  seeQuestionDoubt: boolean = false;
+  currentDoubt: Doubt | null = null;
+  seeingDoubt: Doubt | null = null;
 
   doubt: Doubt | null = null;
   doubts: Doubt[][] = [];
@@ -160,6 +176,11 @@ export default class ResultsView extends Vue {
     }
   }
 
+  showQuestionDoubt(doubt: Doubt): void {
+    this.seeQuestionDoubt = true;
+    this.seeingDoubt = doubt;
+  }
+
   newDoubt(): void {
     this.quizQuestionId = this.statementManager.correctAnswers[
       this.questionOrder
@@ -167,6 +188,13 @@ export default class ResultsView extends Vue {
     console.log(this.statementManager.statementQuiz);
     this.doubt = new Doubt();
     this.createDoubtDialog = true;
+  }
+
+
+
+  onQuestionSeeDoubt(){
+    this.seeingDoubt = null;
+    this.seeQuestionDoubt = false;
   }
 
   async onCreateDoubt(doubt: Doubt) {
@@ -178,6 +206,11 @@ export default class ResultsView extends Vue {
   onCloseDialog() {
     this.createDoubtDialog = false;
     this.doubt = null;
+  }
+
+  onCloseSeeDialog() {
+    this.seeQuestionDoubt = false;
+    this.seeingDoubt = null;
   }
 }
 </script>
