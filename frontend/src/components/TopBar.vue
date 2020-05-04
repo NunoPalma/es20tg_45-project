@@ -281,8 +281,6 @@
       <v-btn v-else :href="fenixUrl" text dark>
         Login <v-icon>fas fa-sign-in-alt</v-icon>
       </v-btn>
-      </v-toolbar-items>
-      </v-app-bar>
     </v-navigation-drawer>
 
     <!-- Start of mobile side menu -->
@@ -303,13 +301,9 @@
                 v-if="isAdmin"
         >
           <template v-slot:activator>
-<<<<<<< HEAD
             <v-list-item-title data-cy="Administration"
             >Administration</v-list-item-title
             >
-=======
-            <v-list-item-title>Administration</v-list-item-title>
->>>>>>> reference/master
           </template>
           <v-list-item to="/admin/courses">
             <v-list-item-action>
