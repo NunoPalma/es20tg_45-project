@@ -7,9 +7,15 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -129,6 +135,15 @@ public class Tournament {
     public void setEndDate(LocalDateTime endDate) {
         checkEndDate(endDate);
         this.endDate = endDate;
+
+        //scheduleEndTournament();
+    }
+
+    private void scheduleEndTournament() {
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+
+        Duration ms = Duration.between(LocalDateTime.now(), this.endDate);
+        service.schedule(new TournamentStateTask(this, State.CLOSED), ms.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     public Set<Topic> getTopics() {
@@ -161,6 +176,7 @@ public class Tournament {
     }
 
     public void setState(State state) {
+        System.out.println("Changed state to: " + state.toString());
         this.state = state;
     }
 
