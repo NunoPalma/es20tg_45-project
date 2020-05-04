@@ -1,17 +1,15 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.user
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import spock.lang.Specification
 
+@DataJpaTest
 class TogglePrivacyTest extends Specification {
 
     static final USERNAME = 'username'
@@ -26,28 +24,12 @@ class TogglePrivacyTest extends Specification {
     @Autowired
     UserService userService
 
-    @Autowired
-    CourseRepository courseRepository
-
-    @Autowired
-    CourseExecutionRepository courseExecutionRepository
-
     def user
-    def courseExecution
 
 
     def setup() {
-        def course = new Course(COURSE_NAME, Course.Type.TECNICO)
-        courseExecution = new CourseExecution(course, ACRONYM, ACADEMIC_TERM, Course.Type.TECNICO)
-        course.addCourseExecution(courseExecution)
-        courseExecution.setCourse(course)
-
-        courseExecutionRepository.save(courseExecution)
-        courseRepository.save(course)
 
         user = new User('name', USERNAME, 1, User.Role.STUDENT)
-        user.getCourseExecutions().add(courseExecution)
-        courseExecution.getUsers().add(user)
 
         userRepository.save(user)
     }
@@ -69,7 +51,7 @@ class TogglePrivacyTest extends Specification {
 
 
     @TestConfiguration
-    static class QuestionServiceImplTestContextConfiguration {
+    static class UserServiceImplTestContextConfiguration {
         @Bean
         UserService userService() {
             return new UserService()

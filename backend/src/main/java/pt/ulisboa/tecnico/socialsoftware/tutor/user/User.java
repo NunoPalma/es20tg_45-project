@@ -50,6 +50,7 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
 
+    @Column(name = "privacy")
     private boolean privacy = false;
 
     @Column(name = "creation_date")

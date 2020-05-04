@@ -43,9 +43,6 @@ public class UserService {
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
 
-    @Autowired
-    private QuestionService questionService;
-
     @PersistenceContext
     EntityManager entityManager;
 
