@@ -5,9 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
@@ -54,7 +61,10 @@ class CreateDoubtTest extends Specification {
     public static final Integer TEACHER_KEY = 3
     public static final Integer USER_KEY = 90000
     public static final String DOUBT_CONTENT = "doubt content"
+    public static final String DOUBT_TITLE = "doubt title"
     public static final String DOUBT2_CONTENT = "doubt2 content"
+    public static final String ACRONYM = "AS1"
+    public static final String ACADEMIC_TERM = "1 SEM"
 
 
 
@@ -84,6 +94,15 @@ class CreateDoubtTest extends Specification {
     @Autowired
     QuizAnswerRepository quizAnswerRepository
 
+    @Autowired
+    QuestionAnswerRepository questionAnswerRepository
+
+    @Autowired
+    ClarificationService clarificationService
+
+    @Autowired
+    CourseExecutionRepository courseExecutionRepository
+
     def question
     def question2
     def questiondto
@@ -92,6 +111,7 @@ class CreateDoubtTest extends Specification {
     def course
     def course2
     def quiz
+    def quiz2
     def quizdto
     def teacher
     def student
@@ -99,26 +119,43 @@ class CreateDoubtTest extends Specification {
     def quizquestion
     def quizquestion2
     def quizanswer
+    def quizanswer2
+    def questionanswer
+    def questionanswer2
+    def courseExecution
+    def courseExecution2
 
 
     def setup() {
-        quizdto = new QuizDto()
-        quizdto.setTitle(QUIZ_TITLE)
-        quizdto.setSeries(QUIZ_SERIES)
-        quizdto.setKey(QUIZ_KEY)
-        quizdto.setScramble(true)
-        quizdto.setType(Quiz.QuizType.GENERATED)
-        quiz = new Quiz(quizdto)
-        quizRepository.save(quiz)
-        student  = new User(USER_NAME, USERNAME_NAME, USER_KEY, User.Role.STUDENT)
-        teacher = new User(TEACHER_NAME, TEACHER_USERNAME, TEACHER_KEY, User.Role.TEACHER)
-        userRepository.save(student)
-        userRepository.save(teacher)
-
         course = new Course(COURSE_NAME, Course.Type.TECNICO)
         course2 = new Course(COURSE2_NAME, Course.Type.TECNICO)
         courseRepository.save(course)
         courseRepository.save(course2)
+
+
+        courseExecution = new CourseExecution(course, ACRONYM, ACADEMIC_TERM, Course.Type.TECNICO)
+        courseExecutionRepository.save(courseExecution)
+
+        courseExecution2 = new CourseExecution(course2, ACRONYM, ACADEMIC_TERM, Course.Type.TECNICO)
+        courseExecutionRepository.save(courseExecution2)
+
+        quiz = new Quiz()
+        quiz.setKey(QUIZ_KEY)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
+        quiz.setCourseExecution(courseExecution)
+        quiz.setAvailableDate(DateHandler.now())
+        quiz2 = new Quiz()
+        quiz2.setKey(QUIZ_KEY)
+        quiz2.setType(Quiz.QuizType.GENERATED.toString())
+        quiz2.setCourseExecution(courseExecution)
+        quiz2.setAvailableDate(DateHandler.now())
+        quizRepository.save(quiz)
+        quizRepository.save(quiz2)
+
+        student  = new User(USER_NAME, USERNAME_NAME, USER_KEY, User.Role.STUDENT)
+        teacher = new User(TEACHER_NAME, TEACHER_USERNAME, TEACHER_KEY, User.Role.TEACHER)
+        userRepository.save(student)
+        userRepository.save(teacher)
 
         questiondto = new QuestionDto()
         questiondto.setKey(QUESTION_KEY)
@@ -148,12 +185,25 @@ class CreateDoubtTest extends Specification {
         questionRepository.save(question2)
 
         quizanswer = new QuizAnswer(student, quiz)
-        quizAnswerRepository.save(quizanswer)
+        quizanswer2 = new QuizAnswer(student, quiz2)
+        student.addQuizAnswer(quizanswer)
 
         quizquestion = new QuizQuestion(quiz, question, 1)
+        questionanswer = new QuestionAnswer(quizanswer, quizquestion, 30);
+        quizanswer.addQuestionAnswer(questionanswer);
+        quizquestion.addQuestionAnswer(questionanswer);
+
         quizquestion2 = new QuizQuestion(quiz, question2, 2)
+        questionanswer2 = new QuestionAnswer(quizanswer2, quizquestion2, 60)
+        quizanswer2.addQuestionAnswer(questionanswer2)
+        quizquestion2.addQuestionAnswer(questionanswer2)
+
         quizQuestionRepository.save(quizquestion)
         quizQuestionRepository.save(quizquestion2)
+        questionAnswerRepository.save(questionanswer)
+        questionAnswerRepository.save(questionanswer2)
+        quizAnswerRepository.save(quizanswer)
+        quizAnswerRepository.save(quizanswer2)
 
 
     }
@@ -162,9 +212,13 @@ class CreateDoubtTest extends Specification {
         given: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
+        doubtdto.setTitle(DOUBT_TITLE)
+        doubtdto.setAuthor(USER_NAME)
+        doubtdto.setStatus(Doubt.Status.UNSOLVED)
+        doubtdto.setQuestionTitle(QUESTION_TITLE)
 
         when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, question.getId(), student.getId())
+        doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
 
         then:
         doubtRepository.count() == 1L
@@ -173,8 +227,11 @@ class CreateDoubtTest extends Specification {
         result.getId() != null
         result.getContent() == DOUBT_CONTENT
         result.getAuthor().getName() == USER_NAME
+        result.getTitle() == DOUBT_TITLE
         result.getAuthor().getRole() == User.Role.STUDENT
-        question.getDoubts().get(0).equals(result)
+        result.getStatus() == Doubt.Status.UNSOLVED
+        result.getQuestion().getTitle() == QUESTION_TITLE
+        questionanswer.getDoubts().get(0).equals(result)
     }
 
     @Unroll
@@ -182,7 +239,10 @@ class CreateDoubtTest extends Specification {
         given: "a doubtdto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
-        doubtdto.setAuthor(student.getName())
+        doubtdto.setTitle(DOUBT_TITLE)
+        doubtdto.setAuthor(USER_NAME)
+        doubtdto.setStatus(Doubt.Status.UNSOLVED)
+        doubtdto.setQuestionTitle(QUESTION_TITLE)
 
         when: "A doubt is created"
         doubtService.createDoubt(doubtdto, questionid, userid)
@@ -207,10 +267,9 @@ class CreateDoubtTest extends Specification {
         given: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(content)
-        doubtdto.setAuthor(student.getName())
 
         when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, question.getId(), student.getId())
+        doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
 
         then:
         def error = thrown(TutorException)
@@ -228,10 +287,13 @@ class CreateDoubtTest extends Specification {
         given: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
-        doubtdto.setAuthor(teacher.getName())
+        doubtdto.setAuthor(TEACHER_NAME)
+        doubtdto.setTitle(DOUBT_TITLE)
+        doubtdto.setStatus(Doubt.Status.UNSOLVED)
+        doubtdto.setQuestionTitle(QUESTION_TITLE)
 
         when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, question.getId(), teacher.getId())
+        doubtService.createDoubt(doubtdto, questionanswer.getId(), teacher.getId())
 
         then:
         def exception = thrown(TutorException)
@@ -244,11 +306,19 @@ class CreateDoubtTest extends Specification {
         def doubtdto = new DoubtDto()
         def doubtdto2 = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
+        doubtdto.setTitle(DOUBT_TITLE)
+        doubtdto.setAuthor(USER_NAME)
+        doubtdto.setStatus(Doubt.Status.UNSOLVED)
+        doubtdto.setQuestionTitle(QUESTION_TITLE)
         doubtdto2.setContent(DOUBT2_CONTENT)
+        doubtdto2.setTitle(DOUBT_TITLE)
+        doubtdto2.setAuthor(USER_NAME)
+        doubtdto2.setStatus(Doubt.Status.UNSOLVED)
+        doubtdto2.setQuestionTitle(QUESTION2_TITLE)
 
         when:"The doubts are created"
-        doubtService.createDoubt(doubtdto, question.getId(), student.getId())
-        doubtService.createDoubt(doubtdto2, question2.getId(), student.getId())
+        doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
+        doubtService.createDoubt(doubtdto2, questionanswer2.getId(), student.getId())
 
         then:
         doubtRepository.count() == 2L
@@ -257,14 +327,14 @@ class CreateDoubtTest extends Specification {
         result.getContent() == DOUBT_CONTENT
         result.getAuthor().getName() == USER_NAME
         result.getAuthor().getRole() == User.Role.STUDENT
-        question.getDoubts().get(0).equals(result)
+        questionanswer.getDoubts().get(0).equals(result)
         student.getDoubts().get(0).equals(result)
         def result2 = doubtRepository.findAll().get(1)
         result2.getId() != null
         result2.getContent() == DOUBT2_CONTENT
         result2.getAuthor().getName() == USER_NAME
         result2.getAuthor().getRole() == User.Role.STUDENT
-        question2.getDoubts().get(0).equals(result2)
+        questionanswer2.getDoubts().get(0).equals(result2)
         student.getDoubts().get(1).equals(result2)
         student.getDoubts().size() == 2
 
@@ -277,6 +347,11 @@ class CreateDoubtTest extends Specification {
         @Bean
         DoubtService doubtService() {
             return new DoubtService()
+        }
+
+        @Bean
+        ClarificationService clarificationService() {
+            return new ClarificationService()
         }
     }
 

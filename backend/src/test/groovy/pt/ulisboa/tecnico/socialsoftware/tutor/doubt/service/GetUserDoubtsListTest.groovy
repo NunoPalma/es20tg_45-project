@@ -4,7 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
+import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
@@ -12,6 +19,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtRepositor
 
@@ -33,6 +44,11 @@ class GetUserDoubtsListTest extends Specification {
     public static final String QUESTION_CONTENT = 'question content'
     public static final Integer QUESTION_KEY = 3
     public static final String DOUBT_CONTENT = 'doubt content'
+    public static final String DOUBT_TITLE = 'doubt title'
+    public static final String ACRONYM = "AS1"
+    public static final String ACADEMIC_TERM = "1 SEM"
+    public static final Integer QUIZ_KEY = 2
+
 
 
     @Autowired
@@ -50,16 +66,51 @@ class GetUserDoubtsListTest extends Specification {
     @Autowired
     CourseRepository courseRepository
 
+    @Autowired
+    CourseExecutionRepository courseExecutionRepository
+
+    @Autowired
+    QuizRepository quizRepository
+
+    @Autowired
+    ClarificationService clarificationService
+
+    @Autowired
+    QuestionAnswerRepository questionAnswerRepository
+
+    @Autowired
+    QuizQuestionRepository quizQuestionRepository
+
+    @Autowired
+    QuizAnswerRepository quizAnswerRepository
+
     def student
     def question
     def questiondto
     def optiondto
     def options
     def course
+    def courseExecution
+    def quiz
+    def quizquestion
+    def quizanswer
+    def questionanswer
+
 
     def setup(){
         course = new Course(COURSE_NAME, Course.Type.TECNICO)
         courseRepository.save(course)
+
+        courseExecution = new CourseExecution(course, ACRONYM, ACADEMIC_TERM, Course.Type.TECNICO)
+        courseExecutionRepository.save(courseExecution)
+
+
+        quiz = new Quiz()
+        quiz.setKey(QUIZ_KEY)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
+        quiz.setCourseExecution(courseExecution)
+        quiz.setAvailableDate(DateHandler.now())
+        quizRepository.save(quiz)
 
         student  = new User(USER_NAME, USERNAME_NAME, USER_KEY, User.Role.STUDENT)
         userRepository.save(student)
@@ -73,13 +124,29 @@ class GetUserDoubtsListTest extends Specification {
         optiondto = new OptionDto()
         optiondto.setContent(QUESTION_CONTENT)
         optiondto.setCorrect(true)
-
         options = new ArrayList<OptionDto>()
         options.add(optiondto)
-
         questiondto.setOptions(options)
+
+
+
         question = new Question(course, questiondto)
+
         questionRepository.save(question)
+
+        quizanswer = new QuizAnswer(student, quiz)
+        student.addQuizAnswer(quizanswer)
+
+        quizquestion = new QuizQuestion(quiz, question, 1)
+        questionanswer = new QuestionAnswer(quizanswer, quizquestion, 30);
+        quizanswer.addQuestionAnswer(questionanswer);
+        quizquestion.addQuestionAnswer(questionanswer);
+
+        quizQuestionRepository.save(quizquestion)
+        questionAnswerRepository.save(questionanswer)
+        quizAnswerRepository.save(quizanswer)
+
+
     }
 
     def "Get the doubt list of a user that has no doubts"(){
@@ -105,7 +172,7 @@ class GetUserDoubtsListTest extends Specification {
     def "Get the doubt list of a user"(){
 
         given: "A doubt"
-        def doubt = new Doubt(question, student, DOUBT_CONTENT)
+        def doubt = new Doubt(questionanswer, student, DateHandler.now().toString(),DOUBT_TITLE ,DOUBT_CONTENT, true)
         doubtRepositor.save(doubt)
 
         when:
@@ -126,6 +193,11 @@ class GetUserDoubtsListTest extends Specification {
         @Bean
         DoubtService doubtService() {
             return new DoubtService()
+        }
+
+        @Bean
+        ClarificationService clarificationService(){
+            return new ClarificationService()
         }
     }
 

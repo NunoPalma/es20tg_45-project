@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
@@ -14,6 +19,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
@@ -47,11 +56,19 @@ class CreateClarificationTest extends Specification {
     public static final String ACRONYM2 = "C13"
     public static final String ACADEMIC_TERM2 = "2º Semestre"
 
+    public static final String DOUBT_TITLE = 'doubt title'
+
+
     public static final String QUESTION_TITLE = "question title"
     public static final String QUESTION_CONTENT = "question content"
     public static final Integer QUESTION_KEY = 1
 
     public static final String OPTION_CONTENT = "content"
+
+    public static final Integer QUIZ_KEY = 2
+
+
+
 
     @Autowired
     ClarificationService clarificationService
@@ -74,6 +91,18 @@ class CreateClarificationTest extends Specification {
     @Autowired
     CourseRepository courseRepository
 
+    @Autowired
+    QuizAnswerRepository quizAnswerRepository
+
+    @Autowired
+    QuizQuestionRepository quizQuestionRepository
+
+    @Autowired
+    QuestionAnswerRepository questionAnswerRepository
+
+    @Autowired
+    QuizRepository quizRepository
+
     def Teacher
     def TeacherTwo
     def Student
@@ -84,6 +113,10 @@ class CreateClarificationTest extends Specification {
     def CourseExecutionTwo
     def SolvedDoubt
     def Doubt
+    def quizquestion
+    def quizanswer
+    def questionanswer
+    def quiz
 
     def setup() {
 
@@ -125,13 +158,32 @@ class CreateClarificationTest extends Specification {
         options.add(optionDto)
         questionDto.setOptions(options)
 
+        quiz = new Quiz()
+        quiz.setKey(QUIZ_KEY)
+        quiz.setType(Quiz.QuizType.GENERATED.toString())
+        quiz.setCourseExecution(CourseExecution)
+        quiz.setAvailableDate(DateHandler.now())
+        quizRepository.save(quiz)
+
         Question = new Question(Course,questionDto)
         questionRepository.save(Question)
 
-        Doubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        quizanswer = new QuizAnswer(student, quiz)
+        Student.addQuizAnswer(quizanswer)
+
+        quizquestion = new QuizQuestion(quiz, question, 1)
+        questionanswer = new QuestionAnswer(quizanswer, quizquestion, 30);
+        quizanswer.addQuestionAnswer(questionanswer);
+        quizquestion.addQuestionAnswer(questionanswer);
+
+        quizQuestionRepository.save(quizquestion)
+        questionAnswerRepository.save(questionanswer)
+        quizAnswerRepository.save(quizanswer)
+
+        Doubt = new Doubt(questionanswer, Student, DateHandler.now().toString(), DOUBT_TITLE,  DOUBT_DESCRIPTION, true)
         doubtRepository.save(Doubt)
 
-        SolvedDoubt = new Doubt(Question, Student, DOUBT_DESCRIPTION)
+        SolvedDoubt = new Doubt(questionanswer, Student, DateHandler.now().toString(), DOUBT_TITLE, DOUBT_DESCRIPTION, true)
         SolvedDoubt.setStatus(Doubt.Status.SOLVED)
         doubtRepository.save(SolvedDoubt)
 
@@ -145,7 +197,7 @@ class CreateClarificationTest extends Specification {
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
         when:
-        clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
+        clarificationService.createClarification(clarificationDto, Doubt.getId(), Teacher.getId())
 
         then: "the correct clarification is successfully added to the repository"
         clarificationRepository.count() == 1L
@@ -196,7 +248,7 @@ class CreateClarificationTest extends Specification {
         clarificationDto.setDescription(description)
 
         when:
-        clarificationService.createClarification(clarificationDto, Teacher.getId(), Doubt.getId())
+        clarificationService.createClarification(clarificationDto, Doubt.getId(), Teacher.getId())
 
         then:
         def exception = thrown(TutorException)
@@ -216,7 +268,7 @@ class CreateClarificationTest extends Specification {
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
         when:
-        clarificationService.createClarification(clarificationDto, Student.getId(), Doubt.getId())
+        clarificationService.createClarification(clarificationDto,Doubt.getId(), Student.getId())
 
         then:
         def exception = thrown(TutorException)
@@ -231,7 +283,7 @@ class CreateClarificationTest extends Specification {
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
         when:
-        clarificationService.createClarification(clarificationDto, Teacher.getId(), SolvedDoubt.getId())
+        clarificationService.createClarification(clarificationDto, SolvedDoubt.getId(), Teacher.getId())
 
         then:
         def exception = thrown(TutorException)
@@ -247,7 +299,7 @@ class CreateClarificationTest extends Specification {
         clarificationDto.setDescription(CLARIFICATION_DESCRIPTION)
 
         when:
-        clarificationService.createClarification(clarificationDto, TeacherTwo.getId(), Doubt.getId())
+        clarificationService.createClarification(clarificationDto, Doubt.getId(), TeacherTwo.getId())
 
         then:
         def exception = thrown(TutorException)
