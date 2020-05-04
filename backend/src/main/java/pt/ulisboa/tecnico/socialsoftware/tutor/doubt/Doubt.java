@@ -1,23 +1,22 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
-import org.hibernate.annotations.JoinColumnOrFormula;
 import org.hibernate.annotations.Type;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
-import java.util.Date;
-
+import java.util.HashMap;
 import javax.persistence.*;
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_NAME_IS_EMPTY;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DOUBT_CONTENT_IS_EMPTY;
 
 @Entity
 @Table(name = "Doubts")
 public class Doubt{
+
     public enum Status {SOLVED, UNSOLVED}
+
+    public enum Visibility {PUBLIC, PRIVATE}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +24,9 @@ public class Doubt{
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.UNSOLVED;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility = Visibility.PRIVATE;
 
     private String content;
 
@@ -61,6 +63,18 @@ public class Doubt{
         this.questionAnswer = questionAnswer;
         this.questionAnswer.addDoubt(this);
         this.isNew = isNew;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
 
     public boolean isNew() {

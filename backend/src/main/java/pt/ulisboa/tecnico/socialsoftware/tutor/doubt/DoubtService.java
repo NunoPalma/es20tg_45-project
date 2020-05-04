@@ -98,7 +98,7 @@ public class DoubtService {
         for(QuestionAnswer questionAnswer : questionAnswerList){
             doubts.addAll(doubtRepository.findQuestionAnswerDoubts(questionAnswer.getId()).stream().map(DoubtDto::new).collect(Collectors.toList()));
         }
-        return doubts;
+        return doubts.stream().filter(doubtDto -> doubtDto.getVisibility().equals(Doubt.Visibility.PUBLIC)).collect(Collectors.toList());
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -115,6 +115,13 @@ public class DoubtService {
     public Question getDoubtQuestion(Integer doubtId) {
         Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
         return doubt.getQuestionAnswer().getQuizQuestion().getQuestion();
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public DoubtDto changeVisibility(Integer doubtId, Doubt.Visibility status) {
+        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
+        doubt.setVisibility(status);
+        return new DoubtDto(doubt);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)

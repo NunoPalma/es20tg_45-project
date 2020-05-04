@@ -11,6 +11,7 @@ public class DoubtDto implements Serializable {
     private String content;
     private String author;
     private Doubt.Status status;
+    private Doubt.Visibility visibility;
     private ClarificationDto clarificationDto;
     private String questionTitle;
     private String title;
@@ -28,11 +29,20 @@ public class DoubtDto implements Serializable {
         this.author = doubt.getAuthor().getName();
         this.creationDate = doubt.getCreationDate();
         this.status = doubt.getStatus();
+        this.visibility = doubt.getVisibility();
         if(doubt.getClarification() != null) {
             this.clarificationDto = new ClarificationDto(doubt.getClarification());
         }
         this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
         this.isNew = doubt.isNew();
+    }
+
+    public Doubt.Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Doubt.Visibility visibility) {
+        this.visibility = visibility;
     }
 
     public String getCreationDate() {
