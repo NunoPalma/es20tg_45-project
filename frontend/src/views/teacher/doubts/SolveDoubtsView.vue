@@ -33,7 +33,6 @@
         </v-btn>
         <v-btn
           class="ma-2"
-
           color="blue darken-3"
           data-cy="detailButton"
           dark
@@ -59,6 +58,20 @@
           >{{ item.status }}</v-chip
         >
       </template>
+      <template v-slot:item.visibility="{ item }">
+        <v-select
+          v-model="item.visibility"
+          :items="visibilityList"
+          dense
+          @change="changeVisibility(item.id, item.visibility)"
+        >
+          <template v-slot:selection="{ item }">
+            <v-chip :color="getStatusColor(item)" height="1px">
+              <span>{{ item }}</span>
+            </v-chip>
+          </template>
+        </v-select>
+      </template>
     </v-data-table>
 
     <create-clarification-dialog
@@ -76,10 +89,12 @@ import { Component, Vue } from 'vue-property-decorator';
 import Doubt from '@/models/management/Doubt';
 import RemoteServices from '@/services/RemoteServices';
 import CreateClarificationDialog from '@/views/teacher/doubts/CreateClarificationDialog.vue';
+import { ToggleButton } from 'vue-js-toggle-button';
 
 @Component({
   components: {
-    'create-clarification-dialog': CreateClarificationDialog
+    'create-clarification-dialog': CreateClarificationDialog,
+    ToggleButton: ToggleButton
   }
 })
 export default class SolveDoubtsView extends Vue {
@@ -88,7 +103,15 @@ export default class SolveDoubtsView extends Vue {
   creating: boolean = false;
   search: string = '';
   currentDoubt: Doubt | null = null;
+  visibilityList = ['PRIVATE', 'PUBLIC'];
   headers: object = [
+    {
+      text: 'Visibility',
+      value: 'visibility',
+      align: 'center',
+      sortable: false,
+      width: '0.1%'
+    },
     {
       text: 'Question Title',
       value: 'questionTitle',
@@ -98,6 +121,12 @@ export default class SolveDoubtsView extends Vue {
     {
       text: 'Author',
       value: 'author',
+      align: 'center',
+      width: '10%'
+    },
+    {
+      text: 'Creation Date',
+      value: 'creationDate',
       align: 'center',
       width: '10%'
     },
@@ -137,6 +166,11 @@ export default class SolveDoubtsView extends Vue {
     return doubt.status == 'SOLVED';
   }
 
+  getStatusColor(status: string) {
+    if (status === 'PUBLIC') return 'green accent-3';
+    return 'blue-grey lighten-4';
+  }
+
   async onSolvedDoubt() {
     this.createClarificationDialog = false;
     this.currentDoubt = null;
@@ -157,6 +191,18 @@ export default class SolveDoubtsView extends Vue {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
+  }
+
+  async changeVisibility(doubtId: number, status: string) {
+    try {
+      await RemoteServices.changeVisibility(doubtId, status);
+      let doubt = this.doubts.find(doubt => doubt.id === doubtId);
+      if (doubt) {
+        doubt.visibility = status;
+      }
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
   }
 }
 </script>
