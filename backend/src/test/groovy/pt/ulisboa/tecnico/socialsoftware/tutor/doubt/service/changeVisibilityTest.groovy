@@ -180,7 +180,7 @@ class changeVisibilityTest extends Specification {
         doubtdto.setContent(DOUBT_CONTENT)
         QuestionAnswer questionAnswer = new QuestionAnswer(quizanswer,quizquestion,2);
         Doubt doubt = new Doubt(questionAnswer,student,"11111","aaa",DOUBT_CONTENT,true);
-        doubt.setId(1);
+        doubtRepository.save(doubt)
         when: "a doubt is set to public"
 
         then:
