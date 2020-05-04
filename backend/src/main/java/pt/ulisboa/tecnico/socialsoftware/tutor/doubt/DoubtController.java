@@ -30,6 +30,12 @@ public class DoubtController {
     @Autowired
     DoubtRepositor doubtRepositor;
 
+    @PostMapping("/doubts/{doubtId}/visibility/{status}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public DoubtDto changeVisibility(@PathVariable int doubtId, @PathVariable Doubt.Visibility status) {
+        return doubtService.changeVisibility(doubtId, status);
+    }
+
     @GetMapping("/doubts")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public List<DoubtDto> getStudentDoubts(Principal principal) {
@@ -55,12 +61,6 @@ public class DoubtController {
     public List<DoubtDto> manageDoubts(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
         return doubtService.findCourseExecutionDoubts(new ArrayList<>(user.getCourseExecutions()));
-    }
-
-    @PostMapping("/doubts/{doubtId}/visibility/{status}")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public DoubtDto changeVisibility(@PathVariable int doubtId, @PathVariable Doubt.Visibility status) {
-        return doubtService.changeVisibility(doubtId, status);
     }
 
 }
