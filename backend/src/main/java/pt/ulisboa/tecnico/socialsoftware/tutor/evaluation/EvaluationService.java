@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,6 +19,7 @@ import java.sql.SQLException;
 
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
+//trying to merge
 
 @Service
 public class EvaluationService {
@@ -27,13 +30,25 @@ public class EvaluationService {
     @Autowired
     private EvaluationRepository evaluationRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PersistenceContext
     EntityManager entityManager;
 
     EvaluationService() {
     }
 
-
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public EvaluationDto findEvaluationByKey(int questionId){
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
+        Evaluation evaluation = evaluationRepository.findByKey(question.getKey()).orElseThrow(() -> new TutorException(EVALUATION_NOT_AVAILABLE, question.getKey()));
+        EvaluationDto evaluationDto = new EvaluationDto(evaluation);
+        return evaluationDto;
+    }
     @Retryable(
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
@@ -53,7 +68,11 @@ public class EvaluationService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public EvaluationDto submitEvaluation(EvaluationDto evaluationDto, Integer questionId) {
+    public EvaluationDto submitEvaluation(String teacherUsername, Integer questionId, EvaluationDto evaluationDto) {
+        User teacher = userRepository.findByUsername(teacherUsername);
+        if(teacher == null) {
+            throw new TutorException(USERNAME_NOT_FOUND, teacherUsername);
+        }
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
         Evaluation evaluation = evaluationRepository.findByKey(question.getKey()).orElseThrow(() -> new TutorException(EVALUATION_NOT_AVAILABLE, question.getKey()));
 
@@ -73,8 +92,10 @@ public class EvaluationService {
             }
             evaluation.setJustification(evaluationDto.getJustification());
         }
+        evaluation.setTeacherUsername(teacherUsername);
         EvaluationDto evaluationDto1 = new EvaluationDto(evaluation);
         evaluationDto1.setSubmittedQuestionDto(evaluationDto.getSubmittedQuestionDto());
+        evaluationDto1.setTeacherUsername(teacherUsername);
         return evaluationDto1;
     }
 

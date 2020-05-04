@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.evaluation;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto;
 
+//trying to merge
 
 public class EvaluationDto {
 
@@ -13,6 +14,8 @@ public class EvaluationDto {
     private Integer key;
 
     private String justification;
+
+    private String teacherUsername;
 
     private QuestionDto submittedQuestion;
 
@@ -45,6 +48,9 @@ public class EvaluationDto {
 
     public boolean getApprovedEvaluation() { return this.approvedEvaluation;}
 
+    public String getTeacherUsername() { return this.teacherUsername;}
+
+    public void setTeacherUsername(String username) { teacherUsername = username; }
 
     public void setJustification(String message) { justification = message; }
 

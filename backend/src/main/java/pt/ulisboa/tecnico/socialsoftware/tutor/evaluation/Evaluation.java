@@ -4,6 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
 import javax.persistence.*;
 
+//trying to merge
 @Entity
 @Table(name = "evaluations")
 public class Evaluation {
@@ -17,6 +18,8 @@ public class Evaluation {
     private boolean approvedEvaluation = false;
 
     private String justification;
+
+    private String teacherUsername;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "evaluation")
     private Question submittedQuestion;
@@ -37,9 +40,14 @@ public class Evaluation {
 
     public void setJustification(String justification) { this.justification = justification; }
 
+    public String getTeacherUsername() { return this.teacherUsername;}
+
+    public void setTeacherUsername(String username) { teacherUsername = username; }
+
     public Integer getId() { return id; }
 
     public void setId(Integer id) { this.id = id; }
+
 
     public Integer getKey() { return key; }
 

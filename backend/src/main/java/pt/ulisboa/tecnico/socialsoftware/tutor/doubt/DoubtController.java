@@ -42,4 +42,17 @@ public class DoubtController {
         return this.doubtService.createDoubt(doubtDto, quizQuestionId, studentId);
     }
 
+    @GetMapping(value = "quizQuestion/{quizQuestionId}/doubts")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public List<DoubtDto> getDoubtsOfQuestions(Principal principal, @PathVariable int quizQuestionId) {
+        return doubtService.findQuizQuestionDoubts(quizQuestionId);
+    }
+
+    @GetMapping("/doubts/all")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public List<DoubtDto> manageDoubts(Principal principal) {
+        User user = (User) ((Authentication) principal).getPrincipal();
+        return doubtService.findCourseExecutionDoubts(new ArrayList<>(user.getCourseExecutions()));
+    }
+
 }
