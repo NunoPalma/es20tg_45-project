@@ -125,7 +125,7 @@ class CancelTournamentServiceSpockTest {
 	def "successful tournament cancellation"() {
 		when:
 		tournamentService.cancelTournament()
-		
+
 		then: "the tournament state is cancelled"
 		def tournament = tournamentRepository.findTournamentByName(courseExecution.getId(), TOURNAMENT_NAME).get()
 		tournament != null
