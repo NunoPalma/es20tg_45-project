@@ -113,7 +113,7 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public boolean getPrivacy(int userId){
+    public Boolean getPrivacy(int userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 
         return user.getPrivacy();

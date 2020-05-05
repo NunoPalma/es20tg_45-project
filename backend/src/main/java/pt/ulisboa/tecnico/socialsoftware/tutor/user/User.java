@@ -356,7 +356,11 @@ public class User implements UserDetails, DomainEntity {
         return this.privacy;
     }
 
-    public void togglePrivacy() { this.privacy = !this.privacy; }
+    public void togglePrivacy() {
+        if (this.privacy == null){
+        this.privacy = false;
+    }
+        this.privacy = !this.privacy; }
 
     @Override
     public String toString() {
