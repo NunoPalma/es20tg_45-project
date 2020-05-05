@@ -247,6 +247,17 @@ export default class RemoteServices {
       });
   }
 
+  static resubmitQuestion(question: Question): Promise<Question> {
+    return httpClient
+      .put(`/questions/${question.id}/resubmit`, question)
+      .then(response => {
+        return new Question(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async deleteQuestion(questionId: number) {
     return httpClient.delete(`/questions/${questionId}`).catch(async error => {
       throw Error(await this.errorMessage(error));

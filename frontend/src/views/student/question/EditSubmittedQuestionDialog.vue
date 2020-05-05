@@ -98,7 +98,7 @@
       }
       if (this.editQuestion && this.editQuestion.id != null) {
         try {
-          const result = await RemoteServices.updateQuestion(this.editQuestion);
+          const result = await RemoteServices.resubmitQuestion(this.editQuestion);
           this.$emit('save-question', result);
         } catch (error) {
           await this.$store.dispatch('error', error);

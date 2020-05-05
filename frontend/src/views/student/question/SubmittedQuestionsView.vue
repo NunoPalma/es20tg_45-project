@@ -2,7 +2,6 @@ o<template>
   <div>
     <template>
       <div class="container">
-        <h2>My Statistics</h2>
         <div v-if="stats != null" class="stats-container">
           <div class="items">
             <div class="icon-wrapper" ref="ProposedQuestions">
@@ -102,12 +101,12 @@ o<template>
             <span>Show Question</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template v-if="item.status === 'REJECTED'" v-slot:activator="{ on }">
               <v-icon small class="mr-2" v-on="on" @click="editQuestion(item)"
-                >edit</v-icon
+                > fas fa-retweet </i></v-icon
               >
             </template>
-            <span>Edit Question</span>
+            <span>Resubmit Question</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
