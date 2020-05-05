@@ -109,7 +109,7 @@ o<template>
             <span>Resubmit Question</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template v-if="item.status === 'PENDING'" v-slot:activator="{ on }">
               <v-icon
                 small
                 class="mr-2"

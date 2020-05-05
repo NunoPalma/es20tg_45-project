@@ -207,10 +207,35 @@
           My Questions
           <v-icon>question_answer</v-icon>
         </v-btn>
-        <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
-          Stats
-          <v-icon>fas fa-user</v-icon>
-        </v-btn>
+
+
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn  v-on="on" text dark>
+              Stats
+              <v-icon>fas fa-user</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/stats">
+              <v-list-item-action>
+                <v-icon>fas fa-user-graduate</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>My Stats</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/globalStats">
+            <v-list-item-action>
+              <v-icon>fas fa-users</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Course Stats</v-list-item-title>
+            </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
 
         <v-btn
                 v-if="isLoggedIn && moreThanOneCourse"
