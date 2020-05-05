@@ -32,9 +32,9 @@ public class StatsController {
         return statsService.getStats(user.getId(), executionId);
     }
 
-    @GetMapping("/executions/{executionId}/privacy")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
-    public Boolean getPrivacy(Principal principal) {
+    @GetMapping("/courses/{courseId}/privacy")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public Boolean getPrivacy(Principal principal, @PathVariable int courseId) {
         User user = (User) ((Authentication) principal).getPrincipal();
 
         if (user == null) {
@@ -44,9 +44,9 @@ public class StatsController {
         return statsService.getPrivacy(user.getId());
     }
 
-    @PutMapping("/executions/{executionId}/toggle")
-    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#executionId, 'EXECUTION.ACCESS')")
-    public void togglePrivacy(Principal principal) {
+    @PutMapping("/courses/{courseId}/toggle")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
+    public void togglePrivacy(Principal principal, @PathVariable int courseId) {
         User user = (User) ((Authentication) principal).getPrincipal();
 
         if (user == null) {
