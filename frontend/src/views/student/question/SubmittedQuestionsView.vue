@@ -340,7 +340,7 @@ export default class SubmittedQuestionsView extends Vue {
   }
   .approvedVersion {
     background-color: rgba(255, 255, 255, 0.75);
-    color: #19d232;
+    color: #4CAF50;
     border-radius: 5px;
     flex-basis: 25%;
     margin: 20px;

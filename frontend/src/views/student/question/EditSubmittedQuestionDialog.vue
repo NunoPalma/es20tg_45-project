@@ -23,7 +23,7 @@
             <v-flex xs24 sm12 md12>
               <v-textarea
                       outline
-                      rows="10"
+                      rows="5"
                       v-model="editQuestion.content"
                       label="Question"
                       data-cy="Content"
@@ -44,7 +44,7 @@
               />
               <v-textarea
                       outline
-                      rows="10"
+                      rows="5"
                       v-model="editQuestion.options[index - 1].content"
                       data-cy="Option"
               ></v-textarea>
@@ -55,8 +55,8 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="blue darken-1" @click="closeDialogue" data-cy="cancelButton">Cancel</v-btn>
-        <v-btn color="blue darken-1" @click="saveQuestion" data-cy="saveButton">Save</v-btn>
+        <v-btn color="primary" @click="closeDialogue" data-cy="cancelButton">Cancel</v-btn>
+        <v-btn color="primary" @click="saveQuestion" data-cy="saveButton">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
