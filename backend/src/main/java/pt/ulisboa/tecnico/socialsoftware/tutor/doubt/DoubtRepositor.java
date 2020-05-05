@@ -18,4 +18,5 @@ public interface DoubtRepositor extends JpaRepository<Doubt, Integer> {
 
     @Query( value = "SELECT * FROM doubts", nativeQuery = true)
     List<Doubt> getDoubts();
+
 }

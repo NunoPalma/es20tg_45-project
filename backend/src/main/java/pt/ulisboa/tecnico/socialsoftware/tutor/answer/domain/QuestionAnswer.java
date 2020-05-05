@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Discussion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
@@ -36,7 +37,7 @@ public class QuestionAnswer implements DomainEntity {
     private Option option;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Doubt> doubts = new ArrayList<>();
+    private List<Discussion> discussions = new ArrayList<>();
 
     private Integer sequence;
 
@@ -114,8 +115,9 @@ public class QuestionAnswer implements DomainEntity {
         this.sequence = sequence;
     }
 
-    public List<Doubt> getDoubts() {
-        return doubts;
+
+    public List<Discussion> getDiscussions() {
+        return discussions;
     }
 
     @Override
@@ -131,8 +133,8 @@ public class QuestionAnswer implements DomainEntity {
         return getOption() != null && getOption().getCorrect();
     }
 
-    public void addDoubt(Doubt doubt){
-        this.doubts.add(doubt);
+    public void addDiscussion(Discussion discussion){
+        this.discussions.add(discussion);
     }
 
     public void remove() {

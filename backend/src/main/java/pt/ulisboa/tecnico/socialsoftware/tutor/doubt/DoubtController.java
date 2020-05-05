@@ -31,37 +31,37 @@ public class DoubtController {
     @Autowired
     DoubtRepositor doubtRepositor;
 
-    @PostMapping("/doubts/{doubtId}/visibility/{status}")
+    @PostMapping("/discussions/{discussionId}/visibility/{status}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public DoubtDto changeVisibility(@PathVariable int doubtId, @PathVariable Doubt.Visibility status) {
-        return doubtService.changeVisibility(doubtId, status);
+    public DiscussionDto changeVisibility(@PathVariable int discussionId, @PathVariable Discussion.Visibility status) {
+        return doubtService.changeVisibility(discussionId, status);
     }
 
-    @GetMapping("/doubts")
+    @GetMapping("/discussions")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public List<DoubtDto> getStudentDoubts(Principal principal) {
+    public List<DiscussionDto> getStudentDoubts(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
-        return doubtService.findUserDoubts(user.getId());
+        return doubtService.findUserDiscussions(user.getId());
     }
 
-    @PostMapping(value = "quizQuestion/{quizQuestionId}/doubts")
+    @PostMapping(value = "quizQuestion/{quizQuestionId}/discussions")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public DoubtDto createDoubt(Principal principal, @RequestBody DoubtDto doubtDto, @PathVariable int quizQuestionId){
+    public DiscussionDto createDiscussion(Principal principal, @RequestBody DiscussionDto discussionDto, @PathVariable int quizQuestionId){
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
-        return this.doubtService.createDoubt(doubtDto, quizQuestionId, studentId);
+        return doubtService.createDiscussion(discussionDto, quizQuestionId, studentId);
     }
 
-    @GetMapping(value = "quizQuestion/{quizQuestionId}/doubts")
+    @GetMapping(value = "quizQuestion/{quizQuestionId}/discussions")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public List<DoubtDto> getDoubtsOfQuestions(Principal principal, @PathVariable int quizQuestionId) {
-        return doubtService.findQuizQuestionDoubts(quizQuestionId);
+    public List<DiscussionDto> getDiscussionsOfQuestions(Principal principal, @PathVariable int quizQuestionId) {
+        return doubtService.findQuizQuestionDiscussions(quizQuestionId);
     }
 
-    @GetMapping("/doubts/all")
+    @GetMapping("/discussions/all")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public List<DoubtDto> manageDoubts(Principal principal) {
+    public List<DiscussionDto> manageDiscussions(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
-        return doubtService.findCourseExecutionDoubts(new ArrayList<>(user.getCourseExecutions()));
+        return doubtService.findCourseExecutionDiscussions(new ArrayList<>(user.getCourseExecutions()));
     }
 
 }

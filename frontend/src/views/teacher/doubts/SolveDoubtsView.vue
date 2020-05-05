@@ -198,7 +198,7 @@ export default class SolveDoubtsView extends Vue {
       await RemoteServices.changeVisibility(doubtId, status);
       let doubt = this.doubts.find(doubt => doubt.id === doubtId);
       if (doubt) {
-        doubt.visibility = status;
+        /*doubt.visibility = status;*/
       }
     } catch (error) {
       await this.$store.dispatch('error', error);

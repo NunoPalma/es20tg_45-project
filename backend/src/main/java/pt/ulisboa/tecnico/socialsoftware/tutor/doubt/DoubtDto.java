@@ -11,7 +11,6 @@ public class DoubtDto implements Serializable {
     private String content;
     private String author;
     private Doubt.Status status;
-    private Doubt.Visibility visibility;
     private ClarificationDto clarificationDto;
     private String questionTitle;
     private String title;
@@ -19,27 +18,22 @@ public class DoubtDto implements Serializable {
     private boolean isNew;
 
     private Doubt.DoubtType doubtType;
-    private int mainDoubtId;
 
 
     public DoubtDto(){
     }
 
     public DoubtDto(Doubt doubt){
-        this.title = doubt.getTitle();
         this.id = doubt.getId();
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
         this.creationDate = doubt.getCreationDate();
         this.status = doubt.getStatus();
-        this.visibility = doubt.getVisibility();
         if(doubt.getClarification() != null) {
             this.clarificationDto = new ClarificationDto(doubt.getClarification());
         }
-        this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
         this.isNew = doubt.isNew();
         this.doubtType = doubt.getDoubtType();
-        this.mainDoubtId = doubt.getMainDoubtId();
     }
 
     public Doubt.DoubtType getDoubtType() {
@@ -48,22 +42,6 @@ public class DoubtDto implements Serializable {
 
     public void setDoubtType(Doubt.DoubtType doubtType) {
         this.doubtType = doubtType;
-    }
-
-    public int getMainDoubtId() {
-        return mainDoubtId;
-    }
-
-    public void setMainDoubtId(int mainDoubtId) {
-        this.mainDoubtId = mainDoubtId;
-    }
-
-    public Doubt.Visibility getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(Doubt.Visibility visibility) {
-        this.visibility = visibility;
     }
 
     public String getCreationDate() {

@@ -9,16 +9,16 @@
     <v-card>
       <v-card-title>
         <span class="headline">
-          New Doubt
+          New Discussion
         </span>
       </v-card-title>
 
-      <v-card-text class="text-left" v-if="isCreateDoubt">
+      <v-card-text class="text-left" v-if="isCreateDiscussion">
         <v-container grid-list-md fluid>
           <v-layout column wrap>
             <v-flex xs24 sm12 md8>
               <v-text-field
-                v-model="newDoubt.title"
+                v-model="newDiscussion.title"
                 label="Title"
                 data-cy="Title"
               />
@@ -49,7 +49,7 @@
           data-cy="cancelButton"
           >Cancel</v-btn
         >
-        <v-btn color="blue darken-1" @click="saveDoubt" data-cy="saveButton"
+        <v-btn color="blue darken-1" @click="saveDiscussion" data-cy="saveButton"
           >Create</v-btn
         >
       </v-card-actions>
@@ -61,24 +61,30 @@
 import { Component, Model, Prop, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import Doubt from '@/models/management/Doubt';
+import Discussion from '@/models/management/Discussion';
 @Component
 export default class CreateDoubtDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
   @Prop({ type: Doubt, required: true }) readonly doubt!: Doubt;
   @Prop({ required: true }) readonly quizId!: number;
+  @Prop({ type: Discussion, required: true }) readonly discussion!: Discussion;
   newDoubt!: Doubt;
+  newDiscussion!: Discussion;
   quizQuestionId!: number;
+  isCreateDiscussion: boolean = true;
   isCreateDoubt: boolean = true;
   created() {
     this.newDoubt = new Doubt(this.doubt);
+    this.newDiscussion = new Discussion(this.discussion);
     this.quizQuestionId = this.quizId;
   }
-  async saveDoubt() {
+
+  async saveDiscussion() {
     if (
       this.newDoubt &&
       (!this.newDoubt.content ||
         this.newDoubt.content == '' ||
-        this.newDoubt.title == '')
+        this.newDiscussion.title == '')
     ) {
       await this.$store.dispatch('error', 'Doubt must have Content');
       return;
@@ -86,12 +92,16 @@ export default class CreateDoubtDialog extends Vue {
       this.newDoubt.creationDate = new Date(Date.now()).toLocaleString();
       console.log(this.newDoubt.creationDate);
       this.newDoubt.isNew = true;
+      this.newDiscussion.postsDto.unshift(this.newDoubt);
+      console.log(this.newDoubt);
+      console.log(this.newDiscussion);
       try {
-        const result = await RemoteServices.createDoubt(
-          this.newDoubt,
-          this.quizQuestionId
+        const result = await RemoteServices.createDiscussion(
+          this.newDiscussion,
+          this.quizQuestionId,
+          this.newDoubt
         );
-        this.$emit('new-doubt', result);
+        this.$emit('new-discussion', result);
       } catch (error) {
         await this.$store.dispatch('error', error);
       }

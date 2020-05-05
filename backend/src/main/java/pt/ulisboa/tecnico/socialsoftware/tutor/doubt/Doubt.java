@@ -12,11 +12,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DO
 
 @Entity
 @Table(name = "doubts")
-public class Doubt{
+public class Doubt {
 
     public enum Status {SOLVED, UNSOLVED}
-
-    public enum Visibility {PUBLIC, PRIVATE}
 
     public enum DoubtType {PRINCIPAL,SUB}
 
@@ -27,15 +25,15 @@ public class Doubt{
     @Enumerated(EnumType.STRING)
     private Status status = Status.UNSOLVED;
 
-    @Enumerated(EnumType.STRING)
-    private Visibility visibility = Visibility.PRIVATE;
 
     @Enumerated(EnumType.STRING)
     private DoubtType doubtType = DoubtType.PRINCIPAL;
 
-    private Integer mainDoubtId = -1;
-
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "discussion_id")
+    private Discussion discussion;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt")
     private Clarification clarification = null;
@@ -44,12 +42,8 @@ public class Doubt{
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User author;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private QuestionAnswer questionAnswer;
-
     private String creationDate;
 
-    private String title;
 
     @Column(name="is_new")
     @Type(type="true_false")
@@ -58,18 +52,20 @@ public class Doubt{
     public Doubt(){
     }
 
-    public Doubt(QuestionAnswer questionAnswer, User user, String creationDate, String title, String content, boolean isNew){
+    public Doubt(User user, String creationDate, String content, boolean isNew, Discussion discussion){
         this.author = user;
-        this.title = title;
         this.creationDate = creationDate;
         this.author.addDoubt(this);
         if (content == null || content.trim().isEmpty()) {
             throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
         }
         this.content = content;
-        this.questionAnswer = questionAnswer;
-        this.questionAnswer.addDoubt(this);
         this.isNew = isNew;
+        this.discussion = discussion;
+    }
+
+    public Discussion getDiscussion() {
+        return discussion;
     }
 
     public DoubtType getDoubtType() {
@@ -80,25 +76,11 @@ public class Doubt{
         this.doubtType = doubtType;
     }
 
-    public Integer getMainDoubtId() {
-        return mainDoubtId;
-    }
-
-    public void setMainDoubtId(Integer mainDoubtId) {
-        this.mainDoubtId = mainDoubtId;
-    }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public Visibility getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(Visibility visibility) {
-        this.visibility = visibility;
-    }
 
     public boolean isNew() {
         return isNew;
@@ -114,25 +96,12 @@ public class Doubt{
 
 
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public QuestionAnswer getQuestionAnswer() {
-        return questionAnswer;
-    }
 
-    public void setQuestionAnswer(QuestionAnswer questionAnswer) {
-        this.questionAnswer = questionAnswer;
-    }
 
     public User getAuthor() {
         return author;
@@ -174,8 +143,6 @@ public class Doubt{
         this.status = status;
     }
 
-    public Question getQuestion(){
-        return questionAnswer.getQuizQuestion().getQuestion();
-    }
+
 }
 

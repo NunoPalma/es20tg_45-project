@@ -48,12 +48,13 @@
       @increase-order="increaseOrder"
       @decrease-order="decreaseOrder"
     />
-    <new-doubt-dialog
+    <new-discussion-dialog
       v-if="doubt"
-      v-model="createDoubtDialog"
+      v-model="createDiscussionDialog"
       :doubt="doubt"
       :quizId="quizQuestionId"
-      v-on:new-doubt="onCreateDoubt"
+      :discussion="discussion"
+      v-on:new-discussion="onCreateDiscussion"
       v-on:close-dialog="onCloseDialog"
     />
     <div class="container" v-if="createDoubtList">
@@ -67,24 +68,16 @@
         </li>
         <li
           class="list-row"
-          v-for="doubt in doubts[this.questionOrder]"
-          :key="doubt.id"
+          v-for="discussion in discussions[this.questionOrder]"
+          :key="discussion.id"
         >
           <div class="col">
             <v-chip color="blue">
-              {{ doubt.author }}
+              {{ discussion.author }}
             </v-chip>
           </div>
           <div class="col" @click="showQuestionDoubt(doubt)">
-            {{ doubt.title }}
-          </div>
-          <div class="col">
-            <v-chip v-if="!doubt.clarificationDto" color="red">{{
-              doubt.status
-            }}</v-chip>
-            <v-chip v-if="doubt.clarificationDto" color="green">{{
-              doubt.status
-            }}</v-chip>
+            {{ discussion.title }}
           </div>
           <div class="col last-col">
             <i class="fas fa-chevron-circle-right" />
@@ -94,7 +87,7 @@
     </div>
     <v-btn width="1040px" large color="primary" dark @click="newDoubt">
       <v-icon data-cy="newDoubtButton" left dark>mdi-plus</v-icon>New
-      Doubt</v-btn
+      Discussion</v-btn
     >
     <see-question-doubt-dialog
       v-if="seeingDoubt"
@@ -111,14 +104,15 @@ import { Component, Vue } from 'vue-property-decorator';
 import StatementManager from '@/models/statement/StatementManager';
 import ResultComponent from '@/views/student/quiz/ResultComponent.vue';
 import Doubt from '@/models/management/Doubt';
-import CreateDoubtDialog from '@/views/student/CreateDoubtDialog.vue';
+import Discussion from '@/models/management/Discussion';
 import RemoteServices from '@/services/RemoteServices';
 import SeeQuestionDoubtDialog from '@/views/student/SeeQuestionDoubtDialog.vue';
+import CreateDiscussionDialog from '@/views/student/CreateDiscussionDialog.vue';
 
 @Component({
   components: {
     'result-component': ResultComponent,
-    'new-doubt-dialog': CreateDoubtDialog,
+    'new-discussion-dialog': CreateDiscussionDialog,
     'see-question-doubt-dialog': SeeQuestionDoubtDialog
   }
 })
@@ -127,13 +121,17 @@ export default class ResultsView extends Vue {
   quizQuestionId: number = 0;
   questionOrder: number = 0;
   createDoubtDialog: boolean = false;
+  createDiscussionDialog: boolean = false;
   createDoubtList: boolean = false;
   seeQuestionDoubt: boolean = false;
   currentDoubt: Doubt | null = null;
+  currentDiscussion: Discussion | null = null;
   seeingDoubt: Doubt | null = null;
 
   doubt: Doubt | null = null;
+  discussion: Discussion | null = null;
   doubts: Doubt[][] = [];
+  discussions: Discussion[][] = [];
 
   async created() {
     if (this.statementManager.isEmpty()) {
@@ -145,7 +143,7 @@ export default class ResultsView extends Vue {
         iter < this.statementManager.statementQuiz?.questions.length;
         iter++
       ) {
-        this.doubts[iter] = await RemoteServices.getQuestionDoubts(
+        this.discussions[iter] = await RemoteServices.getQuestionDiscussions(
           this.statementManager.correctAnswers[iter].quizQuestionId
         );
       }
@@ -187,7 +185,8 @@ export default class ResultsView extends Vue {
     ].quizQuestionId;
     console.log(this.statementManager.statementQuiz);
     this.doubt = new Doubt();
-    this.createDoubtDialog = true;
+    this.discussion = new Discussion();
+    this.createDiscussionDialog = true;
   }
 
 
@@ -197,14 +196,14 @@ export default class ResultsView extends Vue {
     this.seeQuestionDoubt = false;
   }
 
-  async onCreateDoubt(doubt: Doubt) {
-    this.doubts[this.questionOrder].unshift(doubt);
-    this.createDoubtDialog = false;
+  async onCreateDiscussion(discussion: Discussion) {
+    this.discussions[this.questionOrder].unshift(discussion);
+    this.createDiscussionDialog = false;
     this.doubt = null;
   }
 
   onCloseDialog() {
-    this.createDoubtDialog = false;
+    this.createDiscussionDialog = false;
     this.doubt = null;
   }
 
