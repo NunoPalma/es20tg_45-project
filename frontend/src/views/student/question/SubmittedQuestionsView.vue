@@ -69,7 +69,7 @@ o<template>
 
         <template v-slot:item.status="{ item }">
           <v-chip :color="getStatusColor(item.status)" small>
-            <span>{{ item.status }}</span>
+            <span>{{ getStatusToList(item.status) }}</span>
           </v-chip>
         </template>
 
@@ -230,12 +230,22 @@ export default class SubmittedQuestionsView extends Vue {
     }
   }
   getStatusColor(status: string) {
-    if (status === 'REMOVED') return 'red';
-    else if (status === 'DISABLED') return 'orange';
-    else if (status === 'REJECTED') return 'blue';
+    if (status === 'REMOVED') return 'orange';
+    else if (status === 'DISABLED') return 'green';
+    else if (status === 'REJECTED') return 'red';
     else if (status === 'PENDING') return 'yellow';
     else return 'green';
   }
+
+  getStatusToList(status: string){
+    if (status === 'REMOVED') return 'REMOVED';
+    else if (status === 'DISABLED') return 'APPROVED';
+    else if (status === 'REJECTED') return 'REJECTED';
+    else if (status === 'PENDING') return 'PENDING';
+    else return 'APPROVED';
+  }
+
+
   async handleFileUpload(event: File, question: Question) {
     if (question.id) {
       try {
