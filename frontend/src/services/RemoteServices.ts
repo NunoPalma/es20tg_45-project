@@ -16,8 +16,6 @@ import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
 import Evaluation from '@/models/management/Evaluation';
 
-
-
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
 
@@ -196,6 +194,17 @@ export default class RemoteServices {
         return response.data.map((question: any) => {
           return new Question(question);
         });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static getStudentSubmittedQuestionStats(): Promise<number[]> {
+    return httpClient
+      .get('/questions/stats')
+      .then(response => {
+        return response.data;
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));
@@ -751,7 +760,8 @@ export default class RemoteServices {
       console.log('espargos haha crl fds morre');
       return httpClient
         .post(
-          `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
+          `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`,
+          tournament
         )
         .then(response => {
           return new Tournament(response.data);
