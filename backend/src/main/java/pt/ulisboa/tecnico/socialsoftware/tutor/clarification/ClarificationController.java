@@ -21,7 +21,7 @@ public class ClarificationController {
 
     @PostMapping("/doubts/{doubtId}/solve")
     //@PreAuthorize("(hasRole('ROLE_TEACHER') and hasPermission(#doubtId, 'CLARIFICATION.CREATE')) or (hasRole('ROLE_TEACHER') and hasPermission(#clarificationDto,'CLARIFICATION.DEMO'))")
-    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#doubtId, 'CLARIFICATION.CREATE')")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     public ClarificationDto createClarification(Principal principal, @PathVariable int doubtId,
                                                 @RequestBody ClarificationDto clarificationDto) {
         User user = (User) ((Authentication) principal).getPrincipal();

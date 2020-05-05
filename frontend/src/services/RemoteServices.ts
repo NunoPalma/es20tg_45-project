@@ -706,12 +706,12 @@ export default class RemoteServices {
       });
   }
 
-  static manageDoubts(): Promise<Doubt[]> {
+  static manageDiscussions(): Promise<Discussion[]> {
     return httpClient
-      .get('/doubts/all')
+      .get('/discussions/all')
       .then(response => {
-        return response.data.map((doubt: any) => {
-          return new Doubt(doubt);
+        return response.data.map((discussion: any) => {
+          return new Discussion(discussion);
         });
       })
       .catch(async error => {
@@ -797,14 +797,14 @@ export default class RemoteServices {
   }
 
   static async changeVisibility(
-    doubtId: number | null,
+    discussionId: number | null,
     status: string
-  ): Promise<Doubt> {
-    if (doubtId)
+  ): Promise<Discussion> {
+    if (discussionId)
       return httpClient
-        .post(`/doubts/${doubtId}/visibility/${status}`)
+        .post(`/discussions/${discussionId}/visibility/${status}`)
         .then(response => {
-          return new Doubt(response.data);
+          return new Discussion(response.data);
         })
         .catch(async error => {
           throw Error(await this.errorMessage(error));

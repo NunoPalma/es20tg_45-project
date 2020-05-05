@@ -2,7 +2,7 @@
   <v-card class="table">
     <v-data-table
       :headers="headers"
-      :items="doubts"
+      :items="discussions"
       :search="search"
       disable-pagination
       :mobile-breakpoint="0"
@@ -48,14 +48,14 @@
           v-if="isSolved(item)"
           color="blue-grey lighten-2"
           text-color="white"
-          >{{ item.status }}</v-chip
+          >SOLVED</v-chip
         >
         <v-chip
           class="ma-2"
           v-if="!isSolved(item)"
           color="red"
           text-color="white"
-          >{{ item.status }}</v-chip
+          >UNSOLVED</v-chip
         >
       </template>
       <template v-slot:item.visibility="{ item }">
@@ -63,6 +63,7 @@
           v-model="item.visibility"
           :items="visibilityList"
           dense
+          data-cy="visButton"
           @change="changeVisibility(item.id, item.visibility)"
         >
           <template v-slot:selection="{ item }">
@@ -75,9 +76,9 @@
     </v-data-table>
 
     <create-clarification-dialog
-      v-if="currentDoubt"
+      v-if="currentDiscussion"
       v-model="createClarificationDialog"
-      :doubt="currentDoubt"
+      :discussion="currentDiscussion"
       v-on:new-clarification="onSolvedDoubt"
       v-on:close-dialog="onCloseDialog"
       :creating="creating"
@@ -90,6 +91,7 @@ import Doubt from '@/models/management/Doubt';
 import RemoteServices from '@/services/RemoteServices';
 import CreateClarificationDialog from '@/views/teacher/doubts/CreateClarificationDialog.vue';
 import { ToggleButton } from 'vue-js-toggle-button';
+import Discussion from '@/models/management/Discussion';
 
 @Component({
   components: {
@@ -97,12 +99,13 @@ import { ToggleButton } from 'vue-js-toggle-button';
     ToggleButton: ToggleButton
   }
 })
+
 export default class SolveDoubtsView extends Vue {
-  doubts: Doubt[] = [];
+  discussions: Discussion[] = [];
   createClarificationDialog: boolean = false;
   creating: boolean = false;
   search: string = '';
-  currentDoubt: Doubt | null = null;
+  currentDiscussion: Discussion | null = null;
   visibilityList = ['PRIVATE', 'PUBLIC'];
   headers: object = [
     {
@@ -115,18 +118,6 @@ export default class SolveDoubtsView extends Vue {
     {
       text: 'Question Title',
       value: 'questionTitle',
-      align: 'center',
-      width: '10%'
-    },
-    {
-      text: 'Author',
-      value: 'author',
-      align: 'center',
-      width: '10%'
-    },
-    {
-      text: 'Creation Date',
-      value: 'creationDate',
       align: 'center',
       width: '10%'
     },
@@ -145,25 +136,25 @@ export default class SolveDoubtsView extends Vue {
     }
   ];
 
-  async solve(doubt: Doubt) {
-    this.currentDoubt = new Doubt(doubt);
+  onCloseDialog() {
+    this.createClarificationDialog = false;
+  }
+
+  async solve(discussion: Discussion) {
+    this.currentDiscussion = new Discussion(discussion);
     this.createClarificationDialog = true;
     this.creating = true;
   }
 
-  details(doubt: Doubt) {
-    this.currentDoubt = new Doubt(doubt);
+  async details(discussion: Discussion) {
+    this.currentDiscussion = new Discussion(discussion);
     this.createClarificationDialog = true;
     this.creating = false;
   }
 
-  onCloseDialog() {
-    this.createClarificationDialog = false;
-    this.currentDoubt = null;
-  }
-
-  isSolved(doubt: Doubt) {
-    return doubt.status == 'SOLVED';
+  isSolved(discussion: Discussion) {
+    let list = discussion.postsDto;
+    return list.length != 0 ? list[list.length - 1].status == 'SOLVED' : false;
   }
 
   getStatusColor(status: string) {
@@ -173,10 +164,9 @@ export default class SolveDoubtsView extends Vue {
 
   async onSolvedDoubt() {
     this.createClarificationDialog = false;
-    this.currentDoubt = null;
     await this.$store.dispatch('loading');
     try {
-      this.doubts = await RemoteServices.manageDoubts();
+      this.discussions = await RemoteServices.manageDiscussions();
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
@@ -186,22 +176,24 @@ export default class SolveDoubtsView extends Vue {
   async created() {
     await this.$store.dispatch('loading');
     try {
-      this.doubts = await RemoteServices.manageDoubts();
+      this.discussions = await RemoteServices.manageDiscussions();
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
   }
 
-  async changeVisibility(doubtId: number, status: string) {
+  async changeVisibility(discussionId: number, status: string) {
     try {
-      await RemoteServices.changeVisibility(doubtId, status);
-      let doubt = this.doubts.find(doubt => doubt.id === doubtId);
-      if (doubt) {
-        /*doubt.visibility = status;*/
+      await RemoteServices.changeVisibility(discussionId, status);
+      let disc = this.discussions.find(
+        discussion => discussion.id === discussionId
+      );
+      if (disc) {
+        disc.visibility = status;
       }
     } catch (error) {
-      await this.$store.dispatch('error', error);
+      await this.$store.dispatch('error', error + 'aaa');
     }
   }
 }

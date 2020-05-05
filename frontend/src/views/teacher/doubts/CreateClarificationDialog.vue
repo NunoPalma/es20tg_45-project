@@ -9,34 +9,38 @@
     <v-card>
       <v-card-title>
         <span v-if="creating" class="headline"
-          >{{ doubt.questionTitle }} - Resolver dúvida
+          >{{ discussion.title }} - Resolver
         </span>
         <span v-if="!creating" class="headline"
-          >{{ doubt.questionTitle }} - Detalhes da dúvida
+          >{{ discussion.title }} - Detalhes
         </span>
       </v-card-title>
 
-      <v-card-text class="text-left" v-if="newClarification">
+      <v-card-text
+        class="text-left"
+        v-bind:key="item"
+        v-for="item in discussion.postsDto"
+      >
         <v-container grid-list-md fluid>
-          <v-layout column wrap>
-            <v-flex xs24 sm12 md8>
-              <p><b>Autor:</b> {{ doubt.author }}</p>
-            </v-flex>
-            <v-flex xs24 sm12 md8>
-              <p><b>Dúvida:</b> {{ doubt.content }}</p>
-            </v-flex>
-            <v-flex xs24 sm12 md8 v-if="!creating">
-              <p><b>Resposta:</b> {{ doubt.clarificationDto.description }}</p>
-            </v-flex>
-            <v-flex xs24 sm12 md8>
-              <v-text-field
-                v-if="creating"
-                v-model="newClarification.description"
-                label="Responder..."
-                data-cy="Response"
-              />
-            </v-flex>
-          </v-layout>
+          <v-text-field
+            :value="item.content"
+            :label="item.author + ' - ' + item.creationDate"
+            outlined
+            readonly
+          ></v-text-field>
+          <v-text-field
+            v-if="item.status === 'UNSOLVED' && creating && newClarification"
+            label="Responder ..."
+            outlined
+            v-model="newClarification.description"
+          ></v-text-field>
+          <v-text-field
+            v-if="item.status === 'SOLVED'"
+            :value="item.clarificationDto.description"
+            :label="item.clarificationDto.author + ' respondeu...'"
+            outlined
+            readonly
+          ></v-text-field>
         </v-container>
       </v-card-text>
 
@@ -53,7 +57,7 @@
           color="blue darken-1"
           data-cy="saveButton"
           @click="saveClarification"
-          >Reply</v-btn
+          >Guardar</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -62,19 +66,20 @@
 
 <script lang="ts">
 import { Component, Model, Prop, Vue } from 'vue-property-decorator';
-import Doubt from '../../../models/management/Doubt';
 import Clarification from '../../../models/management/Clarification';
 import RemoteServices from '@/services/RemoteServices';
+import Discussion from '@/models/management/Discussion';
 @Component
 export default class CreateClarificationDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: Doubt, required: true }) readonly doubt!: Doubt;
+  @Prop({ type: Discussion, required: true }) readonly discussion!: Discussion;
   @Prop({ type: Boolean, required: true }) readonly creating!: boolean;
-  newClarification!: Clarification;
+  newClarification: Clarification | undefined;
+  currentDoubt = this.discussion.postsDto[this.discussion.postsDto.length - 1];
 
   created() {
     this.newClarification = new Clarification();
-    this.newClarification.author = this.doubt.author;
+    this.newClarification.author = this.discussion.postsDto[0].author;
   }
 
   async saveClarification() {
@@ -90,11 +95,11 @@ export default class CreateClarificationDialog extends Vue {
       this.newClarification &&
       this.newClarification.description &&
       this.newClarification.author &&
-      this.doubt.id != null
+      this.currentDoubt.id != null
     ) {
       try {
         await RemoteServices.createClarification(
-          this.doubt.id,
+          this.currentDoubt.id,
           this.newClarification
         );
         this.$emit('new-clarification');

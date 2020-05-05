@@ -93,7 +93,8 @@ public class DoubtService {
 
         QuestionAnswer questionAnswer = quizQuestion.getQuestionAnswerofUser(studentId);
 
-        Discussion discussion = new Discussion(questionAnswer, questionAnswer.getQuizQuestion().getQuestion().getTitle());
+        Discussion discussion = new Discussion(questionAnswer, discussionDto.getTitle());
+
         for(DoubtDto doubtDto : discussionDto.getPostsDto()){
             discussion.addPost(createDoubt(doubtDto, studentId, discussion));
         }

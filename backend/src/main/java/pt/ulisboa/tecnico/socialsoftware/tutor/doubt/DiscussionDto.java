@@ -24,6 +24,34 @@ public class DiscussionDto implements Serializable {
         this.title = discussion.getTitle();
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setPostsDto(Set<DoubtDto> postsDto) {
+        this.postsDto = postsDto;
+    }
+
+    public String getQuestionTitle() {
+        return questionTitle;
+    }
+
+    public void setQuestionTitle(String questionTitle) {
+        this.questionTitle = questionTitle;
+    }
+
+    public void setVisibility(Discussion.Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Discussion.Visibility getVisibility() {
         return visibility;
     }
