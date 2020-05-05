@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.auth.JwtTokenProvider;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
@@ -32,6 +35,8 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 @Service
 public class DoubtService {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -84,7 +89,6 @@ public class DoubtService {
         Doubt doubt = new Doubt(questionAnswer, student, creationDate, title,  content, isNew);
 
         this.entityManager.persist(doubt);
-
         return new DoubtDto(doubt);
     }
 
@@ -145,35 +149,6 @@ public class DoubtService {
         }
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public DiscussionDto getDoubtDiscussion(Integer doubtId) {
-        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
-        return new DiscussionDto(doubt.getDiscussion());
-    }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public DiscussionDto addDiscussionToDoubt(Integer doubtId, DoubtDto doubtDto) {
-        Doubt doubt = doubtRepository.findById(doubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
-        Doubt optDoubt = new Doubt();
-        optDoubt.setVisibility(doubtDto.getVisibility());
-        optDoubt.setStatus(doubtDto.getStatus());
-        optDoubt.setAuthor(doubt.getAuthor());
-        optDoubt.setDiscussion(null);
-        optDoubt.setNew(doubt.isNew());
-        optDoubt.setContent(doubtDto.getContent());
-        optDoubt.setTitle(doubt.getTitle());
-        optDoubt.setQuestionAnswer(doubt.getQuestionAnswer());
-        doubt.getDiscussion().addOptionalDoubt(optDoubt);
-        return new DiscussionDto(doubt.getDiscussion());
-    }
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public DoubtDto solveOptionalDoubt(Integer optDoubtId, Integer userId, ClarificationDto clarificationDto) {
-        Doubt doubt = doubtRepository.findById(optDoubtId).orElseThrow(()-> new TutorException(DOUBT_NOT_FOUND));
-        clarificationService.createClarification(clarificationDto, doubt.getId(), userId);
-        DoubtDto res = new DoubtDto(doubt);
-        res.setClarificationDto(clarificationService.findDoubtClarification(doubt.getId()));
-        return res;
-    }
 
 }

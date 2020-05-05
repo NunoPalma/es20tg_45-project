@@ -18,6 +18,9 @@ public class DoubtDto implements Serializable {
     private String creationDate;
     private boolean isNew;
 
+    private Doubt.DoubtType doubtType;
+    private int mainDoubtId;
+
 
     public DoubtDto(){
     }
@@ -35,6 +38,24 @@ public class DoubtDto implements Serializable {
         }
         this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
         this.isNew = doubt.isNew();
+        this.doubtType = doubt.getDoubtType();
+        this.mainDoubtId = doubt.getMainDoubtId();
+    }
+
+    public Doubt.DoubtType getDoubtType() {
+        return doubtType;
+    }
+
+    public void setDoubtType(Doubt.DoubtType doubtType) {
+        this.doubtType = doubtType;
+    }
+
+    public int getMainDoubtId() {
+        return mainDoubtId;
+    }
+
+    public void setMainDoubtId(int mainDoubtId) {
+        this.mainDoubtId = mainDoubtId;
     }
 
     public Doubt.Visibility getVisibility() {

@@ -18,6 +18,8 @@ public class Doubt{
 
     public enum Visibility {PUBLIC, PRIVATE}
 
+    public enum DoubtType {PRINCIPAL,SUB}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,6 +29,11 @@ public class Doubt{
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.PRIVATE;
+
+    @Enumerated(EnumType.STRING)
+    private DoubtType doubtType = DoubtType.PRINCIPAL;
+
+    private Integer mainDoubtId = -1;
 
     private String content;
 
@@ -39,9 +46,6 @@ public class Doubt{
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private QuestionAnswer questionAnswer;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Discussion discussion = null;
 
     private String creationDate;
 
@@ -68,12 +72,20 @@ public class Doubt{
         this.isNew = isNew;
     }
 
-    public Discussion getDiscussion() {
-        return discussion;
+    public DoubtType getDoubtType() {
+        return doubtType;
     }
 
-    public void setDiscussion(Discussion discussion) {
-        this.discussion = discussion;
+    public void setDoubtType(DoubtType doubtType) {
+        this.doubtType = doubtType;
+    }
+
+    public Integer getMainDoubtId() {
+        return mainDoubtId;
+    }
+
+    public void setMainDoubtId(Integer mainDoubtId) {
+        this.mainDoubtId = mainDoubtId;
     }
 
     public void setId(Integer id) {

@@ -443,6 +443,7 @@ export default class RemoteServices {
       });
   }
 
+
   static async updateTopic(topic: Topic): Promise<Topic> {
     return httpClient
       .put(`/topics/${topic.id}`, topic)
@@ -746,7 +747,6 @@ export default class RemoteServices {
   static async createTournament(tournament: Tournament): Promise<Tournament> {
     if (tournament) {
       console.log(tournament);
-      console.log('espargos haha crl fds morre');
       return httpClient
         .post(
           `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`,
@@ -806,4 +806,5 @@ export default class RemoteServices {
         });
     else throw Error(await this.errorMessage('No doubt was provided.'));
   }
+
 }

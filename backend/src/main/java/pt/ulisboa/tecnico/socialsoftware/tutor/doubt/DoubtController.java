@@ -37,17 +37,6 @@ public class DoubtController {
         return doubtService.changeVisibility(doubtId, status);
     }
 
-    @PostMapping("/doubts/{doubtId}/discussion")
-    public DiscussionDto addDoubtToDiscussion(@PathVariable int doubtId, @RequestBody DoubtDto doubtDto) {
-        return doubtService.addDiscussionToDoubt(doubtId, doubtDto);
-    }
-
-    @PostMapping("/doubts/discussion/{doubtId}")
-    public DoubtDto solveOptDoubt(Principal principal, @PathVariable int doubtId, @RequestBody ClarificationDto clarificationDto) {
-        User user = (User) ((Authentication) principal).getPrincipal();
-        return doubtService.solveOptionalDoubt(doubtId,user.getId(),clarificationDto);
-    }
-
     @GetMapping("/doubts")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public List<DoubtDto> getStudentDoubts(Principal principal) {
