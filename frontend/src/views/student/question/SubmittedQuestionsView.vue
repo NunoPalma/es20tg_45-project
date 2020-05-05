@@ -78,14 +78,14 @@ o<template>
         </template>
 
         <template v-slot:item.image="{ item }">
-          <v-file-input
+          <v-file-input v-if="item.status === 'PENDING'"
             show-size
             dense
             small-chips
             @change="handleFileUpload($event, item)"
             accept="image/*"
           />
-        </template>
+          </template>
 
         <template v-slot:item.action="{ item }">
           <v-tooltip bottom>
