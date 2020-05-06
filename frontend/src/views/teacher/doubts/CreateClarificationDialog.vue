@@ -27,7 +27,22 @@
             :label="item.author + ' - ' + item.creationDate"
             outlined
             readonly
-          ></v-text-field>
+          >
+            <v-icon
+              slot="append"
+              color="blue"
+              v-if="!item.showDoubt && item.clarificationDto.description !== 'vazio'"
+              @click="item.showDoubt = true"
+              >mdi-plus</v-icon
+            >
+            <v-icon
+              slot="append"
+              color="blue"
+              v-if="item.showDoubt && item.clarificationDto.description !== 'vazio'"
+              @click="item.showDoubt = false"
+              >mdi-minus</v-icon
+            >
+          </v-text-field>
           <v-text-field
             v-if="item.status === 'UNSOLVED' && creating && newClarification"
             label="Responder ..."
@@ -35,7 +50,8 @@
             v-model="newClarification.description"
           ></v-text-field>
           <v-text-field
-            v-if="item.status === 'SOLVED'"
+                  style="left: 1cm; width: 94%;"
+            v-if="item.status === 'SOLVED' && item.showDoubt"
             :value="item.clarificationDto.description"
             :label="item.clarificationDto.author + ' respondeu...'"
             outlined
@@ -50,14 +66,14 @@
           color="blue darken-1"
           @click="$emit('close-dialog')"
           data-cy="cancelButton"
-          >Cancel</v-btn
+          >Back</v-btn
         >
         <v-btn
           v-if="creating"
           color="blue darken-1"
           data-cy="saveButton"
           @click="saveClarification"
-          >Guardar</v-btn
+          >Save</v-btn
         >
       </v-card-actions>
     </v-card>

@@ -20,26 +20,70 @@
         </v-card-title>
       </template>
 
+      <template v-slot:item.creationDate="{ item }">
+        {{ item.postsDto[0].creationDate }}
+      </template>
+
       <template v-slot:item.action="{ item }">
-        <v-btn
-          v-if="!isSolved(item)"
-          class="ma-2"
-          color="green"
-          data-cy="createButton"
-          dark
-          @click="solve(item)"
-          >Solve
-          <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
-        </v-btn>
-        <v-btn
-          class="ma-2"
-          color="blue darken-3"
-          data-cy="detailButton"
-          dark
-          @click="details(item)"
-          >Details
-          <v-icon dark right>fas fa-edit</v-icon>
-        </v-btn>
+        <v-tooltip bottom v-if="!isSolved(item)">
+          <template v-slot:activator="{ on }">
+            <v-icon
+              data-cy="createButton"
+              small
+              color="grey darken-2"
+              class="mr-2"
+              v-on="on"
+              @click="solve(item)"
+              >fas fa-edit</v-icon
+            >
+          </template>
+          <span>Solve</span>
+        </v-tooltip>
+
+        <v-tooltip bottom v-if="item.visibility === 'PRIVATE'">
+          <template v-slot:activator="{ on }">
+            <v-icon
+              data-cy="visibilityButton"
+              small
+              color="grey darken-2"
+              class="mr-2"
+              v-on="on"
+              @click="changeVisibility(item.id, 'PUBLIC')"
+              >fas fa-eye-slash</v-icon
+            >
+          </template>
+          <span>Make public</span>
+        </v-tooltip>
+
+        <v-tooltip bottom v-if="item.visibility === 'PUBLIC'">
+          <template v-slot:activator="{ on }">
+            <v-icon
+              data-cy="visibilityButton"
+              small
+              color="grey darken-2"
+              class="mr-2"
+              v-on="on"
+              @click="changeVisibility(item.id, 'PRIVATE')"
+              >fas fa-eye</v-icon
+            >
+          </template>
+          <span>Make private</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              data-cy="detailButton"
+              small
+              color="grey darken-2"
+              class="mr-2"
+              v-on="on"
+              @click="details(item)"
+              >fas fa-bars</v-icon
+            >
+          </template>
+          <span>Details</span>
+        </v-tooltip>
       </template>
 
       <template v-slot:item.status="{ item }">
@@ -58,6 +102,7 @@
           >UNSOLVED</v-chip
         >
       </template>
+      <!--
       <template v-slot:item.visibility="{ item }">
         <v-select
           v-model="item.visibility"
@@ -73,6 +118,7 @@
           </template>
         </v-select>
       </template>
+      -->
     </v-data-table>
 
     <create-clarification-dialog
@@ -99,7 +145,6 @@ import Discussion from '@/models/management/Discussion';
     ToggleButton: ToggleButton
   }
 })
-
 export default class SolveDoubtsView extends Vue {
   discussions: Discussion[] = [];
   createClarificationDialog: boolean = false;
@@ -109,15 +154,14 @@ export default class SolveDoubtsView extends Vue {
   visibilityList = ['PRIVATE', 'PUBLIC'];
   headers: object = [
     {
-      text: 'Visibility',
-      value: 'visibility',
-      align: 'center',
-      sortable: false,
-      width: '0.1%'
-    },
-    {
       text: 'Question Title',
       value: 'questionTitle',
+      align: 'center',
+      width: '10%'
+    },
+    {
+      text: 'Creation Date',
+      value: 'creationDate',
       align: 'center',
       width: '10%'
     },
@@ -128,7 +172,7 @@ export default class SolveDoubtsView extends Vue {
       width: '10%'
     },
     {
-      text: '',
+      text: 'Actions',
       value: 'action',
       align: 'center',
       sortable: false,

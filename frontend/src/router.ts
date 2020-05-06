@@ -128,11 +128,11 @@ let router = new Router({
           }
         },
         {
-          path: 'doubts',
-          name: 'doubts-management',
+          path: 'discussions',
+          name: 'discussions-management',
           component: SolveDoubtsView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Doubts',
+            title: process.env.VUE_APP_NAME + ' - Discussions',
             requiredAuth: 'Teacher'
           }
         }

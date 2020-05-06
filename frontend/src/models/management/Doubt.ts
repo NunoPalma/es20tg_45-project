@@ -10,6 +10,7 @@ export default class Doubt {
   creationDate!: String | null;
   isNew: Boolean = false;
   doubtType: string = 'PRINCIPAL';
+  showDoubt: boolean = false;
 
   constructor(jsonObj?: Doubt) {
     if (jsonObj) {
