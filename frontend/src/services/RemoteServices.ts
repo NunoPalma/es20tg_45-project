@@ -747,8 +747,6 @@ export default class RemoteServices {
 
   static async createTournament(tournament: Tournament): Promise<Tournament> {
     if (tournament) {
-      console.log(tournament);
-      console.log('espargos haha crl fds morre');
       return httpClient
         .post(
           `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament

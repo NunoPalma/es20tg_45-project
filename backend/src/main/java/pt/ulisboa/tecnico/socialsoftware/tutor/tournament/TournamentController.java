@@ -16,8 +16,6 @@ public class TournamentController {
     @PreAuthorize("(hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT'))")
     public TournamentDto createTournament(@PathVariable int studentId, @PathVariable int executionId,
                                  @RequestBody TournamentDto tournamentDto) {
-        System.out.println("oh god oh fuck " + tournamentDto.getTopics().size());
-        System.out.flush();
         return tournamentService.createTournament(studentId, executionId, tournamentDto);
     }
 
@@ -31,5 +29,11 @@ public class TournamentController {
     @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
     public List<TournamentDto> getTournaments(@PathVariable int studentId) {
         return tournamentService.getTournaments(studentId);
+    }
+
+    @PostMapping("/tournament/cancel/{studentId}/{tournamentId}")
+    @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
+    public TournamentDto cancelTournament(@PathVariable int studentId, @PathVariable int tournamentId) {
+        return tournamentService.cancelTournament(studentId, tournamentId);
     }
 }
