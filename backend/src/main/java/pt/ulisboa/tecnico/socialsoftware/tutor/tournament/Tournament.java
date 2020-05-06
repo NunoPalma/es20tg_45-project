@@ -57,7 +57,7 @@ public class Tournament {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+    private Quiz quiz = null;
 
     @ManyToMany
     @JoinTable(

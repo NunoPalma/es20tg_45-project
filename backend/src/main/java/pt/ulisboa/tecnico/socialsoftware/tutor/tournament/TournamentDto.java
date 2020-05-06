@@ -23,7 +23,7 @@ public class TournamentDto implements Serializable {
 	private String endDate;
 	private Set<TopicDto> topics = new HashSet<>();
 	private Integer numQuestions;
-	private QuizDto quizDto;
+	private QuizDto quizDto = null;
 	private Tournament.State state;
 
 	@Transient
@@ -47,14 +47,6 @@ public class TournamentDto implements Serializable {
 			this.startDate = tournament.getStartDate().format(formatter);
 		if (tournament.getEndDate() != null)
 			this.endDate = tournament.getEndDate().format(formatter);
-
-		if (tournament == null) {
-			System.out.println("FUCKING NIGGERS");
-			System.out.println("FUCKING NIGGERS");
-			System.out.println("FUCKING NIGGERS");
-			System.out.println("FUCKING NIGGERS");
-			System.out.println("FUCKING NIGGERS");
-		}
 
 		this.numQuestions = tournament.getNumQuestions();
 
