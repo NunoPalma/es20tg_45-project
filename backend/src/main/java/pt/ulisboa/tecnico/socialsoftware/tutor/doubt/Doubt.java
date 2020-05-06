@@ -16,18 +16,12 @@ public class Doubt {
 
     public enum Status {SOLVED, UNSOLVED}
 
-    public enum DoubtType {PRINCIPAL,SUB}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.UNSOLVED;
-
-
-    @Enumerated(EnumType.STRING)
-    private DoubtType doubtType = DoubtType.PRINCIPAL;
 
     private String content;
 
@@ -66,14 +60,6 @@ public class Doubt {
 
     public Discussion getDiscussion() {
         return discussion;
-    }
-
-    public DoubtType getDoubtType() {
-        return doubtType;
-    }
-
-    public void setDoubtType(DoubtType doubtType) {
-        this.doubtType = doubtType;
     }
 
 

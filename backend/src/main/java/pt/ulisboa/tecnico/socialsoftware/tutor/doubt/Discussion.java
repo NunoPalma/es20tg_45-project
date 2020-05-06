@@ -20,12 +20,18 @@ public class Discussion {
 
     public enum Visibility {PUBLIC, PRIVATE}
 
+    public enum Status {OPEN, CLOSED}
+
+
     @JoinColumn(name = "user_id")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User author;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.PRIVATE;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Discussion.Status.OPEN;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "discussion", fetch= FetchType.EAGER, orphanRemoval=true)
     Set<Doubt> posts = new HashSet<>();
@@ -44,6 +50,14 @@ public class Discussion {
         this.title = title;
         this.questionTitle = questionAnswer.getQuizQuestion().getQuestion().getTitle();
         this.author = author;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public User getAuthor() {

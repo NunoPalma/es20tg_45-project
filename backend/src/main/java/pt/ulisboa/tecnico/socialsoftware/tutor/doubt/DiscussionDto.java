@@ -12,7 +12,7 @@ public class DiscussionDto implements Serializable {
     private Discussion.Visibility visibility;
     private String title;
     private String author;
-
+    private Discussion.Status status;
 
     public DiscussionDto(){
     }
@@ -25,8 +25,16 @@ public class DiscussionDto implements Serializable {
         this.questionTitle = discussion.getQuestion().getTitle();
         this.title = discussion.getTitle();
         this.author = discussion.getAuthor().getName();
+        this.status = discussion.getStatus();
     }
 
+    public Discussion.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Discussion.Status status) {
+        this.status = status;
+    }
 
     public String getQuestionTitle() {
         return questionTitle;

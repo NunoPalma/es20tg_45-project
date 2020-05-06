@@ -111,6 +111,8 @@ public enum ErrorMessage {
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
     DOUBT_NOT_FOUND("Doubt not found"),
+    DISCUSSION_NOT_FOUND("Discussion not found"),
+    DISCUSSION_CANNOT_BE_CLOSED("Discussion cannot be closed due to unsolved questions"),
 
     ACCESS_DENIED("You do not have permission to view this resource"),
 
