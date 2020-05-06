@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 
 @DataJpaTest
 class ShowOpenTournamentServiceSpockTest extends Specification {
+
 	static final String TOURNAMENT_NAME_ONE = "Tournament_A"
 	static final String TOURNAMENT_NAME_TWO = "Tournament_B"
 	static final LocalDateTime START_DATE = LocalDateTime.now()

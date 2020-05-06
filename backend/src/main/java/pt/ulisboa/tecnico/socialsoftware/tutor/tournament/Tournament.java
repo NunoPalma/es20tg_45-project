@@ -66,7 +66,7 @@ public class Tournament {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
 
-    private Set<User> participants;
+    private final Set<User> participants;
 
     @Enumerated(EnumType.STRING)
     private State state = State.CREATED;

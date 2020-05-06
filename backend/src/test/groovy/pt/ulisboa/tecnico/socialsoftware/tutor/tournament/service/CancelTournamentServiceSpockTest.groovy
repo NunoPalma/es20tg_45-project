@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.tournament.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
@@ -14,21 +15,27 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
+import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.time.LocalDateTime
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
-class CancelTournamentServiceSpockTest {
+@DataJpaTest
+class CancelTournamentServiceSpockTest extends Specification {
 
-	static final Integer DEMO_USER = 676
-	static final Integer VALID_USER = 42
-	static final Integer INVALID_USER = 100000
-	static final Integer VALID_TOURNAMENT = 43
-	static final Integer INVALID_TOURNAMENT = 100000
+	static final int VALID_TOURNAMENT_CREATOR = 42000
+	static final int VALID_USER = 43000
+	static final int INVALID_USER = 100000
+	static final int VALID_TOURNAMENT = 1337
+	static final int INVALID_TOURNAMENT = 100000
 	static final String TOURNAMENT_NAME = "LeTournament"
 	static final String COURSE_NAME = "LEIC-T"
 	static final String COURSE_EXECUTION_ACRONYM = "CS101"
 	static final String COURSE_EXECUTION_ACADEMIC_TERM = "1º Semestre"
+	static final LocalDateTime START_DATE = LocalDateTime.now().plusDays(1)
+	static final LocalDateTime END_DATE = LocalDateTime.now().plusDays(2)
 
 
 	@Autowired
@@ -50,13 +57,18 @@ class CancelTournamentServiceSpockTest {
 	TournamentRepository tournamentRepository
 
 
+	def creatorStudent
 	def userStudent
 	def course
 	def courseExecution
 	def tournament
 
-
 	def setup() {
+		creatorStudent = new User()
+		creatorStudent.setRole(User.Role.STUDENT)
+		creatorStudent.setKey(VALID_TOURNAMENT_CREATOR)
+		userRepository.save(creatorStudent)
+
 		userStudent = new User()
 		userStudent.setRole(User.Role.STUDENT)
 		userStudent.setKey(VALID_USER)
@@ -74,8 +86,10 @@ class CancelTournamentServiceSpockTest {
 
 		tournament = new Tournament()
 		tournament.setCourseExecution(courseExecution)
-		tournament.setCreator(userStudent)
+		tournament.setCreator(creatorStudent)
 		tournament.setName(TOURNAMENT_NAME)
+		tournament.setStartDate(START_DATE)
+		tournament.setEndDate(END_DATE)
 		tournamentRepository.save(tournament)
 	}
 
@@ -97,11 +111,11 @@ class CancelTournamentServiceSpockTest {
 
 	def "tournament doesn't exist"() {
 		when:
-		tournamentService.cancelTournament(DEMO_USER, INVALID_TOURNAMENT)
+		tournamentService.cancelTournament(userStudent.getId(), INVALID_TOURNAMENT)
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
-		exception.getErrorMessage() == INVALID_TOURNAMENT_ID
+		exception.getErrorMessage() == TOURNAMENT_NOT_FOUND
 	}
 
 	def "user doesn't exist"() {
@@ -110,33 +124,61 @@ class CancelTournamentServiceSpockTest {
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
-		exception.getErrorMessage() == INVALID_USER_ID
+		exception.getErrorMessage() == USER_NOT_FOUND
 	}
 
 	def "user that attempts tournament cancellation isn't the creator"() {
 		when:
-		tournamentService.cancelTournament(DEMO_USER, tournament.getId())
+		tournamentService.cancelTournament(userStudent.getId(), tournament.getId())
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
 		exception.getErrorMessage() == USER_NOT_TOURNAMENT_CREATOR
 	}
 
+	def "valid user attempts to cancel a closed tournament"() {
+		given:
+		tournament.setState(Tournament.State.CLOSED)
+
+		when:
+		tournamentService.cancelTournament(creatorStudent.getId(), tournament.getId())
+
+		then: "an exception is thrown"
+		def exception = thrown(TutorException)
+		exception.getErrorMessage() == CANNOT_CANCEL_CLOSED_TOURNAMENT
+		and: "set the state back to created"
+		tournament.setState(Tournament.State.CREATED)
+	}
+
+	def "valid user attempts to cancel a cancelled tournament"() {
+		given:
+		tournament.setState(Tournament.State.CANCELLED)
+
+		when:
+		tournamentService.cancelTournament(creatorStudent.getId(), tournament.getId())
+
+		then: "an exception is thrown"
+		def exception = thrown(TutorException)
+		exception.getErrorMessage() == CANNOT_CANCEL_CANCELLED_TOURNAMENT
+		and: "set the state back to created"
+		tournament.setState(Tournament.State.CREATED)
+	}
+
 	def "successful tournament cancellation"() {
 		when:
-		tournamentService.cancelTournament()
+		tournamentService.cancelTournament(creatorStudent.getId(), tournament.getId())
 
 		then: "the tournament state is cancelled"
 		def tournament = tournamentRepository.findTournamentByName(courseExecution.getId(), TOURNAMENT_NAME).get()
 		tournament != null
 		and: "values are correct"
-		tournament.name = TOURNAMENT_NAME
-		tournament.state = Tournament.State.CANCELLED
+		tournament.name == TOURNAMENT_NAME
+		tournament.state == Tournament.State.CANCELLED
 	}
 
 
 	@TestConfiguration
-	static class TournamentServiceImplTestContextConfiguration {
+	static class ServiceImplTestContextConfiguration {
 
 		@Bean
 		TournamentService tournamentService() {

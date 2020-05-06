@@ -154,8 +154,13 @@ public class TournamentService {
 		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
 		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
 
-		if (!tournament.getCreator().equals(user))
+		if (!tournament.isCreator(user))
 			throw new TutorException(USER_NOT_TOURNAMENT_CREATOR, user.getId());
+
+		if (tournament.getState().equals(Tournament.State.CLOSED))
+			throw new TutorException(CANNOT_CANCEL_CLOSED_TOURNAMENT);
+		else if (tournament.getState().equals(Tournament.State.CANCELLED))
+			throw new TutorException(CANNOT_CANCEL_CANCELLED_TOURNAMENT);
 
 		tournament.setState(Tournament.State.CANCELLED);
 
