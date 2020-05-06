@@ -97,6 +97,8 @@ public class TournamentService {
 		return new TournamentDto(tournament, true);
 	}
 
+
+
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public TournamentDto enrollStudent(Integer userId, Integer tournamentId) {
 		if (userId == null)
@@ -116,6 +118,9 @@ public class TournamentService {
 
 
 		tournament.enrollStudent(user);
+
+		if (tournament.getParticipants().size() > 1)
+			tournament.generateQuiz();
 
 		tournamentRepository.save(tournament);
 

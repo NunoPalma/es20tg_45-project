@@ -31,10 +31,6 @@ public class TournamentDto implements Serializable {
 
 	public TournamentDto() {}
 
-	public TournamentDto(UserDto creator, Integer courseExecution) {
-		this.creator = creator;
-		this.courseExecutionId = courseExecution;
-	}
 
 	public TournamentDto(Tournament tournament, boolean deepCopy) {
 		this.id = tournament.getId();
@@ -56,6 +52,7 @@ public class TournamentDto implements Serializable {
 					.collect(Collectors.toSet());
 		}
 		this.tournamentId = tournament.getId();
+		this.quizDto = new QuizDto(tournament.getQuiz(), true);
 	}
 
 	public Integer getId() {

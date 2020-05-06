@@ -8,9 +8,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -176,7 +174,6 @@ public class Tournament {
     }
 
     public void setState(State state) {
-        System.out.println("Changed state to: " + state.toString());
         this.state = state;
     }
 
@@ -236,5 +233,18 @@ public class Tournament {
 
     public boolean isCreator(User user) {
         return this.creator.equals(user);
+    }
+
+    public void generateQuiz() {
+        this.quiz = new Quiz();
+        quiz.setType(Quiz.QuizType.PROPOSED.toString());
+        quiz.setTitle(this.name + " Quiz");
+        quiz.setScramble(true);
+        quiz.setQrCodeOnly(false);
+        quiz.setOneWay(false);
+        quiz.setCreationDate(LocalDateTime.now());
+        quiz.setAvailableDate(this.startDate);
+        quiz.setConclusionDate(this.endDate);
+        quiz.setResultsDate(this.endDate);
     }
 }
