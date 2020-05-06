@@ -14,7 +14,7 @@ describe('Student Resubmit Question action', () => {
 
     cy.approveQuestion(title, 'moreContent');
 
-    cy.checkifAvailable(title);
+    cy.checkIfAvailable(title);
 
   });
 

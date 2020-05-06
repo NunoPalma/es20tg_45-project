@@ -192,8 +192,15 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .find('[data-cy="evaluateQuestion"]')
       .click({ force: true });
     cy.get('[data-cy="approve"]').click({ force: true });
-    cy.get('[data-cy="Content"]').type(newContent);
     cy.get('[data-cy="saveQuestion"]').click({ force: true });
+  });
+
+  Cypress.Commands.add('checkIfAvailable', (title) => {
+    cy.get('[data-cy="Management"]').click();
+    cy.get('[data-cy="Questions"]').click();
+    cy.contains(title)
+      .parent()
+      .should('have.length', 1);
   });
 
   Cypress.Commands.add('rejectQuestion', (title, justification) => {
