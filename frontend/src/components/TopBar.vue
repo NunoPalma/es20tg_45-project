@@ -226,12 +226,12 @@
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/student/globalStats">
-            <v-list-item-action>
-              <v-icon>fas fa-users</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Course Stats</v-list-item-title>
-            </v-list-item-content>
+              <v-list-item-action>
+                <v-icon>fas fa-users</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Course Stats</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -249,11 +249,11 @@
         </v-btn>
 
         <v-btn
-          v-if="isLoggedIn"
-          @click="logout"
-          data-cy="logoutButton"
-          text
-          dark
+                v-if="isLoggedIn"
+                @click="logout"
+                data-cy="logoutButton"
+                text
+                dark
         >
           Logout
           <v-icon>fas fa-sign-out-alt</v-icon>
@@ -425,6 +425,13 @@
             </v-list-item-action>
             <v-list-item-content>Stats</v-list-item-content>
           </v-list-item>
+          <v-list-item to="/student/globalStats">
+            <v-list-item-action>
+               <v-icon>fas fa-users</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Course Stats</v-list-item-content>
+          </v-list-item>
+
           <v-list-item to="/student/tournaments">
             <v-list-item-action>
               <v-icon>fas fa-trophy</v-icon>

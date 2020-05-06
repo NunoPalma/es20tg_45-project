@@ -211,6 +211,25 @@ export default class RemoteServices {
       });
   }
 
+  static getStudentPrivacySettings(): Promise<Boolean> {
+    return httpClient
+      .get(`/courses/${Store.getters.getCurrentCourse.courseId}/privacy`)
+      .then(response => {
+        return response.data;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static toggleStudentPrivacySettings(): void {
+    httpClient
+      .put(`/courses/${Store.getters.getCurrentCourse.courseId}/toggle`)
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static findEvaluation(question: Question): Promise<Evaluation> {
     return httpClient
       .get(`/evaluations/${question.id}`)
