@@ -102,8 +102,8 @@ o<template>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-if="item.status === 'REJECTED'" v-slot:activator="{ on }">
-              <v-icon small class="mr-2" v-on="on" @click="editQuestion(item)"
-                > fas fa-retweet </i></v-icon
+              <v-icon small class="mr-2" v-on="on" @click="editQuestion(item)" data-cy="resubmit"
+                > fas fa-retweet </v-icon
               >
             </template>
             <span>Resubmit Question</span>

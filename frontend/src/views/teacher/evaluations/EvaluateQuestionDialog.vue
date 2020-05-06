@@ -53,7 +53,7 @@ o<template>
           </v-card-actions>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="primary" @click="rejectQuestion">
+            <v-btn color="primary" @click="rejectQuestion" data-cy="saveEvaluation">
               Submit
             </v-btn>
             <v-btn color="primary"  @click="closeDialogue">
@@ -116,7 +116,7 @@ o<template>
         <v-spacer />
         <v-btn color="primary" @click="closeDialogue">Cancel</v-btn>
         <v-btn color="primary" @click="approveDialog = true"  >Approve Question</v-btn>
-        <v-btn color="primary" @click="rejectDialog = true"  >Reject Question</v-btn>
+        <v-btn color="primary" @click="rejectDialog = true"  data-cy="reject" >Reject Question</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

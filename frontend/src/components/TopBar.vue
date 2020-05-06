@@ -275,51 +275,6 @@
         </v-list>
       </v-toolbar>
 
-      <v-btn
-              to="/student/questions"
-              v-if="isStudent && currentCourse"
-              text
-              dark
-      >
-        My Questions
-        <v-icon>question_answer</v-icon>
-      </v-btn>
-
-
-      <v-btn
-              v-if="isLoggedIn && moreThanOneCourse"
-              to="/courses"
-              active-class="no-active"
-              text
-              dark
-      >
-
-        Change course
-        <v-icon>fa fa-book</v-icon>
-      </v-btn>
-
-      <v-btn v-if="isLoggedIn" @click="logout" text dark>
-        Logout
-        <v-icon>fas fa-sign-out-alt</v-icon>
-      </v-btn>
-
-      <v-btn v-else :href="fenixUrl" text dark>
-        Login <v-icon>fas fa-sign-in-alt</v-icon>
-      </v-btn>
-      </v-toolbar-items>
-      </v-app-bar>
-    </v-navigation-drawer>
-
-    <!-- Start of mobile side menu -->
-    <v-navigation-drawer app v-model="drawer" absolute dark temporary>
-      <v-toolbar flat>
-        <v-list>
-          <v-list-item>
-            <v-list-item-title class="title">Menu</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-toolbar>
-
       <v-list class="pt-0" dense>
         <!-- Administration Group-->
         <v-list-group
@@ -328,13 +283,9 @@
                 v-if="isAdmin"
         >
           <template v-slot:activator>
-<<<<<<< HEAD
             <v-list-item-title data-cy="Administration"
             >Administration</v-list-item-title
             >
-=======
-            <v-list-item-title>Administration</v-list-item-title>
->>>>>>> reference/master
           </template>
           <v-list-item to="/admin/courses">
             <v-list-item-action>

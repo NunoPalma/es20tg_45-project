@@ -23,14 +23,12 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-<<<<<<< HEAD
+
 Cypress.Commands.add('demoTeacherLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="demoTeacherButton"]').click();
 });
-=======
-/// <reference types="Cypress" />
->>>>>>> reference/master
+
 
 Cypress.Commands.add('demoStudentLogin', () => {
   cy.visit('/');
@@ -156,7 +154,6 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .should('have.length', 1)
       .children()
       .should('have.length', 7)
-<<<<<<< HEAD
       .find('[data-cy="deleteQuestion"]')
       .click({ force: true });
   });
@@ -171,6 +168,17 @@ Cypress.Commands.add('closeErrorMessage', () => {
   });
 
 
+  Cypress.Commands.add( 'resubmitQuestion', (title, newContent) => {
+    cy.contains(title)
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 7)
+      .find('[data-cy="resubmit"]')
+      .click({ force: true });
+    cy.get('[data-cy="Content"]').type(newContent);
+    cy.get('[data-cy="saveButton"]').click({force:true});
+  });
 
   Cypress.Commands.add('approveQuestion', (title) => {
     cy.get('[data-cy="Management"]').click();
@@ -194,6 +202,7 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .should('have.length', 7)
       .find('[data-cy="evaluateQuestion"]')
       .click({ force: true });
+    cy.get('[data-cy="reject"]').click({force:true});
     cy.get('[data-cy="justification"]').type(justification);
     cy.get('[data-cy="saveEvaluation"]').click({ force: true });
   });
@@ -246,13 +255,3 @@ Cypress.Commands.add('closeErrorMessage', () => {
     let search = '[data-cy="' + tournamentName + '"]';
     cy.get(search).click({ force: true });
   });
-
-=======
-      .find('[data-cy="createFromCourse"]')
-      .click();
-    cy.get('[data-cy="courseExecutionAcronymInput"]').type(acronym);
-    cy.get('[data-cy="courseExecutionAcademicTermInput"]').type(academicTerm);
-    cy.get('[data-cy="saveButton"]').click();
-  }
-);
->>>>>>> reference/master
