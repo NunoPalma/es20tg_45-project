@@ -22,41 +22,49 @@
         v-for="item in discussion.postsDto"
       >
         <v-container grid-list-md fluid>
-          <v-text-field
+          <v-textarea
             :value="item.content"
             :label="item.author + ' - ' + item.creationDate"
             outlined
             readonly
+            auto-grow
+            rows="1"
           >
             <v-icon
               slot="append"
               color="blue"
-              v-if="!item.showDoubt && item.clarificationDto.description !== 'vazio'"
+              v-if="
+                !item.showDoubt && item.clarificationDto.description !== 'vazio'
+              "
               @click="item.showDoubt = true"
               >mdi-plus</v-icon
             >
             <v-icon
               slot="append"
               color="blue"
-              v-if="item.showDoubt && item.clarificationDto.description !== 'vazio'"
+              v-if="
+                item.showDoubt && item.clarificationDto.description !== 'vazio'
+              "
               @click="item.showDoubt = false"
               >mdi-minus</v-icon
             >
-          </v-text-field>
+          </v-textarea>
           <v-text-field
             v-if="item.status === 'UNSOLVED' && creating && newClarification"
             label="Responder ..."
             outlined
             v-model="newClarification.description"
           ></v-text-field>
-          <v-text-field
-                  style="left: 1cm; width: 94%;"
+          <v-textarea
+            style="left: 1cm; width: 94%;"
             v-if="item.status === 'SOLVED' && item.showDoubt"
             :value="item.clarificationDto.description"
             :label="item.clarificationDto.author + ' respondeu...'"
             outlined
             readonly
-          ></v-text-field>
+            auto-grow
+            rows="1"
+          ></v-textarea>
         </v-container>
       </v-card-text>
 

@@ -810,4 +810,18 @@ export default class RemoteServices {
     else throw Error(await this.errorMessage('No doubt was provided.'));
   }
 
+  static async closeDiscussion(
+    discussionId: number | null
+  ): Promise<Discussion> {
+    if (discussionId)
+      return httpClient
+        .post(`/discussions/${discussionId}/close`)
+        .then(response => {
+          return new Discussion(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    else throw Error(await this.errorMessage('No discussion was provided.'));
+  }
 }

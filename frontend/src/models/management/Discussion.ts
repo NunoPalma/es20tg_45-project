@@ -7,6 +7,7 @@ export default class Discussion {
   questionTitle: string = '';
   title: string = '';
   author: string = '';
+  status: String = 'OPEN';
 
   constructor(jsonObj?: Discussion) {
     if (jsonObj) {
@@ -16,6 +17,7 @@ export default class Discussion {
       this.questionTitle = jsonObj.questionTitle;
       this.postsDto = jsonObj.postsDto.map((doubt: Doubt) => new Doubt(doubt));
       this.author = jsonObj.author;
+      this.status = jsonObj.status;
     }
   }
 }

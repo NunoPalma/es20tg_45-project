@@ -137,10 +137,6 @@ public class DoubtService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public DiscussionDto closeDiscussion(Integer discussionId) {
         Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(()-> new TutorException(DISCUSSION_NOT_FOUND));
-        Doubt[] doubtList = (Doubt[])discussion.getPosts().toArray();
-        if(doubtList[doubtList.length - 1].getStatus().equals(Doubt.Status.UNSOLVED)) {
-            throw new TutorException(DISCUSSION_CANNOT_BE_CLOSED);
-        }
         discussion.setStatus(Discussion.Status.CLOSED);
         return new DiscussionDto(discussion);
     }

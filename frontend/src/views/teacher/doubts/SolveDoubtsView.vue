@@ -70,6 +70,22 @@
           <span>Make private</span>
         </v-tooltip>
 
+        <v-tooltip bottom v-if="item.status === 'OPEN' && isSolved(item)">
+          <template v-slot:activator="{ on }">
+            <v-icon
+              data-cy="closeDiscussionButton"
+              small
+              color="grey darken-2"
+              class="mr-2"
+              v-on="on"
+              @click="closeDiscussion(item.id)"
+              >fas fa-times
+            </v-icon
+            >
+          </template>
+          <span>Close discussion</span>
+        </v-tooltip>
+
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon
@@ -87,20 +103,17 @@
       </template>
 
       <template v-slot:item.status="{ item }">
-        <v-chip
-          class="ma-2"
-          v-if="isSolved(item)"
-          color="blue-grey lighten-2"
-          text-color="white"
-          >SOLVED</v-chip
-        >
-        <v-chip
-          class="ma-2"
-          v-if="!isSolved(item)"
-          color="red"
-          text-color="white"
-          >UNSOLVED</v-chip
-        >
+        <v-chip :color="getStatusColor(item)" small>
+          <span>{{ item.status }}</span>
+        </v-chip>
+        <v-tooltip bottom v-if="!isSolved(item)">
+          <template v-slot:activator="{ on }">
+            <v-icon small color="#ffcc00" v-on="on" @click="true"
+              >fas fa-bell</v-icon
+            >
+          </template>
+          <span>unsolved doubt!</span>
+        </v-tooltip>
       </template>
       <!--
       <template v-slot:item.visibility="{ item }">
@@ -133,7 +146,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Doubt from '@/models/management/Doubt';
 import RemoteServices from '@/services/RemoteServices';
 import CreateClarificationDialog from '@/views/teacher/doubts/CreateClarificationDialog.vue';
 import { ToggleButton } from 'vue-js-toggle-button';
@@ -201,11 +213,11 @@ export default class SolveDoubtsView extends Vue {
     return list.length != 0 ? list[list.length - 1].status == 'SOLVED' : false;
   }
 
-  getStatusColor(status: string) {
-    if (status === 'PUBLIC') return 'green accent-3';
-    return 'blue-grey lighten-4';
+  getStatusColor(discussion: Discussion) {
+    let status = discussion.status;
+    if (status === 'CLOSED') return 'red';
+    else return 'green';
   }
-
   async onSolvedDoubt() {
     this.createClarificationDialog = false;
     await this.$store.dispatch('loading');
@@ -237,9 +249,24 @@ export default class SolveDoubtsView extends Vue {
         disc.visibility = status;
       }
     } catch (error) {
-      await this.$store.dispatch('error', error + 'aaa');
+      await this.$store.dispatch('error', error);
     }
   }
+
+  async closeDiscussion(discussionId: number) {
+    try {
+      await RemoteServices.closeDiscussion(discussionId);
+      let disc = this.discussions.find(
+              discussion => discussion.id === discussionId
+      );
+      if (disc) {
+        disc.status = 'CLOSED'
+      }
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+  }
+
 }
 </script>
 

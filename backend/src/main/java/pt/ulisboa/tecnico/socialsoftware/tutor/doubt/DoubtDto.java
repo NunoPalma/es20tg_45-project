@@ -17,9 +17,6 @@ public class DoubtDto implements Serializable {
     private String creationDate;
     private boolean isNew;
 
-    private Doubt.DoubtType doubtType;
-
-
     public DoubtDto(){
     }
 
@@ -33,15 +30,6 @@ public class DoubtDto implements Serializable {
             this.clarificationDto = new ClarificationDto(doubt.getClarification());
         }
         this.isNew = doubt.isNew();
-        this.doubtType = doubt.getDoubtType();
-    }
-
-    public Doubt.DoubtType getDoubtType() {
-        return doubtType;
-    }
-
-    public void setDoubtType(Doubt.DoubtType doubtType) {
-        this.doubtType = doubtType;
     }
 
     public String getCreationDate() {
