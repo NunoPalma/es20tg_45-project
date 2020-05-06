@@ -75,6 +75,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 
 	def setup() {
 		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
 		course = new Course()
 		course.setName(COURSE_NAME)
 		courseRepository.save(course)
@@ -122,7 +123,6 @@ class CreateTournamentServiceSpockTest extends Specification {
 		tournamentRepository.save(tournament)
 
 		tournamentDto = new TournamentDto(tournament, true)
-
 	}
 
 	@Unroll
