@@ -37,6 +37,12 @@ public class DoubtController {
         return doubtService.changeVisibility(discussionId, status);
     }
 
+    @PostMapping("/discussions/{discussionId}/close")
+    @PreAuthorize("hasRole('ROLE_TEACHER') || hasRole('ROLE_STUDENT')")
+    public DiscussionDto closeDiscussion(@PathVariable int discussionId) {
+        return doubtService.closeDiscussion(discussionId);
+    }
+
     @GetMapping("/discussions")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public List<DiscussionDto> getStudentDoubts(Principal principal) {
