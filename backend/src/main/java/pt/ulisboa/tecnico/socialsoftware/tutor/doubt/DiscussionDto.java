@@ -11,6 +11,8 @@ public class DiscussionDto implements Serializable {
     private String questionTitle;
     private Discussion.Visibility visibility;
     private String title;
+    private String author;
+
 
     public DiscussionDto(){
     }
@@ -22,6 +24,12 @@ public class DiscussionDto implements Serializable {
         this.postsDto = discussion.getPosts().stream().map(DoubtDto::new).collect(Collectors.toSet());
         this.questionTitle = discussion.getQuestion().getTitle();
         this.title = discussion.getTitle();
+        this.author = discussion.getAuthor().getName();
+    }
+
+
+    public String getQuestionTitle() {
+        return questionTitle;
     }
 
     public Integer getId() {
@@ -36,9 +44,6 @@ public class DiscussionDto implements Serializable {
         this.postsDto = postsDto;
     }
 
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
 
     public void setQuestionTitle(String questionTitle) {
         this.questionTitle = questionTitle;
@@ -50,6 +55,14 @@ public class DiscussionDto implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public Discussion.Visibility getVisibility() {
@@ -64,4 +77,14 @@ public class DiscussionDto implements Serializable {
         return title;
     }
 
+    @Override
+    public String toString() {
+        return "DiscussionDto{" +
+                "id=" + id +
+                ", postsDto=" + postsDto +
+                ", questionTitle='" + questionTitle + '\'' +
+                ", visibility=" + visibility +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

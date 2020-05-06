@@ -6,6 +6,7 @@ export default class Discussion {
   visibility: String = 'PRIVATE';
   questionTitle: string = '';
   title: string = '';
+  author: string = '';
 
   constructor(jsonObj?: Discussion) {
     if (jsonObj) {
@@ -14,6 +15,7 @@ export default class Discussion {
       this.visibility = jsonObj.visibility;
       this.questionTitle = jsonObj.questionTitle;
       this.postsDto = jsonObj.postsDto.map((doubt: Doubt) => new Doubt(doubt));
+      this.author = jsonObj.author;
     }
   }
 }

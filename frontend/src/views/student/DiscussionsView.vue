@@ -2,7 +2,7 @@
   <v-card class="table">
     <v-data-table
       :headers="headers"
-      :items="doubts"
+      :items="discussions"
       :search="search"
       multi-sort
       :mobile-breakpoint="0"
@@ -27,25 +27,25 @@
       </template>
 
       <template v-slot:item.title="{ item }">
-        <v-chip @click="seeDoubt(item)" small>
+        <v-chip @click="seeDiscussion(item)" small>
           <span>{{ item.title }}</span>
         </v-chip>
       </template>
 
       <template v-slot:item.status="{ item }">
-        <v-chip :color="getStatusColor(item.status)" small>
-          <span>{{ item.status }}</span>
+        <v-chip :color="getStatusColor(item)" small>
+          <span>{{ item.postsDto[item.postsDto.length - 1].status }}</span>
         </v-chip>
       </template>
 
       <template v-slot:item.creationDate="{ item }">
-        {{ item.creationDate }}
+        {{ item.postsDto[0].creationDate }}
       </template>
 
       <template v-slot:item.action="{ item }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-icon small class="mr-2" v-on="on" @click="seeDoubt(item)"
+            <v-icon small class="mr-2" v-on="on" @click="seeDiscussion(item)"
               >visibility</v-icon
             >
           </template>
@@ -67,11 +67,11 @@
         </v-tooltip>
       </template>
     </v-data-table>
-    <see-doubt-dialog
-      v-if="doubt"
-      v-model="seeDoubtDialog"
-      :doubt="doubt"
-      v-on:see-doubt="onSeeDoubt"
+    <see-discussion-dialog
+      v-if="discussion"
+      v-model="seeDiscussionDialog"
+      :discussion="discussion"
+      v-on:see-discussion="onSeeDiscussion"
       v-on:close-dialog="onCloseDialog"
     />
   </v-card>
@@ -80,17 +80,17 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
-import Doubt from '@/models/management/Doubt';
-import SeeDoubtDialog from '@/views/student/SeeDoubtDialog.vue';
+import Discussion from '@/models/management/Discussion';
+import SeeDiscussionDialog from '@/views/student/SeeDiscussionDialog.vue';
 @Component({
   components: {
-    'see-doubt-dialog': SeeDoubtDialog
+    'see-discussion-dialog': SeeDiscussionDialog
   }
 })
 export default class DoubtView extends Vue {
-  doubts: Doubt[] = [];
-  doubt: Doubt | null = null;
-  seeDoubtDialog: boolean = false;
+  discussions: Discussion[] = [];
+  discussion: Discussion | null = null;
+  seeDiscussionDialog: boolean = false;
   search: string = '';
   headers: object = [
     { text: 'QuestionTitle', value: 'questionTitle', align: 'left' },
@@ -99,33 +99,36 @@ export default class DoubtView extends Vue {
     { text: 'Creation Date', value: 'creationDate', align: 'center' },
     { text: 'Actions', value: 'action', align: 'center', sortable: false }
   ];
+
   async created() {
     await this.$store.dispatch('loading');
     try {
-      this.doubts = await RemoteServices.getDoubts();
-      console.log(this.doubts);
+      this.discussions = await RemoteServices.getDiscussions();
+      console.log(this.discussions);
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
   }
-  getStatusColor(status: string) {
+
+  getStatusColor(discussion: Discussion) {
+    status = discussion.postsDto[discussion.postsDto.length - 1].status;
     if (status === 'UNSOLVED') return 'red';
     else return 'green';
   }
-  seeDoubt(currentDoubt: Doubt): void {
-    console.log(currentDoubt);
-    this.doubt = currentDoubt;
-    this.doubt.isNew = false;
-    this.seeDoubtDialog = true;
+
+  seeDiscussion(currentDiscussion: Discussion): void {
+    console.log(currentDiscussion);
+    this.discussion = currentDiscussion;
+    this.seeDiscussionDialog = true;
   }
-  async onSeeDoubt() {
-    this.seeDoubtDialog = false;
-    this.doubt = null;
+  async onSeeDiscussion() {
+    this.seeDiscussionDialog = false;
+    this.discussion = null;
   }
   onCloseDialog() {
-    this.seeDoubtDialog = false;
-    this.doubt = null;
+    this.seeDiscussionDialog = false;
+    this.discussion = null;
   }
 }
 </script>

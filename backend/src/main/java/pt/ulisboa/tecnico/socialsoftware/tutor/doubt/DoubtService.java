@@ -60,7 +60,7 @@ public class DoubtService {
             value = { SQLException.class },
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Doubt createDoubt(DoubtDto doubtdto, Integer studentId, Discussion discussion){
+    public Doubt createDoubt(DoubtDto doubtdto, User student, Discussion discussion){
 
         boolean isNew = doubtdto.isNew();
 
@@ -68,11 +68,6 @@ public class DoubtService {
 
         String content = doubtdto.getContent();
 
-        User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
-
-        if(student.getRole() != User.Role.STUDENT){
-            throw new TutorException(DOUBT_USER_IS_NOT_A_STUDENT);
-        }
         return new Doubt(student, creationDate, content, isNew, discussion);
 
     }
@@ -93,10 +88,15 @@ public class DoubtService {
 
         QuestionAnswer questionAnswer = quizQuestion.getQuestionAnswerofUser(studentId);
 
-        Discussion discussion = new Discussion(questionAnswer, discussionDto.getTitle());
+        User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
 
+        if(student.getRole() != User.Role.STUDENT){
+            throw new TutorException(DOUBT_USER_IS_NOT_A_STUDENT);
+        }
+
+        Discussion discussion = new Discussion(questionAnswer, discussionDto.getTitle(), student);
         for(DoubtDto doubtDto : discussionDto.getPostsDto()){
-            discussion.addPost(createDoubt(doubtDto, studentId, discussion));
+            discussion.addPost(createDoubt(doubtDto, student, discussion));
         }
         entityManager.persist(discussion);
         return new DiscussionDto(discussion);
@@ -122,8 +122,8 @@ public class DoubtService {
         if(userId == null){
             throw new TutorException(DOUBT_USER_IS_EMPTY);
         }
-        List<DiscussionDto> userDiscussion = discussionRepository.findUserDiscussions(userId).stream().map(DiscussionDto::new).collect(Collectors.toList());
-        return userDiscussion;
+        List<DiscussionDto> userDiscussions = discussionRepository.findUserDiscussions(userId).stream().map(DiscussionDto::new).collect(Collectors.toList());
+        return userDiscussions;
     }
 
 

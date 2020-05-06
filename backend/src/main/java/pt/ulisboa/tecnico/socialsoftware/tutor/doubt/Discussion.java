@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,6 +20,10 @@ public class Discussion {
 
     public enum Visibility {PUBLIC, PRIVATE}
 
+    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private User author;
+
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.PRIVATE;
 
@@ -34,10 +39,19 @@ public class Discussion {
 
     }
 
-    public Discussion(QuestionAnswer questionAnswer, String title){
+    public Discussion(QuestionAnswer questionAnswer, String title, User author){
         this.questionAnswer = questionAnswer;
         this.title = title;
         this.questionTitle = questionAnswer.getQuizQuestion().getQuestion().getTitle();
+        this.author = author;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public String getQuestionTitle() {
+        return questionTitle;
     }
 
     public Integer getId() {
@@ -67,6 +81,8 @@ public class Discussion {
     public Question getQuestion(){
         return questionAnswer.getQuizQuestion().getQuestion();
     }
+
+
 
     public String getTitle() {
         return title;

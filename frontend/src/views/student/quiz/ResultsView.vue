@@ -63,7 +63,6 @@
         <li class="list-header ">
           <div class="col">Author</div>
           <div class="col">Title</div>
-          <div class="col">Status</div>
           <div class="col last-col"></div>
         </li>
         <li
@@ -106,7 +105,7 @@ import ResultComponent from '@/views/student/quiz/ResultComponent.vue';
 import Doubt from '@/models/management/Doubt';
 import Discussion from '@/models/management/Discussion';
 import RemoteServices from '@/services/RemoteServices';
-import SeeQuestionDoubtDialog from '@/views/student/SeeQuestionDoubtDialog.vue';
+import SeeQuestionDoubtDialog from '@/views/student/SeeDiscussionDoubtDialog.vue';
 import CreateDiscussionDialog from '@/views/student/CreateDiscussionDialog.vue';
 
 @Component({

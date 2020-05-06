@@ -4,7 +4,7 @@ import Store from '@/store';
 
 import LoginView from '@/views/LoginView.vue';
 import CourseSelectionView from '@/views/CourseSelectionView.vue';
-import DoubtsViewTest from '@/views/student/DoubtsViewTest.vue';
+import DoubtsViewTest from '@/views/student/DiscussionsView.vue';
 
 import HomeView from '@/views/HomeView.vue';
 import ManagementView from '@/views/teacher/ManagementView.vue';

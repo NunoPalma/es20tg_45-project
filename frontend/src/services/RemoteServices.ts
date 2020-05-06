@@ -406,12 +406,12 @@ export default class RemoteServices {
       });
   }
 
-  static getDoubts(): Promise<Doubt[]> {
+  static getDiscussions(): Promise<Discussion[]> {
     return httpClient
-      .get('/doubts')
+      .get('/discussions')
       .then(response => {
-        return response.data.map((doubts: any) => {
-          return new Doubt(doubts);
+        return response.data.map((discussion: any) => {
+          return new Discussion(discussion);
         });
       })
       .catch(async error => {
@@ -437,7 +437,6 @@ export default class RemoteServices {
     quizQuestionId: number,
     doubt: Doubt
   ): Promise<Discussion> {
-    doubt.author = Store.getters.getUser.name;
     return httpClient
       .post(`/quizQuestion/${quizQuestionId}/discussions`, discussion)
       .then(response => {
@@ -447,7 +446,6 @@ export default class RemoteServices {
         throw Error(await this.errorMessage(error));
       });
   }
-
 
   static async updateTopic(topic: Topic): Promise<Topic> {
     return httpClient
