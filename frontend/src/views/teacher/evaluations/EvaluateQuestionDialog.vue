@@ -27,14 +27,6 @@ o<template>
         </div>
       </v-card-text>
 
-<!--      <v-card-text class="text-left">-->
-<!--        <v-switch-->
-<!--                v-model="statusDefault"-->
-<!--                label="Question Approved"-->
-<!--                data-cy="approve"-->
-<!--        />-->
-<!--      </v-card-text>-->
-
       <v-dialog
               v-model="rejectDialog"
               max-width="750px"
@@ -80,6 +72,7 @@ o<template>
                     outline
                     rows="5"
                     v-model="editQuestion.content"
+                    data-cy="Content"
                     label="Question"
             ></v-textarea>
             <div v-for="index in editQuestion.options.length" :key="index">
@@ -99,7 +92,7 @@ o<template>
 
           <v-card-actions>
             <v-spacer />
-            <v-btn color="primary" @click="saveQuestion">
+            <v-btn color="primary" @click="saveQuestion" data-cy="saveQuestion">
               Save and Approve
             </v-btn>
             <v-btn color="primary" @click="approveQuestion">
@@ -115,7 +108,7 @@ o<template>
       <v-card-actions>
         <v-spacer />
         <v-btn color="primary" @click="closeDialogue">Cancel</v-btn>
-        <v-btn color="primary" @click="approveDialog = true"  >Approve Question</v-btn>
+        <v-btn color="primary" @click="approveDialog = true"  data-cy="approve" >Approve Question</v-btn>
         <v-btn color="primary" @click="rejectDialog = true"  data-cy="reject" >Reject Question</v-btn>
       </v-card-actions>
     </v-card>
@@ -157,34 +150,17 @@ o<template>
       }
     };
 
-    async setStatus(status: boolean) {
-      try {
-        if (status && !this.updateDefault) {
-          if (this.question.id) {
-            let questionNew = await RemoteServices.setQuestionStatus(this.question.id, 'DISABLED');
-            if (questionNew) {
-              this.editQuestion.status = 'DISABLED';
-            }
-          }
-        } else if (status && this.updateDefault) {
-          if (this.question.id) {
-            let questionNew = await RemoteServices.setQuestionStatus(this.question.id, 'AVAILABLE');
-            if (questionNew) {
-              this.editQuestion.status = 'AVAILABLE';
-            }
-          }
-        } else {
-          if (this.question.id) {
-            let questionNew = await RemoteServices.setQuestionStatus(this.question.id, 'REJECTED');
-            if (questionNew) {
-              this.editQuestion.status = 'REJECTED';
-            }
+    async setStatus(text: string) {
+      try{
+        if (this.question.id) {
+          let questionNew = await RemoteServices.setQuestionStatus(this.question.id, text);
+          if (questionNew) {
+            this.editQuestion.status = text;
           }
         }
-
       } catch (error) {
-        await this.$store.dispatch('error', error);
-      }
+            await this.$store.dispatch('error', error);
+          }
     }
 
     convertMarkDown(text: string, image: Image | null = null): string {
@@ -208,7 +184,7 @@ o<template>
 
       if (this.evaluation && this.question) {
         try {
-          await this.setStatus(false);
+          await this.setStatus('REJECTED');
           this.evaluation.justification = this.justification;
           const result = await RemoteServices.submitEvaluation(this.evaluation, this.question);
           this.$emit('evaluate-question', result);
@@ -223,10 +199,16 @@ o<template>
 
       if (this.evaluation && this.question) {
         try {
-          await this.setStatus(true);
-          this.evaluation.justification = this.justification;
-          const result = await RemoteServices.submitEvaluation(this.evaluation, this.question);
-          this.$emit('evaluate-question', result);
+          if(this.updateDefault){
+            this.evaluation.justification = this.justification;
+            const result = await RemoteServices.submitEvaluation(this.evaluation, this.question);
+            await this.setStatus('AVAILABLE');
+            this.$emit('evaluate-question', result);
+          } else {
+            this.evaluation.justification = this.justification;
+            const result = await RemoteServices.submitEvaluation(this.evaluation, this.question);
+            this.$emit('evaluate-question', result);
+          }
         } catch (error) {
           await this.$store.dispatch('error', error);
         }
@@ -234,8 +216,6 @@ o<template>
     }
 
     async saveQuestion() {
-      this.updateDefault = true;
-
       if (
               this.editQuestion &&
               (!this.editQuestion.title || !this.editQuestion.content)
@@ -257,6 +237,7 @@ o<template>
         await this.$store.dispatch('error', error);
       }
 
+      this.updateDefault = true;
       this.approveQuestion();
     }
   }

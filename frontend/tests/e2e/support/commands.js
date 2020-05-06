@@ -180,7 +180,8 @@ Cypress.Commands.add('closeErrorMessage', () => {
     cy.get('[data-cy="saveButton"]').click({force:true});
   });
 
-  Cypress.Commands.add('approveQuestion', (title) => {
+
+  Cypress.Commands.add('approveQuestion', (title, newContent) => {
     cy.get('[data-cy="Management"]').click();
     cy.get('[data-cy="Evaluate"]').click();
     cy.contains(title)
@@ -191,7 +192,8 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .find('[data-cy="evaluateQuestion"]')
       .click({ force: true });
     cy.get('[data-cy="approve"]').click({ force: true });
-    cy.get('[data-cy="saveEvaluation"]').click({ force: true });
+    cy.get('[data-cy="Content"]').type(newContent);
+    cy.get('[data-cy="saveQuestion"]').click({ force: true });
   });
 
   Cypress.Commands.add('rejectQuestion', (title, justification) => {
