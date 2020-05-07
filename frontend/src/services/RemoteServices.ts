@@ -16,8 +16,6 @@ import { QuizAnswers } from '@/models/management/QuizAnswers';
 import Tournament from '@/models/management/Tournament';
 import Evaluation from '@/models/management/Evaluation';
 
-
-
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
 
@@ -749,7 +747,8 @@ export default class RemoteServices {
     if (tournament) {
       return httpClient
         .post(
-          `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`, tournament
+          `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`,
+          tournament
         )
         .then(response => {
           return new Tournament(response.data);
@@ -788,5 +787,18 @@ export default class RemoteServices {
           throw Error(await this.errorMessage(error));
         });
     else throw Error(await this.errorMessage('No tournament id provided.'));
+  }
+
+  static getStudentTournamentStats(): Promise<Question[]> {
+    return httpClient
+      .get(`/tournament/stats/${Store.getters.getUser.id}`)
+      .then(response => {
+        return response.data.map((question: any) => {
+          return new Question(question);
+        });
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
   }
 }
