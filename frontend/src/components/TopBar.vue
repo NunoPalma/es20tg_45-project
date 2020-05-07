@@ -256,6 +256,16 @@
         <v-icon>question_answer</v-icon>
       </v-btn>
 
+      <v-btn
+              to="/student/tournaments"
+              v-if="isStudent && currentCourse"
+              text
+              dark
+      >
+        Tournaments
+        <v-icon>question_answer</v-icon>
+      </v-btn>
+
 
       <v-btn
               v-if="isLoggedIn && moreThanOneCourse"
@@ -431,6 +441,13 @@
               <v-icon>question_answer</v-icon>
             </v-list-item-action>
             <v-list-item-content>My Questions</v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/student/tournaments">
+            <v-list-item-action>
+              <v-icon>fas fa-trophy</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Tournaments</v-list-item-content>
           </v-list-item>
 
           <v-list-item to="/student/stats">

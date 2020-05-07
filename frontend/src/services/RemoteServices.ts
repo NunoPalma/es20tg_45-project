@@ -18,6 +18,7 @@ import Evaluation from '@/models/management/Evaluation';
 
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
+import StudentTournamentStats from "@/models/statement/StudentTournamentStats";
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -789,13 +790,11 @@ export default class RemoteServices {
     else throw Error(await this.errorMessage('No tournament id provided.'));
   }
 
-  static getStudentTournamentStats(): Promise<Question[]> {
+  static async getStudentTournamentStats(): Promise<StudentTournamentStats> {
     return httpClient
       .get(`/tournament/stats/${Store.getters.getUser.id}`)
       .then(response => {
-        return response.data.map((question: any) => {
-          return new Question(question);
-        });
+          return new StudentTournamentStats(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));

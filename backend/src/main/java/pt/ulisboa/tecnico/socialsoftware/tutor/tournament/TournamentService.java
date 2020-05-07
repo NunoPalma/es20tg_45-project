@@ -96,6 +96,9 @@ public class TournamentService {
 
 		tournamentRepository.save(tournament);
 
+		user.addTournament(tournament);
+		userRepository.save(user);
+
 		return new TournamentDto(tournament, true);
 	}
 

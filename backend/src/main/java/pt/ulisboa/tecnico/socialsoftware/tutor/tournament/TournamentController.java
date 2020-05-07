@@ -38,7 +38,7 @@ public class TournamentController {
         return tournamentService.cancelTournament(studentId, tournamentId);
     }
 
-    @PostMapping("/tournament/stats/{studentId}")
+    @GetMapping("/tournament/stats/{studentId}")
     @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
     public StudentDto getStudentTournamentStats(@PathVariable int studentId) {
         return tournamentService.getStudentTournamentStats(studentId);
