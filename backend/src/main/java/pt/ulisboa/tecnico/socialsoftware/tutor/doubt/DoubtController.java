@@ -3,11 +3,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
@@ -68,6 +64,13 @@ public class DoubtController {
     public List<DiscussionDto> manageDiscussions(Principal principal) {
         User user = (User) ((Authentication) principal).getPrincipal();
         return doubtService.findCourseExecutionDiscussions(new ArrayList<>(user.getCourseExecutions()));
+    }
+
+    @PostMapping(value = "/discussions/{discussionId}")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public DiscussionDto addDoubt(Principal principal,@PathVariable int discussionId, @RequestBody DoubtDto doubtDto){
+        Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
+        return doubtService.addDoubt(discussionId, studentId, doubtDto);
     }
 
 }

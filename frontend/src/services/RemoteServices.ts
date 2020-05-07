@@ -447,6 +447,20 @@ export default class RemoteServices {
       });
   }
 
+  static addDoubt(
+    discussionId: number,
+    doubt: Doubt
+  ): Promise<Discussion> {
+    return httpClient
+      .post(`/discussions/${discussionId}`, doubt)
+      .then(response => {
+        return new Discussion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async updateTopic(topic: Topic): Promise<Topic> {
     return httpClient
       .put(`/topics/${topic.id}`, topic)
@@ -824,4 +838,5 @@ export default class RemoteServices {
         });
     else throw Error(await this.errorMessage('No discussion was provided.'));
   }
+
 }

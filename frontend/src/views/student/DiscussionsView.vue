@@ -71,6 +71,7 @@
       v-if="discussion"
       v-model="seeDiscussionDialog"
       :discussion="discussion"
+      :id="discussion.id"
       v-on:see-discussion="onSeeDiscussion"
       v-on:close-dialog="onCloseDialog"
     />

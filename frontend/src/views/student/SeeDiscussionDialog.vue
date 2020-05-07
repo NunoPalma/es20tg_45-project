@@ -16,82 +16,42 @@
         <tbody>
           <tr v-for="item in discussion.postsDto" :key="item.name">
             <td>{{ item.content }}</td>
-            <td v-if="item.clarificationDto">{{ item.clarificationDto.description }}</td>
+            <td v-if="item.clarificationDto">
+              {{ item.clarificationDto.description }}
+            </td>
           </tr>
         </tbody>
       </template>
     </v-simple-table>
-
-    <!-- Comment
-    <v-container>
+    <template>
       <v-card>
-        <v-card-title>
-          <span class="headline">
-            Discussions
-          </span>
-        </v-card-title>
-
-        <v-card-title>
-          <span class="headline">
-            A sua discussão:
-          </span>
-        </v-card-title>
-
-        <v-card-text class="text-left">
+        <v-card-text class="text-left" v-if="canCreateNewDoubt">
           <v-container grid-list-md fluid>
             <v-layout column wrap>
               <v-flex xs24 sm12 md8>
-                <v-card>{{ Doubt.content }}</v-card>
+                <v-text-field
+                  v-model="newDoubt.content"
+                  label="Content"
+                  data-cy="Content"
+                />
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
-
-        <v-card-title>
-          <span class="headline">
-            A resposta de um docente:
-          </span>
-        </v-card-title>
-
-        <v-card-text class="text-left" v-if="!Doubt.clarificationDto">
-          <v-container grid-list-md fluid>
-            <v-layout column wrap>
-              <v-flex xs24 sm12 md8>
-                <v-card> Ainda não existe uma resposta a sua duvida...</v-card>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-
-        <v-card-text class="text-left" v-if="Doubt.clarificationDto">
-          <v-container grid-list-md fluid>
-            <v-layout column wrap>
-              <v-flex xs24 sm12 md8>
-                <v-card>{{ Doubt.clarificationDto.description }}</v-card>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-
         <v-card-actions>
           <v-spacer />
           <v-btn
             color="blue darken-1"
             @click="$emit('close-dialog')"
             data-cy="cancelButton"
-            >Back</v-btn
+            >Cancel</v-btn
           >
-          <v-spacer />
-          <v-btn
-            color="blue darken-1"
-            @click="$emit('close-dialog')"
-            data-cy="cancelButton"
-            >Back</v-btn
+          <v-btn v-if="canCreateNewDoubt" color="blue darken-1" @click="addDoubt" data-cy="saveButton"
+            >Create</v-btn
           >
         </v-card-actions>
       </v-card>
-    </v-container>
-    -->
+    </template>
   </v-dialog>
 </template>
 
@@ -104,10 +64,38 @@ import Discussion from '@/models/management/Discussion';
 export default class EditDoubtDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
   @Prop({ type: Discussion, required: true }) readonly discussion!: Discussion;
+  @Prop({ type: Number, required: true }) readonly id!: number;
+
   Discussion!: Discussion;
+  newDoubt!: Doubt;
+  canCreateNewDoubt: boolean = true;
   created() {
     console.log(this.discussion);
+    console.log('nibba');
+    this.newDoubt = new Doubt();
     this.Discussion = new Discussion(this.discussion);
+    this.canCreateNewDoubt =
+      this.discussion.postsDto[this.discussion.postsDto.length - 1]
+        .clarificationDto != null;
+    console.log(this.canCreateNewDoubt);
+  }
+
+  async addDoubt() {
+    if (this.newDoubt && !this.newDoubt.content) {
+      await this.$store.dispatch('error', 'Doubt must have Content');
+      return;
+    } else {
+      this.newDoubt.creationDate = new Date(Date.now()).toLocaleString();
+      console.log(this.newDoubt.creationDate);
+      this.newDoubt.isNew = true;
+      this.discussion.postsDto.unshift(this.newDoubt);
+      try {
+        const result = await RemoteServices.addDoubt(this.id, this.newDoubt);
+        this.$emit('new-discussion', result);
+      } catch (error) {
+        await this.$store.dispatch('error', error);
+      }
+    }
   }
 }
 </script>

@@ -102,6 +102,21 @@ public class DoubtService {
         return new DiscussionDto(discussion);
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public DiscussionDto addDoubt(Integer discussionId, Integer studentId,  DoubtDto doubtDto){
+        Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, discussionId));
+
+
+        User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
+
+        discussion.addPost(createDoubt(doubtDto, student, discussion));
+        discussionRepository.save(discussion);
+        return new DiscussionDto(discussion);
+    }
+
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<DiscussionDto> findQuizQuestionDiscussions(Integer questionQuestionId){
