@@ -64,16 +64,15 @@
 								</template>
 							</v-data-table>
 						</v-card>
-							<p class="pl-0">Number of Questions</p>
-							<v-btn-toggle
+						<v-flex xs24 sm12 md8>
+							<p v-if="isCreateTournament"><b>Start Date:</b> {{ editTournament.numQuestions }} </p>
+							<v-text-field
+									v-if="!isCreateTournament"
 									v-model="editTournament.numQuestions"
-									mandatory
-									class="button-group"
-							>
-								<v-btn text value="5" data-cy="Questions5">5</v-btn>
-								<v-btn text value="10" data-cy="Questions10">10</v-btn>
-								<v-btn text value="20" data-cy="Questions20">20</v-btn>
-							</v-btn-toggle>
+									label="Number of questions"
+									data-cy="numQuestions"
+							/>
+						</v-flex>
 					</v-layout>
 				</v-container>
 			</v-card-text>
