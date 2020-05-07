@@ -5,7 +5,7 @@ o<template>
             <div class="statsContainer">
               <h3>Your information is currently public. This implies that other platform users can see your statistics.<br/>Do you wish for this information to be public?
               </h3>
-              <v-switch v-model="privateHelper" justify="center" align="end" @change="saveChanges"/>
+              <v-switch v-model="this.privateHelper" justify="center" align="end" @change="saveChanges" data-cy="makePrivate"/>
             </div>
         </div>
 
@@ -13,7 +13,7 @@ o<template>
             <div class="statsContainer">
                 <h3>Your information is currently private. This implies that no one can see your statistics.<br/>Do you wish for this information to be public?
                 </h3>
-                <v-switch v-model="privateHelper" justify="center" align="end" @change="saveChanges"/>
+                <v-switch v-model="this.privateHelper" justify="center" align="end" @change="saveChanges" data-cy="makePublic"/>
             </div>
         </div>
   </div>
@@ -31,7 +31,7 @@ import RemoteServices from '@/services/RemoteServices';
 })
 export default class StudentsStatsView extends Vue {
   privateStats: Boolean = false;
-  privateHelper: Boolean | undefined;
+  privateHelper: Boolean = false;
 
   async created() {
     await this.$store.dispatch('loading');
