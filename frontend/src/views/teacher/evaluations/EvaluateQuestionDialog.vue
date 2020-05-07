@@ -95,7 +95,7 @@ o<template>
             <v-btn color="primary" @click="saveQuestion" data-cy="saveQuestion">
               Save and Approve
             </v-btn>
-            <v-btn color="primary" @click="approveQuestion">
+            <v-btn color="primary" @click="approveQuestion" data-cy="skipApprove">
               Skip and Approve
             </v-btn>
             <v-btn color="primary"  @click="closeDialogue">
