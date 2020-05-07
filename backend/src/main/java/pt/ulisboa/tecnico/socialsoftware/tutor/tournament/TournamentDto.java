@@ -52,7 +52,8 @@ public class TournamentDto implements Serializable {
 					.collect(Collectors.toSet());
 		}
 		this.tournamentId = tournament.getId();
-		this.quizDto = new QuizDto(tournament.getQuiz(), true);
+		if (tournament.getQuiz() != null)
+			this.quizDto = new QuizDto(tournament.getQuiz(), true);
 	}
 
 	public Integer getId() {

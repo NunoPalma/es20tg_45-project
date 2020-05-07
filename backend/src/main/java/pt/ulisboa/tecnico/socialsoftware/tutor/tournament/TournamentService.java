@@ -97,8 +97,6 @@ public class TournamentService {
 		return new TournamentDto(tournament, true);
 	}
 
-
-
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public TournamentDto enrollStudent(Integer userId, Integer tournamentId) {
 		if (userId == null)
@@ -116,11 +114,19 @@ public class TournamentService {
 		if (Duration.between(LocalDateTime.now(), tournament.getEndDate()).toMillis() < 0 && tournament.getState() != Tournament.State.CLOSED)
 			tournament.setState(Tournament.State.CLOSED);
 
-
 		tournament.enrollStudent(user);
 
-		if (tournament.getParticipants().size() > 1)
+		if (tournament.getParticipants().size() > 1) {
+			System.out.println("well well well");
+			System.out.println("well well well");
+			System.out.println("well well well");
+			System.out.println("well well well");
+			System.out.println("well well well");
+			System.out.println("well well well");
+			System.out.println("well well well");
+			System.out.flush();
 			tournament.generateQuiz();
+		}
 
 		tournamentRepository.save(tournament);
 
