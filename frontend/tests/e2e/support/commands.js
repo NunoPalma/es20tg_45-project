@@ -181,7 +181,7 @@ Cypress.Commands.add('closeErrorMessage', () => {
   });
 
 
-  Cypress.Commands.add('approveQuestion', (title, newContent) => {
+  Cypress.Commands.add('approveQuestion', (title) => {
     cy.get('[data-cy="Management"]').click();
     cy.get('[data-cy="Evaluate"]').click();
     cy.contains(title)
@@ -192,8 +192,22 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .find('[data-cy="evaluateQuestion"]')
       .click({ force: true });
     cy.get('[data-cy="approve"]').click({ force: true });
-    cy.get('[data-cy="saveQuestion"]').click({ force: true });
+    cy.get('[data-cy="skipApprove"]').click({ force: true });
   });
+
+Cypress.Commands.add('approveQuestion2', (title) => {
+  cy.get('[data-cy="Management"]').click();
+  cy.get('[data-cy="Evaluate"]').click();
+  cy.contains(title)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="evaluateQuestion"]')
+    .click({ force: true });
+  cy.get('[data-cy="approve"]').click({ force: true });
+  cy.get('[data-cy="saveQuestion"]').click({ force: true });
+});
 
   Cypress.Commands.add('checkIfAvailable', (title) => {
     cy.get('[data-cy="Management"]').click();
