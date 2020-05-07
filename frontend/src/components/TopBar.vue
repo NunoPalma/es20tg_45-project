@@ -189,7 +189,7 @@
                 <v-icon>question_answer</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Doubts</v-list-item-title>
+                <v-list-item-title data-cy="discussionsButton">Discussions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item to="/student/tournaments">

@@ -4,6 +4,7 @@
       :headers="headers"
       :items="discussions"
       :search="search"
+      data-cy="table"
       disable-pagination
       :mobile-breakpoint="0"
       :items-per-page="50"

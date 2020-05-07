@@ -11,10 +11,10 @@ describe('Doubts List walkthrough', () => {
 
   it('login creates a doubt and see it on the doubt list', () => {
     cy.contains('Component').click();
-    cy.createDoubt1('List Test');
+    cy.createDoubt1('List Title Test', 'List Test');
     cy.get('[data-cy="QuizzesButton"]').click();
     cy.contains('Doubts').click();
-    cy.contains('SOA').click({force:true});
+    cy.contains('List Test').click({force:true});
     cy.contains('Back').click();
   });
 

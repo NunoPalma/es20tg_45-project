@@ -57,6 +57,7 @@
           </p>
           -->
           <v-text-field
+            data-cy="ResponseInput"
             v-if="item.status === 'UNSOLVED' && creating && newClarification"
             label="Responder ..."
             outlined
