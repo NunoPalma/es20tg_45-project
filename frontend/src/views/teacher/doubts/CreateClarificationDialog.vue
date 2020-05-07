@@ -17,7 +17,6 @@
       </v-card-title>
 
       <v-card-text
-        class="text-left"
         v-bind:key="item"
         v-for="item in discussion.postsDto"
       >
@@ -49,6 +48,14 @@
               >mdi-minus</v-icon
             >
           </v-textarea>
+          <!--
+          <p
+            v-if="(item.id % 10) % 2 > 0"
+            style="position: relative; top: -0.7cm; font-size: 10pt; color: green; padding-bottom: -0.1cm;"
+          >
+            ~Teacher marked a good question~
+          </p>
+          -->
           <v-text-field
             v-if="item.status === 'UNSOLVED' && creating && newClarification"
             label="Responder ..."

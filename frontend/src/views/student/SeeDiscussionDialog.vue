@@ -3,55 +3,84 @@
     :value="dialog"
     @input="$emit('close-dialog')"
     @keydown.esc="$emit('close-dialog')"
-    max-width="75%"
+    max-width="45%"
     max-height="80%"
   >
-    <v-simple-table>
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in discussion.postsDto" :key="item.name">
-            <td>{{ item.content }}</td>
-            <td v-if="item.clarificationDto">
-              {{ item.clarificationDto.description }}
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
-    <template>
-      <v-card>
-        <v-card-text class="text-left" v-if="canCreateNewDoubt">
-          <v-container grid-list-md fluid>
-            <v-layout column wrap>
-              <v-flex xs24 sm12 md8>
-                <v-text-field
-                  v-model="newDoubt.content"
-                  label="Content"
-                  data-cy="Content"
-                />
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="blue darken-1"
-            @click="$emit('close-dialog')"
-            data-cy="cancelButton"
-            >Cancel</v-btn
+    <v-card>
+      <v-card-title>
+        <span class="headline">{{ Discussion.title }} - Detalhes </span>
+      </v-card-title>
+
+      <v-card-text v-for="item in discussion.postsDto">
+        <v-container grid-list-md fluid>
+          <v-textarea
+            :value="item.content"
+            :label="item.author + ' - ' + item.creationDate"
+            outlined
+            readonly
+            auto-grow
+            rows="1"
           >
-          <v-btn v-if="canCreateNewDoubt" color="blue darken-1" @click="addDoubt" data-cy="saveButton"
-            >Create</v-btn
+            <v-icon
+              slot="append"
+              color="blue"
+              v-if="!item.showDoubt && item.status === 'SOLVED'"
+              v-on:click="item.showDoubt = true"
+              >mdi-plus</v-icon
+            >
+            <v-icon
+              slot="append"
+              color="blue"
+              v-if="item.showDoubt && item.status === 'SOLVED'"
+              @click="item.showDoubt = false"
+              >mdi-minus</v-icon
+            >
+          </v-textarea>
+          <!--
+          <p
+            v-if="(item.id % 10) % 2 > 0"
+            style="position: relative; top: -0.7cm; font-size: 10pt; color: green; padding-bottom: -0.1cm;"
           >
-        </v-card-actions>
-      </v-card>
-    </template>
+            ~Teacher marked a good question~
+          </p>
+          -->
+          <v-textarea
+            style="left: 1cm; width: 94%;"
+            v-if="item.clarificationDto && item.showDoubt"
+            :value="item.clarificationDto.description"
+            :label="item.clarificationDto.author + ' respondeu...'"
+            outlined
+            readonly
+            auto-grow
+            rows="1"
+          ></v-textarea>
+        </v-container>
+      </v-card-text>
+
+      <v-text-field style="left: 0.95cm; width: 15.9cm;"
+              v-if="newDoubt && canCreateNewDoubt && discussion.status === 'OPEN'"
+              label="Doubt here ..."
+              outlined
+              v-model="newDoubt.content"
+      ></v-text-field>
+
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="blue darken-1"
+          @click="$emit('close-dialog')"
+          data-cy="cancelButton"
+          >Back</v-btn
+        >
+        <v-btn
+          v-if=" newDoubt && discussion.status === 'OPEN' && canCreateNewDoubt"
+          color="blue darken-1"
+          data-cy="saveButton"
+          @click="addDoubt"
+          >Save</v-btn
+        >
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -63,11 +92,11 @@ import Discussion from '@/models/management/Discussion';
 @Component
 export default class EditDoubtDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: Discussion, required: true }) readonly discussion!: Discussion;
+  @Prop({ type: Discussion, required: true }) discussion!: Discussion;
   @Prop({ type: Number, required: true }) readonly id!: number;
 
   Discussion!: Discussion;
-  newDoubt!: Doubt;
+  newDoubt: Doubt | null = null;
   canCreateNewDoubt: boolean = true;
   created() {
     console.log(this.discussion);
@@ -84,13 +113,12 @@ export default class EditDoubtDialog extends Vue {
     if (this.newDoubt && !this.newDoubt.content) {
       await this.$store.dispatch('error', 'Doubt must have Content');
       return;
-    } else {
+    } else if (this.newDoubt) {
       this.newDoubt.creationDate = new Date(Date.now()).toLocaleString();
-      console.log(this.newDoubt.creationDate);
       this.newDoubt.isNew = true;
-      this.discussion.postsDto.unshift(this.newDoubt);
       try {
         const result = await RemoteServices.addDoubt(this.id, this.newDoubt);
+        this.newDoubt = null;
         this.$emit('new-discussion', result);
       } catch (error) {
         await this.$store.dispatch('error', error);

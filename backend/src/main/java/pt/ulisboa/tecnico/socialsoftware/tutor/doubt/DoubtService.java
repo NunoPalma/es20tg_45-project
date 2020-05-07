@@ -23,12 +23,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.*;
-
-
-import java.util.Set;
 
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -171,7 +167,6 @@ public class DoubtService {
                     d.setClarificationDto(clarificationService.findDoubtClarification(d.getId()));
                 }
             }
-
             return discussions;
 
         }

@@ -1,19 +1,23 @@
 <template>
   <div>
     <div class="stats-container">
-    <div class="items">
-      <div class="icon-wrapper" ref="discussionsMade">
-        <animated-number :number="discussions.length">
-          {{discussions.length}}</animated-number>
-      </div>
-      <div class="project-name">
-        <p>Total Discussions Made</p>
-      </div>
-    </div>
       <div class="items">
         <div class="icon-wrapper" ref="discussionsMade">
           <animated-number :number="discussions.length">
-            {{discussions.filter(disc => disc.status==='OPEN').length}}</animated-number>
+            {{ discussions.length }}</animated-number
+          >
+        </div>
+        <div class="project-name">
+          <p>Total Discussions Made</p>
+        </div>
+      </div>
+      <div class="items">
+        <div class="icon-wrapper" ref="discussionsMade">
+          <animated-number :number="discussions.length">
+            {{
+              discussions.filter(disc => disc.status === 'OPEN').length
+            }}</animated-number
+          >
         </div>
         <div class="project-name">
           <p>Total Open Discussions</p>
@@ -81,6 +85,7 @@
         :id="discussion.id"
         v-on:see-discussion="onSeeDiscussion"
         v-on:close-dialog="onCloseDialog"
+        v-on:new-discussion="onNewDoubt"
       />
     </v-card>
   </div>
@@ -131,6 +136,7 @@ export default class DoubtView extends Vue {
     console.log(currentDiscussion);
     this.discussion = currentDiscussion;
     this.seeDiscussionDialog = true;
+    this.discussion.postsDto.forEach(d => (d.showDoubt = false));
   }
   async onSeeDiscussion() {
     this.seeDiscussionDialog = false;
@@ -139,6 +145,18 @@ export default class DoubtView extends Vue {
   onCloseDialog() {
     this.seeDiscussionDialog = false;
     this.discussion = null;
+  }
+
+  async onNewDoubt() {
+    await this.$store.dispatch('loading');
+    try {
+      this.seeDiscussionDialog = false;
+      this.discussions = await RemoteServices.getDiscussions();
+      console.log(this.discussions);
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
   }
 }
 </script>

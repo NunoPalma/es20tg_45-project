@@ -79,7 +79,7 @@
             {{ discussion.title }}
           </div>
           <div class="col last-col">
-            <i class="fas fa-chevron-circle-right" />
+            <v-icon @click="onQuestionSeeDoubt(discussion)">fas fa-chevron-circle-right</v-icon>
           </div>
         </li>
       </ul>
@@ -88,12 +88,11 @@
       <v-icon data-cy="newDoubtButton" left dark>mdi-plus</v-icon>New
       Discussion</v-btn
     >
-    <see-question-doubt-dialog
-      v-if="seeingDoubt"
-      v-model="seeQuestionDoubt"
-      :doubt="seeingDoubt"
-      v-on:see-question-doubt="onQuestionSeeDoubt"
-      v-on:close-question-dialog="onCloseSeeDialog"
+    <see-question-discussion-dialog
+      v-if="seeingDiscussion"
+      v-model="seeQuestionDiscussion"
+      :discussion="seeingDiscussion"
+      v-on:close-dialog="onCloseSeeDialog"
     />
   </div>
 </template>
@@ -112,7 +111,7 @@ import CreateDiscussionDialog from '@/views/student/CreateDiscussionDialog.vue';
   components: {
     'result-component': ResultComponent,
     'new-discussion-dialog': CreateDiscussionDialog,
-    'see-question-doubt-dialog': SeeQuestionDoubtDialog
+    'see-question-discussion-dialog': SeeQuestionDoubtDialog
   }
 })
 export default class ResultsView extends Vue {
@@ -122,10 +121,10 @@ export default class ResultsView extends Vue {
   createDoubtDialog: boolean = false;
   createDiscussionDialog: boolean = false;
   createDoubtList: boolean = false;
-  seeQuestionDoubt: boolean = false;
+  seeQuestionDiscussion: boolean = false;
   currentDoubt: Doubt | null = null;
   currentDiscussion: Discussion | null = null;
-  seeingDoubt: Doubt | null = null;
+  seeingDiscussion: Discussion | null = null;
 
   doubt: Doubt | null = null;
   discussion: Discussion | null = null;
@@ -173,11 +172,6 @@ export default class ResultsView extends Vue {
     }
   }
 
-  showQuestionDoubt(doubt: Doubt): void {
-    this.seeQuestionDoubt = true;
-    this.seeingDoubt = doubt;
-  }
-
   newDoubt(): void {
     this.quizQuestionId = this.statementManager.correctAnswers[
       this.questionOrder
@@ -190,9 +184,9 @@ export default class ResultsView extends Vue {
 
 
 
-  onQuestionSeeDoubt(){
-    this.seeingDoubt = null;
-    this.seeQuestionDoubt = false;
+  onQuestionSeeDoubt(discussion: Discussion){
+    this.seeingDiscussion = new Discussion(discussion);
+    this.seeQuestionDiscussion = true;
   }
 
   async onCreateDiscussion(discussion: Discussion) {
@@ -207,8 +201,8 @@ export default class ResultsView extends Vue {
   }
 
   onCloseSeeDialog() {
-    this.seeQuestionDoubt = false;
-    this.seeingDoubt = null;
+    this.seeQuestionDiscussion = false;
+    this.seeingDiscussion = null;
   }
 }
 </script>

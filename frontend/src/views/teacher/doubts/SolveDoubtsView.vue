@@ -6,6 +6,8 @@
       :search="search"
       disable-pagination
       :mobile-breakpoint="0"
+      :items-per-page="50"
+      :footer-props="{ itemsPerPageOptions: [15, 30, 50, 100] }"
       multi-sort
     >
       <template v-slot:top>
