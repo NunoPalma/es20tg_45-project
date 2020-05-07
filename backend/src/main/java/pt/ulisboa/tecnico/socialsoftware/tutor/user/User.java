@@ -49,6 +49,7 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectTeacherAnswers;
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
+    private Integer numberOfParticipatedTournaments = 0;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -497,6 +498,19 @@ public class User implements UserDetails, DomainEntity {
         }
 
         return result;
+    }
+
+    public Integer getNumberOfParticipatedTournaments() {
+        return numberOfParticipatedTournaments;
+    }
+
+    public void setNumberOfParticipatedTournaments(Integer numberOfParticipatedTournaments) {
+        this.numberOfParticipatedTournaments = numberOfParticipatedTournaments;
+    }
+
+    public void addTournament(Tournament tournament) {
+        this.enrolledTournaments.add(tournament);
+        this.numberOfParticipatedTournaments += 1;
     }
 
     public boolean isEqual(Object obj) {

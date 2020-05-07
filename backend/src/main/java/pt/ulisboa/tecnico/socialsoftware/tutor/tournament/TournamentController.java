@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.tournament;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
 import java.util.List;
 
@@ -35,5 +36,11 @@ public class TournamentController {
     @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
     public TournamentDto cancelTournament(@PathVariable int studentId, @PathVariable int tournamentId) {
         return tournamentService.cancelTournament(studentId, tournamentId);
+    }
+
+    @PostMapping("/tournament/stats/{studentId}")
+    @PreAuthorize("hasRole('ROLE_DEMO_STUDENT') or hasRole('ROLE_STUDENT')")
+    public StudentDto getStudentTournamentStats(@PathVariable int studentId) {
+        return tournamentService.getStudentTournamentStats(studentId);
     }
 }

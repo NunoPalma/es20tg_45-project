@@ -15,6 +15,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicReposito
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -130,6 +132,9 @@ public class TournamentService {
 
 		tournamentRepository.save(tournament);
 
+		user.addTournament(tournament);
+		userRepository.save(user);
+
 		return new TournamentDto(tournament, true);
 	}
 
@@ -178,5 +183,12 @@ public class TournamentService {
 		tournamentRepository.save(tournament);
 
 		return new TournamentDto(tournament, true);
+	}
+
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public StudentDto getStudentTournamentStats(Integer userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+		return new StudentDto(user);
 	}
 }
