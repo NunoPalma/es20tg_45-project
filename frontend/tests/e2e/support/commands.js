@@ -125,7 +125,7 @@ Cypress.Commands.add('closeErrorMessage', () => {
 //Commands for Submit Question Test
 
   Cypress.Commands.add('submitQuestion', (title, content, option) => {
-    cy.get('[data-cy="submitButton"]').click();
+    cy.get('[data-cy="submitButton"]').click({ force: true });
     cy.get('[data-cy="Title"]').type(title, { force: true });
     cy.get('[data-cy="Content"]').type(content);
     cy.get('[data-cy="Correct"]').eq(0).click({ force: true });
