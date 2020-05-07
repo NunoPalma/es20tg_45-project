@@ -23,14 +23,10 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-<<<<<<< HEAD
 Cypress.Commands.add('demoTeacherLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="demoTeacherButton"]').click();
 });
-=======
-/// <reference types="Cypress" />
->>>>>>> reference/master
 
 Cypress.Commands.add('demoStudentLogin', () => {
   cy.visit('/');
@@ -156,7 +152,6 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .should('have.length', 1)
       .children()
       .should('have.length', 7)
-<<<<<<< HEAD
       .find('[data-cy="deleteQuestion"]')
       .click({ force: true });
   });
@@ -203,7 +198,7 @@ Cypress.Commands.add('closeErrorMessage', () => {
     cy.get('[data-cy="Tournaments"]').click({ force: true });
   });
 
-  Cypress.Commands.add('createTournament', (name, startDate, endDate, topicName) => {
+  Cypress.Commands.add('createTournament', (name, startDate, endDate, topicName, numQuestions) => {
     cy.get('[data-cy="createButton"]').click();
 
     // insert in text fields
@@ -221,7 +216,7 @@ Cypress.Commands.add('closeErrorMessage', () => {
       .click({ force: true });
 
     // select the number of questions
-    cy.get('[data-cy="Questions10"]').click({ force: true });
+    cy.get('[data-cy="numQuestions"]').click({ force: true }).type(numQuestions);
 
     // save the tournament
     cy.get('[data-cy="saveButton"]').click({ force: true });
@@ -246,13 +241,3 @@ Cypress.Commands.add('closeErrorMessage', () => {
     let search = '[data-cy="' + tournamentName + '"]';
     cy.get(search).click({ force: true });
   });
-
-=======
-      .find('[data-cy="createFromCourse"]')
-      .click();
-    cy.get('[data-cy="courseExecutionAcronymInput"]').type(acronym);
-    cy.get('[data-cy="courseExecutionAcademicTermInput"]').type(academicTerm);
-    cy.get('[data-cy="saveButton"]').click();
-  }
-);
->>>>>>> reference/master
