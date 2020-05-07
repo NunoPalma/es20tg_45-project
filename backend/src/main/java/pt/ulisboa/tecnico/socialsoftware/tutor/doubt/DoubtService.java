@@ -64,6 +64,10 @@ public class DoubtService {
 
         String content = doubtdto.getContent();
 
+        if(content == null || content.trim().length() == 0){
+            throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
+        }
+
         return new Doubt(student, creationDate, content, isNew, discussion);
 
     }
@@ -90,6 +94,7 @@ public class DoubtService {
             throw new TutorException(DOUBT_USER_IS_NOT_A_STUDENT);
         }
 
+
         Discussion discussion = new Discussion(questionAnswer, discussionDto.getTitle(), student);
         for(DoubtDto doubtDto : discussionDto.getPostsDto()){
             discussion.addPost(createDoubt(doubtDto, student, discussion));
@@ -103,10 +108,23 @@ public class DoubtService {
             backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public DiscussionDto addDoubt(Integer discussionId, Integer studentId,  DoubtDto doubtDto){
-        Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, discussionId));
+        if(discussionId == null){
+            throw new TutorException(DISCUSSION_IS_EMPTY);
+        }
+
+        if(studentId == null){
+            throw new TutorException(ErrorMessage.DISCUSSION_USER_IS_EMPTY);
+        }
+
+        Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new TutorException(DISCUSSION_NOT_FOUND, discussionId));
+
 
 
         User student = userRepository.findById(studentId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, studentId));
+
+        if(student.getRole() != User.Role.STUDENT){
+            throw new TutorException(DISCUSSION_USER_IS_NOT_A_STUDENT);
+        }
 
         discussion.addPost(createDoubt(doubtDto, student, discussion));
         discussionRepository.save(discussion);
@@ -117,7 +135,7 @@ public class DoubtService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<DiscussionDto> findQuizQuestionDiscussions(Integer questionQuestionId){
         if (questionQuestionId == null){
-            throw new TutorException(DOUBT_USER_IS_EMPTY);
+            throw new TutorException(DOUBT_QUESTION_IS_EMPTY);
         }
         List<DiscussionDto> discussions = new ArrayList<>();
         QuizQuestion quizQuestion = quizQuestionRepository.findById(questionQuestionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionQuestionId));

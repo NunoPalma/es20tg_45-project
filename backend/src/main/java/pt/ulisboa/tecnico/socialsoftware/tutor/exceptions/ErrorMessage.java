@@ -113,6 +113,9 @@ public enum ErrorMessage {
     DOUBT_NOT_FOUND("Doubt not found"),
     DISCUSSION_NOT_FOUND("Discussion not found"),
     DISCUSSION_CANNOT_BE_CLOSED("Discussion cannot be closed due to unsolved questions"),
+    DISCUSSION_USER_IS_EMPTY(""),
+    DISCUSSION_IS_EMPTY(""),
+    DISCUSSION_USER_IS_NOT_A_STUDENT(""),
 
     ACCESS_DENIED("You do not have permission to view this resource"),
 

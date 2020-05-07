@@ -52,6 +52,10 @@ public class DiscussionDto implements Serializable {
         this.postsDto = postsDto;
     }
 
+    public void addPostDto(DoubtDto doubtDto){
+        this.postsDto.add(doubtDto);
+    }
+
 
     public void setQuestionTitle(String questionTitle) {
         this.questionTitle = questionTitle;
