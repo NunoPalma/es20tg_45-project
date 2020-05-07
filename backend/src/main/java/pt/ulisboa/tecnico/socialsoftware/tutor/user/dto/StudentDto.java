@@ -24,6 +24,7 @@ public class StudentDto implements Serializable {
     private int percentageOfCorrectTeacherAnswers = 0;
     private int percentageOfCorrectInClassAnswers = 0;
     private int percentageOfCorrectStudentAnswers = 0;
+    private int amountOfParticipatedTournaments = 0;
     private String creationDate;
     private String lastAccess;
     private List<Integer> tournaments = new ArrayList<>();
@@ -40,6 +41,7 @@ public class StudentDto implements Serializable {
         this.numberOfStudentAnswers = user.getNumberOfStudentAnswers();
         this.lastAccess = DateHandler.toISOString(user.getLastAccess());
         this.creationDate = DateHandler.toISOString(user.getCreationDate());
+        this.amountOfParticipatedTournaments = user.getNumberOfParticipatedTournaments();
 
         if (this.numberOfTeacherAnswers != 0)
             this.percentageOfCorrectTeacherAnswers = user.getNumberOfCorrectTeacherAnswers() * 100 / this.numberOfTeacherAnswers;
@@ -177,6 +179,14 @@ public class StudentDto implements Serializable {
 
     public void setPercentageOfCorrectStudentAnswers(int percentageOfCorrectStudentAnswers) {
         this.percentageOfCorrectStudentAnswers = percentageOfCorrectStudentAnswers;
+    }
+
+    public int getAmountOfParticipatedTournaments() {
+        return amountOfParticipatedTournaments;
+    }
+
+    public void setAmountOfParticipatedTournaments(int amountOfParticipatedTournaments) {
+        this.amountOfParticipatedTournaments = amountOfParticipatedTournaments;
     }
 
     @Override

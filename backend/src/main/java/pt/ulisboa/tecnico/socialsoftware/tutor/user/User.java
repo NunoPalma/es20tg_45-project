@@ -49,7 +49,7 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectTeacherAnswers;
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
-    private Integer numberOfParticipatedTournaments;
+    private Integer numberOfParticipatedTournaments = 0;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -97,7 +97,6 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
-        this.numberOfParticipatedTournaments = 0;
     }
 
     public void addClarification(Clarification clarification) {

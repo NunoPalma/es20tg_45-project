@@ -81,6 +81,7 @@ public class Tournament {
 		this.participants = new HashSet<>();
 		this.creator = creator;
 		this.courseExecution = courseExecution;
+		this.topics = new HashSet<>();
 	}
 
 	public Integer getId() {
@@ -152,7 +153,7 @@ public class Tournament {
 	}
 
 	public void addTopic(Topic topic) {
-		topics.add(topic);
+		this.topics.add(topic);
 	}
 
 	public Integer getNumQuestions() {
