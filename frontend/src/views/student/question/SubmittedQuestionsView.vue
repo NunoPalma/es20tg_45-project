@@ -2,7 +2,6 @@ o<template>
   <div>
     <template>
       <div class="container">
-        <h2>My Statistics</h2>
         <div v-if="stats != null" class="stats-container">
           <div class="items">
             <div class="icon-wrapper" ref="ProposedQuestions">
@@ -70,7 +69,7 @@ o<template>
 
         <template v-slot:item.status="{ item }">
           <v-chip :color="getStatusColor(item.status)" small>
-            <span>{{ item.status }}</span>
+            <span>{{ getStatusToList(item.status) }}</span>
           </v-chip>
         </template>
 
@@ -79,14 +78,14 @@ o<template>
         </template>
 
         <template v-slot:item.image="{ item }">
-          <v-file-input
+          <v-file-input v-if="item.status === 'PENDING'"
             show-size
             dense
             small-chips
             @change="handleFileUpload($event, item)"
             accept="image/*"
           />
-        </template>
+          </template>
 
         <template v-slot:item.action="{ item }">
           <v-tooltip bottom>
@@ -102,15 +101,15 @@ o<template>
             <span>Show Question</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon small class="mr-2" v-on="on" @click="editQuestion(item)"
-                >edit</v-icon
+            <template v-if="item.status === 'REJECTED'" v-slot:activator="{ on }">
+              <v-icon small class="mr-2" v-on="on" @click="editQuestion(item)" data-cy="resubmit"
+                > fas fa-retweet </v-icon
               >
             </template>
-            <span>Edit Question</span>
+            <span>Resubmit Question</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template v-if="item.status === 'PENDING'" v-slot:activator="{ on }">
               <v-icon
                 small
                 class="mr-2"
@@ -231,12 +230,22 @@ export default class SubmittedQuestionsView extends Vue {
     }
   }
   getStatusColor(status: string) {
-    if (status === 'REMOVED') return 'red';
-    else if (status === 'DISABLED') return 'orange';
-    else if (status === 'REJECTED') return 'blue';
+    if (status === 'REMOVED') return 'orange';
+    else if (status === 'DISABLED') return 'green';
+    else if (status === 'REJECTED') return 'red';
     else if (status === 'PENDING') return 'yellow';
     else return 'green';
   }
+
+  getStatusToList(status: string){
+    if (status === 'REMOVED') return 'REMOVED';
+    else if (status === 'DISABLED') return 'APPROVED';
+    else if (status === 'REJECTED') return 'REJECTED';
+    else if (status === 'PENDING') return 'PENDING';
+    else return 'APPROVED';
+  }
+
+
   async handleFileUpload(event: File, question: Question) {
     if (question.id) {
       try {
@@ -331,7 +340,7 @@ export default class SubmittedQuestionsView extends Vue {
   }
   .approvedVersion {
     background-color: rgba(255, 255, 255, 0.75);
-    color: #19d232;
+    color: #4CAF50;
     border-radius: 5px;
     flex-basis: 25%;
     margin: 20px;
