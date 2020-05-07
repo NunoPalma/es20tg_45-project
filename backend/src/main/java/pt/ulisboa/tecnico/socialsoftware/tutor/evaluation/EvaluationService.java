@@ -77,7 +77,7 @@ public class EvaluationService {
         Evaluation evaluation = evaluationRepository.findByKey(question.getKey()).orElseThrow(() -> new TutorException(EVALUATION_NOT_AVAILABLE, question.getKey()));
 
         if (evaluationDto.getApprovedEvaluation()) {
-            question.setStatus(Question.Status.AVAILABLE);
+            question.setStatus(Question.Status.DISABLED);
             QuestionDto questionDto = new QuestionDto(question);
             evaluationDto.setSubmittedQuestionDto(questionDto);
             evaluation.approveEvaluation();

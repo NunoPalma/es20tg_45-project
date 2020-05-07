@@ -180,6 +180,16 @@ public class QuestionService {
         return new QuestionDto(question);
     }
 
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public QuestionDto resubmitQuestion(Integer questionId, QuestionDto questionDto) {
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new TutorException(QUESTION_NOT_FOUND, questionId));
+        question.resubmit(questionDto);
+        return new QuestionDto(question);
+    }
+
 
     @Retryable(
             value = { SQLException.class },
@@ -344,6 +354,31 @@ public class QuestionService {
 
         return sortedQuestions.stream().map(QuestionDto::new).collect(Collectors.toList());
 
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public List<Integer> calculateApprovedVersusProposed(String username) {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new TutorException(USERNAME_NOT_FOUND, username);
+        }
+        List<Integer> userQuestionsStats = new ArrayList<>();
+        Set<Question> userSubmittedQuestions = user.getSubmittedQuestions();
+        userQuestionsStats.add(userSubmittedQuestions.size());
+        int approvedQuestions = 0;
+
+        for(Question q: userSubmittedQuestions){
+            if(q.getStatus() == Question.Status.DISABLED || q.getStatus() == Question.Status.AVAILABLE){
+                approvedQuestions += 1;
+            }
+        }
+
+        userQuestionsStats.add(approvedQuestions);
+        return userQuestionsStats;
     }
 
     public void deleteQuizQuestion(QuizQuestion quizQuestion) {
