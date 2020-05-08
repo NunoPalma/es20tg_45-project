@@ -18,6 +18,7 @@ import Evaluation from '@/models/management/Evaluation';
 
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
+import StudentTournamentStats from "@/models/statement/StudentTournamentStats";
 import Discussion from '@/models/management/Discussion';
 import User from '@/models/user/User';
 
@@ -826,7 +827,6 @@ export default class RemoteServices {
 
   static async createTournament(tournament: Tournament): Promise<Tournament> {
     if (tournament) {
-      console.log(tournament);
       return httpClient
         .post(
           `/tournament/create/${Store.getters.getCurrentCourse.courseExecutionId}/${Store.getters.getUser.id}`,
@@ -840,6 +840,23 @@ export default class RemoteServices {
         });
     } else {
       throw Error(await this.errorMessage('No tournament provided.'));
+    }
+  }
+
+  static async cancelTournament(tournamentId: number): Promise<Tournament> {
+    if (tournamentId) {
+      return httpClient
+        .post(
+          `/tournament/cancel/${Store.getters.getUser.id}/${tournamentId}`
+        )
+        .then(response => {
+          return new Tournament(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    } else {
+      throw Error(await this.errorMessage('No tournament id provided.'));
     }
   }
 
@@ -869,6 +886,17 @@ export default class RemoteServices {
           throw Error(await this.errorMessage(error));
         });
     else throw Error(await this.errorMessage('No tournament id provided.'));
+  }
+
+  static async getStudentTournamentStats(): Promise<StudentTournamentStats> {
+    return httpClient
+      .get(`/tournament/stats/${Store.getters.getUser.id}`)
+      .then(response => {
+          return new StudentTournamentStats(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
   }
 
   static async changeVisibility(

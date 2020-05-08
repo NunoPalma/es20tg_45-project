@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.TopicRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.TournamentService
@@ -29,16 +30,17 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 class CreateTournamentServiceSpockTest extends Specification {
 
 	static final String TOURNAMENT_NAME = "TournamentOne"
-	static final LocalDateTime START_DATE = LocalDateTime.now().withSecond(0).withNano(0)
-	static final LocalDateTime OVERLAP_END_DATE = START_DATE
-	static final LocalDateTime EARLY_END_DATE = START_DATE.minusDays(1)
-	static final LocalDateTime END_DATE = START_DATE.plusDays(20)
+	static final String TOURNAMENT_NAME_1 = "Tournament1"
 	static final Integer ONE_QUESTION = 1
 	static final String TOPIC_NAME = "InterestingTopic"
 	static final int USER_ID = 1
 	static final String COURSE_NAME = "LEIC-T"
 	static final String COURSE_EXECUTION_ACRONYM = "CS101"
 	static final String COURSE_EXECUTION_ACADEMIC_TERM = "1º Semestre"
+	static final LocalDateTime START_DATE = LocalDateTime.now()
+	static final LocalDateTime END_DATE = START_DATE.plusDays(20)
+	static final LocalDateTime OVERLAP_END_DATE = START_DATE
+	static final LocalDateTime EARLY_END_DATE = START_DATE.minusDays(1)
 
 	@Autowired
 	TournamentService tournamentService
@@ -58,8 +60,11 @@ class CreateTournamentServiceSpockTest extends Specification {
 	@Autowired
 	TournamentRepository tournamentRepository
 
+	def tournament
 	def tournamentDto
 	def topic
+	def topics
+	def topicStandard
 	def topicNameList
 	def topicsEmpty
 	def topicsNotEmpty
@@ -69,11 +74,20 @@ class CreateTournamentServiceSpockTest extends Specification {
 	def formatter
 
 	def setup() {
-		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-		topic = new Topic()
-		topic.setName(TOPIC_NAME)
-		topicRepository.save(topic)
+		course = new Course()
+		course.setName(COURSE_NAME)
+		courseRepository.save(course)
+
+		topicStandard = new Topic()
+		topicStandard.setName(TOPIC_NAME)
+		topicStandard.setCourse(course)
+		topicRepository.save(topicStandard)
+		topic = new TopicDto(topicStandard)
+
+		course.addTopic(topicStandard)
+		courseRepository.save(course)
 
 		topicNameList = new ArrayList<>()
 		topicNameList.add(TOPIC_NAME)
@@ -83,17 +97,14 @@ class CreateTournamentServiceSpockTest extends Specification {
 		topicsNotEmpty = new HashSet<>()
 		topicsNotEmpty.add(topic)
 
+		topics = new HashSet<Topic>()
+		topics.add(topicStandard)
+
 		userStudent = new User()
 		userStudent.setRole(User.Role.STUDENT)
 		userStudent.setKey(USER_ID)
 		userRepository.save(userStudent)
 
-		course = new Course()
-		course.setName(COURSE_NAME)
-		course.addTopic(topic)
-		courseRepository.save(course)
-
-		topic.setCourse(course)
 
 		courseExecution = new CourseExecution()
 		courseExecution.setAcronym(COURSE_EXECUTION_ACRONYM)
@@ -101,26 +112,31 @@ class CreateTournamentServiceSpockTest extends Specification {
 		courseExecution.setCourse(course)
 		courseExecutionRepository.save(courseExecution)
 
-		tournamentDto = new TournamentDto()
-		tournamentDto.setName(TOURNAMENT_NAME)
-		tournamentDto.setStartDate(START_DATE.format(formatter))
-		tournamentDto.setEndDate(END_DATE.format(formatter))
-		tournamentDto.setTopics(topicsNotEmpty as Set<TopicDto>)
-		tournamentDto.setNumQuestions(ONE_QUESTION)
+		tournament = new Tournament()
+		tournament.setName(TOURNAMENT_NAME)
+		tournament.setStartDate(START_DATE)
+		tournament.setEndDate(END_DATE)
+		tournament.setTopics(topics)
+		tournament.setNumQuestions(ONE_QUESTION)
+		tournament.setCreator(userStudent)
+		tournament.setCourseExecution(courseExecution)
+		tournamentRepository.save(tournament)
+
+		tournamentDto = new TournamentDto(tournament, true)
 	}
 
 	@Unroll
 	def "invalid arguments: tournamentName=#tournamentName | startDate=#startDate | endDate=#endDate \
         | numQuestions=#numQuestions || errorMessage=#errorMessage"() {
 		given: "a TournamentDto"
-		def tournamentDto = new TournamentDto(userStudent, courseExecution)
+		def tournamentDto = new TournamentDto(tournament, true)
 		tournamentDto.setName(tournamentName)
 		tournamentDto.setStartDate(startDate ? startDate.format(formatter) : null)
 		tournamentDto.setEndDate(endDate ? endDate.format(formatter) : null)
 		tournamentDto.setNumQuestions(numQuestions)
 
 		when:
-		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
+		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), tournamentDto)
 
 		then:
 		def error = thrown(TutorException)
@@ -137,13 +153,12 @@ class CreateTournamentServiceSpockTest extends Specification {
 		TOURNAMENT_NAME | START_DATE | END_DATE         | 0            || TOURNAMENT_NOT_ENOUGH_QUESTIONS
 	}
 
-	def "tournament creator is a student"() {
+	def "tournament creator is not a student"() {
 		given: "a user that is not a student"
-		//tournamentDto.setName("HelloTournament")
 		userStudent.setRole(User.Role.TEACHER)
 
 		when:
-		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
+		tournamentService.createTournament((Integer) userStudent.getId(), (Integer) courseExecution.getId(), (TournamentDto) tournamentDto)
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
@@ -152,10 +167,10 @@ class CreateTournamentServiceSpockTest extends Specification {
 
 	def "create tournament without enough topics"() {
 		given: "an empty list of topics"
-		def emptyTopicNameList = new LinkedList<String>();
+		tournamentDto.setTopics(new HashSet<TopicDto>());
 
 		when:
-		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), emptyTopicNameList, tournamentDto)
+		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), tournamentDto)
 
 		then: "an exception is thrown"
 		def exception = thrown(TutorException)
@@ -164,30 +179,32 @@ class CreateTournamentServiceSpockTest extends Specification {
 
 	def "all arguments are valid and create tournament"() {
 		given: "a tournamentDto"
-		def tournamentDto = new TournamentDto()
-		tournamentDto.setName(TOURNAMENT_NAME)
-		tournamentDto.setStartDate(START_DATE.format(formatter))
-		tournamentDto.setEndDate(END_DATE.format(formatter))
-		tournamentDto.setNumQuestions(ONE_QUESTION)
-		tournamentDto.setTopics(topicsNotEmpty)
+		def _tournament = new Tournament()
+		_tournament.setName(TOURNAMENT_NAME_1)
+		_tournament.setStartDate(START_DATE)
+		_tournament.setEndDate(END_DATE)
+		_tournament.setTopics(topics)
+		_tournament.setNumQuestions(ONE_QUESTION)
+		_tournament.setCreator(userStudent)
+		_tournament.setCourseExecution(courseExecution)
+		def tournamentDto = new TournamentDto(_tournament, true)
 
 		when:
-		def result = tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), topicNameList, tournamentDto)
+		def result = tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), tournamentDto)
 
 		then: "the returned data are correct"
-		result.name == TOURNAMENT_NAME
+		result.name == TOURNAMENT_NAME_1
 		result.startDate == START_DATE.format(formatter)
 		result.endDate == END_DATE.format(formatter)
 		result.numQuestions == ONE_QUESTION
 		result.topics.size() == 1
 		and: "tournament is created"
-		tournamentRepository.findAll().size() == 1
-		def tournament = tournamentRepository.findTournamentByName(courseExecution.getId(), TOURNAMENT_NAME).get()
+		def tournament = tournamentRepository.findTournamentByName(courseExecution.getId(), TOURNAMENT_NAME_1).get()
 		tournament != null
 		and: "has the correct values"
-		tournament.name == TOURNAMENT_NAME
-		tournament.startDate == START_DATE
-		tournament.endDate == END_DATE
+		tournament.name == TOURNAMENT_NAME_1
+		tournament.startDate.format(formatter) == START_DATE.format(formatter)
+		tournament.endDate.format(formatter) == END_DATE.format(formatter)
 		tournament.numQuestions == ONE_QUESTION
 		tournament.topics.size() == 1
 	}

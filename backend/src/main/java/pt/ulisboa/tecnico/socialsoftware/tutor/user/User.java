@@ -52,6 +52,7 @@ public class User implements UserDetails, DomainEntity {
     private Integer numberOfCorrectTeacherAnswers;
     private Integer numberOfCorrectInClassAnswers;
     private Integer numberOfCorrectStudentAnswers;
+    private Integer numberOfParticipatedTournaments;
 
     @Column(name = "privacy")
     private Boolean privacy;
@@ -93,6 +94,7 @@ public class User implements UserDetails, DomainEntity {
 
 
     public User() {
+        this.numberOfParticipatedTournaments = 0;
     }
 
     public User(String name, String username, Integer key, User.Role role) {
@@ -541,5 +543,21 @@ public class User implements UserDetails, DomainEntity {
         }
 
         return result;
+    }
+
+    public Integer getNumberOfParticipatedTournaments() {
+        return this.enrolledTournaments.size();
+    }
+
+    public void addTournament(Tournament tournament) {
+        this.enrolledTournaments.add(tournament);
+    }
+
+    public boolean isEqual(Object obj) {
+        if (getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+
+        // ol' == won't work for wrapper types because it compares references
+        return this.getId().equals(user.getId());
     }
 }

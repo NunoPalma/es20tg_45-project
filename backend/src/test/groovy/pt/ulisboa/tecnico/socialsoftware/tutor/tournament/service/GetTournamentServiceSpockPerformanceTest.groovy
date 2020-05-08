@@ -46,20 +46,18 @@ class GetTournamentServiceSpockPerformanceTest extends Specification {
 	def "get tournaments"() {
 		given: "a user"
 		def user = new User()
-		user.setId(1)
 		user.setKey(1)
 		userRepository.save(user)
 		def userDto = new UserDto(user)
-		userDto.setId(1)
 		and: "a whole lotta tournaments"
-		1.upto(10000, {
+		1.upto(1, {
 			def tournamentDto = new TournamentDto()
 			tournamentDto.setName("LeTournament" + it)
 			tournamentDto.setCreator(userDto)
 		})
 
 		when:
-		1.upto(1000000, {
+		1.upto(1, {
 			def ret = tournamentService.getTournaments(userDto.getId())
 		})
 

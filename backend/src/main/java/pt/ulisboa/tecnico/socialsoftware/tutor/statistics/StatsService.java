@@ -105,6 +105,7 @@ public class StatsService {
         }
         return statsDto;
     }
+}
 
     @Retryable(
             value = { SQLException.class },

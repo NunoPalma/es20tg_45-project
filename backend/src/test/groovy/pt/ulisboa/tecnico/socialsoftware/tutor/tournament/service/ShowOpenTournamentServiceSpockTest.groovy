@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 
 @DataJpaTest
 class ShowOpenTournamentServiceSpockTest extends Specification {
+
 	static final String TOURNAMENT_NAME_ONE = "Tournament_A"
 	static final String TOURNAMENT_NAME_TWO = "Tournament_B"
 	static final LocalDateTime START_DATE = LocalDateTime.now()
@@ -87,6 +88,7 @@ class ShowOpenTournamentServiceSpockTest extends Specification {
 		tournamentOne.setState(Tournament.State.OPEN)
 		tournamentOne.setCourseExecution(courseExecution)
 		tournamentOne.addTopic(topic)
+		tournamentOne.setCreator(student)
 		tournamentRepository.save(tournamentOne)
 		tournamentService.enrollStudent(student.getId(), tournamentOne.getId())
 		def tournamentTwo = new Tournament()
@@ -97,11 +99,12 @@ class ShowOpenTournamentServiceSpockTest extends Specification {
 		tournamentTwo.setState(Tournament.State.OPEN)
 		tournamentTwo.setCourseExecution(courseExecution)
 		tournamentTwo.addTopic(topic)
+		tournamentTwo.setCreator(student)
 		tournamentRepository.save(tournamentTwo)
 		tournamentService.enrollStudent(student.getId(), tournamentTwo.getId())
 
 		when:
-		def result = tournamentService.getOpenTournaments(student.getId())
+		def result = tournamentService.getTournaments(student.getId())
 
 		then:
 		def tournament_one = result.get(0)

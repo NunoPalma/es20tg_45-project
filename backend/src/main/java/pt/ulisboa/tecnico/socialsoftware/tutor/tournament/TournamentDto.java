@@ -22,19 +22,15 @@ public class TournamentDto implements Serializable {
 	private String startDate;
 	private String endDate;
 	private Set<TopicDto> topics = new HashSet<>();
-	private int numQuestions;
-	private QuizDto quizDto;
+	private Integer numQuestions;
+	private QuizDto quizDto = null;
 	private Tournament.State state;
 
 	@Transient
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	public TournamentDto() {}
 
-	public TournamentDto(UserDto creator, Integer courseExecution) {
-		this.creator = creator;
-		this.courseExecutionId = courseExecution;
-	}
 
 	public TournamentDto(Tournament tournament, boolean deepCopy) {
 		this.id = tournament.getId();
@@ -56,6 +52,8 @@ public class TournamentDto implements Serializable {
 					.collect(Collectors.toSet());
 		}
 		this.tournamentId = tournament.getId();
+		if (tournament.getQuiz() != null)
+			this.quizDto = new QuizDto(tournament.getQuiz(), true);
 	}
 
 	public Integer getId() {

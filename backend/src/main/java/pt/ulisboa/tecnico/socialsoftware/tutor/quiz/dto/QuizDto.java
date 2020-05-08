@@ -26,8 +26,8 @@ public class QuizDto implements Serializable {
     private String resultsDate;
     private Integer series;
     private String version;
-    private int numberOfQuestions;
-    private int numberOfAnswers;
+    private Integer numberOfQuestions;
+    private Integer numberOfAnswers;
     private List<QuestionDto> questions = new ArrayList<>();
 
     public QuizDto(){
