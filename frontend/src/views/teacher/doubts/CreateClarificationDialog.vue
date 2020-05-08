@@ -98,6 +98,7 @@
 
 <script lang="ts">
 import { Component, Model, Prop, Vue } from 'vue-property-decorator';
+import Doubt from '../../../models/management/Doubt';
 import Clarification from '../../../models/management/Clarification';
 import RemoteServices from '@/services/RemoteServices';
 import Discussion from '@/models/management/Discussion';

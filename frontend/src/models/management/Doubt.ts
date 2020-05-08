@@ -11,6 +11,7 @@ export default class Doubt {
   isNew: Boolean = false;
   doubtType: string = 'PRINCIPAL';
   showDoubt: boolean = false;
+  questionTitle: string = '';
 
   constructor(jsonObj?: Doubt) {
     if (jsonObj) {
@@ -21,6 +22,7 @@ export default class Doubt {
       this.status = jsonObj.status;
       this.content = jsonObj.content;
       this.clarificationDto = jsonObj.clarificationDto;
+      this.questionTitle = jsonObj.questionTitle;
       this.doubtType = jsonObj.doubtType;
     }
   }

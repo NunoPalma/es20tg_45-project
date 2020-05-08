@@ -16,6 +16,7 @@ public class DoubtDto implements Serializable {
     private String title;
     private String creationDate;
     private boolean isNew;
+    private String questionTitle;
 
     public DoubtDto(){
     }
@@ -46,6 +47,16 @@ public class DoubtDto implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getQuestionTitle() {
+        return questionTitle;
+    }
+
+    public void setQuestionTitle(String questionTitle) {
+        this.questionTitle = questionTitle;
+        this.clarificationDto = null;
+        this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
     }
 
     public String getQuestionTitle() {
