@@ -27,6 +27,7 @@ public class StudentDto implements Serializable {
     private String creationDate;
     private String lastAccess;
     private List<Integer> tournaments = new ArrayList<>();
+    private boolean dashboardPrivacy;
 
     public StudentDto(User user) {
         this.username = user.getUsername();
@@ -40,6 +41,7 @@ public class StudentDto implements Serializable {
         this.numberOfStudentAnswers = user.getNumberOfStudentAnswers();
         this.lastAccess = DateHandler.toISOString(user.getLastAccess());
         this.creationDate = DateHandler.toISOString(user.getCreationDate());
+        this.dashboardPrivacy = user.isDashboardPrivacy();
 
         if (this.numberOfTeacherAnswers != 0)
             this.percentageOfCorrectTeacherAnswers = user.getNumberOfCorrectTeacherAnswers() * 100 / this.numberOfTeacherAnswers;
@@ -57,6 +59,14 @@ public class StudentDto implements Serializable {
 
         for(Tournament tournament: user.getTournaments())
             tournaments.add(tournament.getId());
+    }
+
+    public boolean isDashboardPrivacy() {
+        return dashboardPrivacy;
+    }
+
+    public void setDashboardPrivacy(boolean dashboardPrivacy) {
+        this.dashboardPrivacy = dashboardPrivacy;
     }
 
     public String getUsername() {

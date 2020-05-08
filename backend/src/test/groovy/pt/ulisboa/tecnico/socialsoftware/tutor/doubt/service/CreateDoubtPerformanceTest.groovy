@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
@@ -48,6 +50,7 @@ class CreateDoubtPerformanceTest extends Specification {
     public static final Integer TEACHER_KEY = 3
     public static final Integer USER_KEY = 90000
     public static final String DOUBT_CONTENT = "doubt content"
+    public static final String DOUBT_TITLE = "doubt title"
 
 
     @Autowired
@@ -74,6 +77,9 @@ class CreateDoubtPerformanceTest extends Specification {
     @Autowired
     QuizAnswerRepository quizAnswerRepository
 
+    @Autowired
+    QuestionAnswerRepository questionAnswerRepository
+
     def question
     def questiondto
     def optiondto
@@ -85,6 +91,7 @@ class CreateDoubtPerformanceTest extends Specification {
     def options
     def quizquestion
     def quizanswer
+    def questionanswer
 
 
     def setup() {
@@ -127,6 +134,9 @@ class CreateDoubtPerformanceTest extends Specification {
         quizquestion = new QuizQuestion(quiz, question, 1)
         quizQuestionRepository.save(quizquestion)
 
+        questionanswer = new QuestionAnswer(quizanswer,quizquestion,30);
+        questionAnswerRepository.save(questionanswer);
+
 
     }
 
@@ -138,7 +148,7 @@ class CreateDoubtPerformanceTest extends Specification {
         1.upto(1000, {
             doubtdto = new DoubtDto()
             doubtdto.setContent(DOUBT_CONTENT + it)
-            doubtService.createDoubt(doubtdto, question.getId(), student.getId())
+            doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
         })
 
         then:
@@ -156,6 +166,7 @@ class CreateDoubtPerformanceTest extends Specification {
         DoubtService doubtService() {
             return new DoubtService()
         }
+
     }
 
 }
