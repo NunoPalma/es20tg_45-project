@@ -29,6 +29,7 @@ import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import SolveDoubtsView from '@/views/teacher/doubts/SolveDoubtsView.vue';
 import SubmittedQuestionsView from '@/views/student/question/SubmittedQuestionsView.vue';
+import SeeStudentDiscussionsDashBoard from "@/views/student/SeeStudentDiscussionsDashBoard.vue";
 Vue.use(Router);
 
 let router = new Router({
@@ -167,6 +168,15 @@ let router = new Router({
           component: SubmittedQuestionsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Student Questions',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'discussionStats',
+          name: 'student-discussionStats',
+          component: SeeStudentDiscussionsDashBoard,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student DiscussionStats',
             requiredAuth: 'Student'
           }
         },

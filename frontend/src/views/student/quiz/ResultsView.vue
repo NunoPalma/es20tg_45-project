@@ -104,7 +104,7 @@ import ResultComponent from '@/views/student/quiz/ResultComponent.vue';
 import Doubt from '@/models/management/Doubt';
 import Discussion from '@/models/management/Discussion';
 import RemoteServices from '@/services/RemoteServices';
-import SeeQuestionDoubtDialog from '@/views/student/SeeDiscussionDoubtDialog.vue';
+import SeeQuestionDoubtDialog from '@/views/student/SeeQuestionDiscussionDialog.vue';
 import CreateDiscussionDialog from '@/views/student/CreateDiscussionDialog.vue';
 
 @Component({

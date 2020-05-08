@@ -12,7 +12,6 @@ public class DoubtDto implements Serializable {
     private String author;
     private Doubt.Status status;
     private ClarificationDto clarificationDto;
-    private String questionTitle;
     private String title;
     private String creationDate;
     private boolean isNew;
@@ -46,14 +45,6 @@ public class DoubtDto implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
-
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
     }
 
     public ClarificationDto getClarificationDto() {

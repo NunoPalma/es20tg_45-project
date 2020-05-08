@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
 
 
 import java.security.Principal;
@@ -46,6 +47,8 @@ public class DoubtController {
         return doubtService.findUserDiscussions(user.getId());
     }
 
+
+
     @PostMapping(value = "quizQuestion/{quizQuestionId}/discussions")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public DiscussionDto createDiscussion(Principal principal, @RequestBody DiscussionDto discussionDto, @PathVariable int quizQuestionId){
@@ -72,5 +75,6 @@ public class DoubtController {
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
         return doubtService.addDoubt(discussionId, studentId, doubtDto);
     }
+
 
 }

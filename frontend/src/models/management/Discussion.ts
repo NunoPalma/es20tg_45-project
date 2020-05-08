@@ -7,6 +7,7 @@ export default class Discussion {
   questionTitle: string = '';
   title: string = '';
   author: string = '';
+  authorId: number | null = null;
   status: String = 'OPEN';
 
   constructor(jsonObj?: Discussion) {
@@ -14,6 +15,7 @@ export default class Discussion {
       this.title = jsonObj.title;
       this.id = jsonObj.id;
       this.visibility = jsonObj.visibility;
+      this.authorId = jsonObj.authorId;
       this.questionTitle = jsonObj.questionTitle;
       this.postsDto = jsonObj.postsDto.map((doubt: Doubt) => new Doubt(doubt));
       // @ts-ignore

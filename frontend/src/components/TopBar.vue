@@ -135,7 +135,7 @@
             </v-list-item>
             <v-list-item to="/management/discussions">
               <v-list-item-action>
-                <v-icon>question_answer</v-icon>
+                <v-icon>fas fa-question-circle</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Discussions</v-list-item-title>
@@ -184,14 +184,6 @@
                 <v-list-item-title data-cy="solved">Solved</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/doubts">
-              <v-list-item-action>
-                <v-icon>question_answer</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title data-cy="discussionsButton">Discussions</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
             <v-list-item to="/student/tournaments">
               <v-list-item-action>
                 <v-icon>fas fa-trophy</v-icon>
@@ -206,6 +198,11 @@
         <v-btn to="/student/questions" v-if="isStudent && currentCourse" text dark>
           My Questions
           <v-icon>question_answer</v-icon>
+        </v-btn>
+        <v-btn to="/student/doubts" v-if="isStudent && currentCourse" text dark>
+          My Discussions
+          <v-icon>fas fa-question-circle
+          </v-icon>
         </v-btn>
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats
@@ -258,6 +255,11 @@
       >
         My Questions
         <v-icon>question_answer</v-icon>
+      </v-btn>
+      <v-btn to="/student/doubts" v-if="isStudent && currentCourse" text dark>
+        My Discussions
+        <v-icon>fas fa-question-circle
+        </v-icon>
       </v-btn>
 
 
@@ -442,6 +444,7 @@
             </v-list-item-action>
             <v-list-item-content>My Questions</v-list-item-content>
           </v-list-item>
+
 
           <v-list-item to="/student/stats">
             <v-list-item-action>

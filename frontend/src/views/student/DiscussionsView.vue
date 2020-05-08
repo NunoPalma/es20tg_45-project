@@ -1,5 +1,6 @@
 <template>
   <div>
+    <v-btn to="discussionStats"><v-card>Statistics</v-card></v-btn>
     <div class="stats-container">
       <div class="items">
         <div class="icon-wrapper" ref="discussionsMade">
