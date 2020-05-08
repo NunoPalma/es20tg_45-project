@@ -199,7 +199,7 @@
           My Questions
           <v-icon>question_answer</v-icon>
         </v-btn>
-        <v-btn to="/student/doubts" v-if="isStudent && currentCourse" text dark>
+        <v-btn  data-cy="studentDiscussions" to="/student/doubts" v-if="isStudent && currentCourse" text dark>
           My Discussions
           <v-icon>fas fa-question-circle
           </v-icon>

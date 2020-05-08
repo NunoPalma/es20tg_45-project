@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,8 @@ public class User implements UserDetails, DomainEntity {
     @Column(unique=true, nullable = false)
     private Integer key;
 
+    @Column(name="dashboard_privacy")
+    @Type(type="true_false")
     private boolean dashboardPrivacy = false;
 
     @Enumerated(EnumType.STRING)

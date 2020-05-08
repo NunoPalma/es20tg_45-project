@@ -1,4 +1,4 @@
-describe('Doubts List walkthrough', () => {
+describe('Discussion List walkthrough', () => {
   beforeEach(() => {
     cy.demoStudentLogin();
     cy.get('[data-cy="QuizzesButton"]').click();
@@ -9,14 +9,10 @@ describe('Doubts List walkthrough', () => {
     cy.contains('Logout').click();
   });
 
-  it('login creates a doubt and see it on the doubt list', () => {
+  it('login creates a discussion and see it on the discussion list', () => {
     cy.contains('Component').click();
-    cy.createDoubt1('List Title Test', 'List Test');
+    cy.createDiscussion('List Title Test', 'List Test');
     cy.get('[data-cy="QuizzesButton"]').click();
-    cy.contains('Doubts').click();
-    cy.contains('List Test').click({force:true});
-    cy.contains('Back').click();
+    cy.contains('My Discussions').click();
   });
-
-
 });

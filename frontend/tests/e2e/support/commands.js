@@ -30,7 +30,6 @@ Cypress.Commands.add('demoTeacherLogin', () => {
 
 Cypress.Commands.add('demoStudentLogin', () => {
   cy.visit('/');
-<<<<<<< Updated upstream
   cy.get('[data-cy="studentButton"]').click();
   cy.contains('My Questions').click();
 });
@@ -39,6 +38,27 @@ Cypress.Commands.add('demoTeacherLogin', () => {
   cy.visit('/');
   cy.get('[data-cy="teacherButton"]').click();
   cy.contains('Management').click();
+});
+
+Cypress.Commands.add('createDiscussion', (content, title) => {
+  cy.get('[data-cy="QuizzesButton"]').click();
+  cy.contains('Solved').click();
+
+  cy.contains('Component-and-connector viewtype')
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 4)
+      .find('[data-cy="goButton"]')
+      .click();
+
+  cy.get('[data-cy="newDoubtButton"]').click();
+  if(title != null) {
+    cy.get('[data-cy="Title"]').type(title);
+  }
+  cy.get('[data-cy="Content"]').type(content);
+  cy.get('[data-cy="saveButton"]').click();
+
 });
 
 Cypress.Commands.add('createDoubt1', (content, title) => {
@@ -91,14 +111,12 @@ Cypress.Commands.add('createDoubt2', description => {
 
   cy.get('[data-cy="newDoubtButton"]').click();
   cy.get('[data-cy="Content"]').type(description);
-=======
   cy.get('[data-cy="demoStudentButton"]').click();
 });
 
 Cypress.Commands.add('createClarification', (status, response) => {
   cy.get('[data-cy="createButton"]').click({ multiple: true });
   cy.get('[data-cy="Response"]').type(response);
->>>>>>> Stashed changes
   cy.get('[data-cy="saveButton"]').click();
   cy.contains('Logout').click();
 });
@@ -110,7 +128,7 @@ Cypress.Commands.add('closeClarificationErrorMessage', () => {
     .click();
 });
 
-<<<<<<< Updated upstream
+
 Cypress.Commands.add(
   'createFromCourseExecution',
   (name, acronym, academicTerm) => {
@@ -275,7 +293,7 @@ Cypress.Commands.add('createTournamentNoTopics', (name, startDate, endDate) => {
 Cypress.Commands.add('enrollStudent', tournamentName => {
   let search = '[data-cy="' + tournamentName + '"]';
   cy.get(search).click({ force: true });
-=======
+
 Cypress.Commands.add('createDoubt', description => {
   cy.demoStudentLogin();
   cy.get('[data-cy="QuizzesButton"]').click();
@@ -293,5 +311,5 @@ Cypress.Commands.add('createDoubt', description => {
   cy.get('[data-cy="Content"]').type(description);
   cy.get('[data-cy="saveButton"]').click();
   cy.contains('Logout').click();
->>>>>>> Stashed changes
+
 });
