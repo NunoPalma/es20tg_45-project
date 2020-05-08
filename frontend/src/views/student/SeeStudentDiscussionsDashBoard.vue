@@ -1,49 +1,54 @@
 <template>
-  <div class="stats-container">
-    <div class="items">
-      <div class="icon-wrapper" ref="discussionsMade">
-        <animated-number>
-          {{ discussions.length }}</animated-number
-        >
+  <div>
+    <v-btn @click="changePrivacy()"><v-icon>{{privacyIcon()}}</v-icon>{{privacyMessage()}}</v-btn>
+    <div class="stats-container" v-if="!privacy">
+      <div class="items">
+        <div class="icon-wrapper" ref="discussionsMade">
+          <animated-number> {{ discussions.length }}</animated-number>
+        </div>
+        <div class="project-name">
+          <p>Total Discussions Made</p>
+        </div>
       </div>
-      <div class="project-name">
-        <p>Total Discussions Made</p>
+      <div class="items">
+        <div class="icon-wrapper" ref="discussionsMade">
+          <animated-number>
+            {{
+              discussions.filter(disc => disc.status === 'OPEN').length
+            }}</animated-number
+          >
+        </div>
+        <div class="project-name">
+          <p>Total Open Discussions</p>
+        </div>
       </div>
-    </div>
-    <div class="items">
-      <div class="icon-wrapper" ref="discussionsMade">
-        <animated-number>
-          {{
-          discussions.filter(disc => disc.status === 'OPEN').length
-          }}</animated-number
-        >
+      <div class="items">
+        <div class="icon-wrapper" ref="discussionsMade">
+          <animated-number>
+            {{
+              discussions.length -
+                discussions.filter(disc => disc.status === 'OPEN').length
+            }}</animated-number
+          >
+        </div>
+        <div class="project-name">
+          <p>Total Closed Discussions</p>
+        </div>
       </div>
-      <div class="project-name">
-        <p>Total Open Discussions</p>
-      </div>
-    </div>
-    <div class="items">
-      <div class="icon-wrapper" ref="discussionsMade">
-        <animated-number>
-          {{
-          discussions.length - discussions.filter(disc => disc.status === 'OPEN').length
-          }}</animated-number
-        >
-      </div>
-      <div class="project-name">
-        <p>Total Closed Discussions</p>
-      </div>
-    </div>
-    <div class="items">
-      <div class="icon-wrapper" ref="discussionsMade">
-        <animated-number>
-          {{
-         discussions.filter(disc => disc.postsDto[disc.postsDto.length-1].status === 'SOLVED').length
-          }}</animated-number
-        >
-      </div>
-      <div class="project-name">
-        <p>Total Solved Discussions</p>
+      <div class="items">
+        <div class="icon-wrapper" ref="discussionsMade">
+          <animated-number>
+            {{
+              discussions.filter(
+                disc =>
+                  disc.postsDto[disc.postsDto.length - 1].status === 'SOLVED'
+              ).length
+            }}</animated-number
+          >
+        </div>
+        <div class="project-name">
+          <p>Total Solved Discussions</p>
+        </div>
       </div>
     </div>
   </div>
@@ -59,9 +64,17 @@ import Discussion from '@/models/management/Discussion';
   components: { AnimatedNumber }
 })
 export default class SeeStudentDiscussionsDashBoard extends Vue {
-  discussions: Discussion[] = []
-  switch: boolean = false
+  discussions: Discussion[] = [];
+  privacy: boolean = false;
   async created() {
+    await this.$store.dispatch('loading');
+    try {
+      this.privacy = await RemoteServices.getPrivacy();
+      console.log(this.privacy);
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
     await this.$store.dispatch('loading');
     try {
       this.discussions = await RemoteServices.getDiscussions();
@@ -69,6 +82,33 @@ export default class SeeStudentDiscussionsDashBoard extends Vue {
       await this.$store.dispatch('error', error);
     }
     await this.$store.dispatch('clearLoading');
+  }
+
+  async changePrivacy() {
+    await this.$store.dispatch('loading');
+    try {
+      this.privacy = await RemoteServices.setPrivacy();
+      console.log(this.privacy);
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+    await this.$store.dispatch('clearLoading');
+  }
+
+  privacyMessage(): string {
+    if (this.privacy) {
+      return 'Make public';
+    } else {
+      return 'Make private';
+    }
+  }
+
+  privacyIcon(): string {
+    if (this.privacy == false) {
+      return 'fas fa-eye';
+    } else {
+      return 'fas fa-eye-slash';
+    }
   }
 }
 </script>

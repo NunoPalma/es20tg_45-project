@@ -84,14 +84,14 @@ public class DoubtController {
         return doubtService.addDoubt(discussionId, studentId, doubtDto);
     }
 
-    @GetMapping(value = "user/dashboard/privacy")
+    @GetMapping(value = "/user/dashboard/privacy")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public UserDto getDashBoardPrivacy(Principal principal){
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
         return new UserDto(userService.getDashBoardPrivacy(studentId));
     }
 
-    @PutMapping(value = "user/dashboard/privacy")
+    @PutMapping(value = "/user/dashboard/privacy")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public UserDto changeDashBoardPrivacy(Principal principal){
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
