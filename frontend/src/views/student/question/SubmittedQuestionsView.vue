@@ -151,6 +151,7 @@ import Topic from '@/models/management/Topic';
 import EditSubmittedQuestionDialog from '@/views/student/question/EditSubmittedQuestionDialog.vue';
 import ShowSubmittedQuestionDialog from '@/views/student/question/ShowSubmittedQuestionDialog.vue';
 import EditSubmittedQuestionTopics from '@/views/student/question/EditSubmittedQuestionTopics.vue';
+
 import AnimatedNumber from '@/components/AnimatedNumber.vue';
 @Component({
   components: {
@@ -203,6 +204,7 @@ export default class SubmittedQuestionsView extends Vue {
         RemoteServices.getTopics(),
         RemoteServices.getSubmittedQuestions()
       ]);
+
       this.stats = await RemoteServices.getStudentSubmittedQuestionStats();
     } catch (error) {
       await this.$store.dispatch('error', error);
@@ -230,6 +232,7 @@ export default class SubmittedQuestionsView extends Vue {
     }
   }
   getStatusColor(status: string) {
+
     if (status === 'REMOVED') return 'orange';
     else if (status === 'DISABLED') return 'green';
     else if (status === 'REJECTED') return 'red';
@@ -280,6 +283,7 @@ export default class SubmittedQuestionsView extends Vue {
   async onSaveQuestion(question: Question) {
     this.questions = this.questions.filter(q => q.id !== question.id);
     this.questions.unshift(question);
+
     this.stats = await RemoteServices.getStudentSubmittedQuestionStats();
     this.onCloseEditQuestionDialogue();
   }
@@ -320,6 +324,7 @@ export default class SubmittedQuestionsView extends Vue {
     min-height: 100px !important;
   }
 }
+
 .stats-container {
   display: flex;
   flex-direction: row;
@@ -353,9 +358,7 @@ export default class SubmittedQuestionsView extends Vue {
 .project-name {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
+  justify-content: center
 .icon-wrapper {
   font-size: 100px;
   transform: translateY(0px);

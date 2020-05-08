@@ -19,6 +19,8 @@ import Evaluation from '@/models/management/Evaluation';
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
 import StudentTournamentStats from "@/models/statement/StudentTournamentStats";
+import Discussion from '@/models/management/Discussion';
+import User from '@/models/user/User';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -447,12 +449,12 @@ export default class RemoteServices {
       });
   }
 
-  static getDoubts(): Promise<Doubt[]> {
+  static getDiscussions(): Promise<Discussion[]> {
     return httpClient
-      .get('/doubts')
+      .get('/discussions')
       .then(response => {
-        return response.data.map((doubts: any) => {
-          return new Doubt(doubts);
+        return response.data.map((discussion: any) => {
+          return new Discussion(discussion);
         });
       })
       .catch(async error => {
@@ -460,12 +462,12 @@ export default class RemoteServices {
       });
   }
 
-  static getQuestionDoubts(quizQuestionId: number): Promise<Doubt[]> {
+  static getQuestionDiscussions(quizQuestionId: number): Promise<Discussion[]> {
     return httpClient
-      .get(`/quizQuestion/${quizQuestionId}/doubts`)
+      .get(`/quizQuestion/${quizQuestionId}/discussions`)
       .then(response => {
-        return response.data.map((doubts: any) => {
-          return new Doubt(doubts);
+        return response.data.map((discussion: any) => {
+          return new Discussion(discussion);
         });
       })
       .catch(async error => {
@@ -473,12 +475,50 @@ export default class RemoteServices {
       });
   }
 
-  static createDoubt(doubt: Doubt, quizQuestionId: number): Promise<Doubt> {
-    doubt.author = Store.getters.getUser.name;
+  static getPrivacy(): Promise<boolean> {
     return httpClient
-      .post(`/quizQuestion/${quizQuestionId}/doubts`, doubt)
+      .get('/user/dashboard/privacy')
       .then(response => {
-        return new Doubt(response.data);
+        console.log(response.data);
+        return response.data.dashBoardPrivacy;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static setPrivacy(): Promise<boolean> {
+    return httpClient
+      .put('/user/dashboard/privacy')
+      .then(response => {
+        console.log(response.data);
+        return response.data.dashBoardPrivacy;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static createDiscussion(
+    discussion: Discussion,
+    quizQuestionId: number,
+    doubt: Doubt
+  ): Promise<Discussion> {
+    return httpClient
+      .post(`/quizQuestion/${quizQuestionId}/discussions`, discussion)
+      .then(response => {
+        return new Discussion(response.data);
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static addDoubt(discussionId: number, doubt: Doubt): Promise<Discussion> {
+    return httpClient
+      .post(`/discussions/${discussionId}`, doubt)
+      .then(response => {
+        return new Discussion(response.data);
       })
       .catch(async error => {
         throw Error(await this.errorMessage(error));
@@ -742,12 +782,12 @@ export default class RemoteServices {
       });
   }
 
-  static manageDoubts(): Promise<Doubt[]> {
+  static manageDiscussions(): Promise<Discussion[]> {
     return httpClient
-      .get('/doubts/all')
+      .get('/discussions/all')
       .then(response => {
-        return response.data.map((doubt: any) => {
-          return new Doubt(doubt);
+        return response.data.map((discussion: any) => {
+          return new Discussion(discussion);
         });
       })
       .catch(async error => {
@@ -857,5 +897,36 @@ export default class RemoteServices {
       .catch(async error => {
         throw Error(await this.errorMessage(error));
       });
+  }
+
+  static async changeVisibility(
+    discussionId: number | null,
+    status: string
+  ): Promise<Discussion> {
+    if (discussionId)
+      return httpClient
+        .post(`/discussions/${discussionId}/visibility/${status}`)
+        .then(response => {
+          return new Discussion(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    else throw Error(await this.errorMessage('No doubt was provided.'));
+  }
+
+  static async closeDiscussion(
+    discussionId: number | null
+  ): Promise<Discussion> {
+    if (discussionId)
+      return httpClient
+        .post(`/discussions/${discussionId}/close`)
+        .then(response => {
+          return new Discussion(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    else throw Error(await this.errorMessage('No discussion was provided.'));
   }
 }

@@ -12,6 +12,7 @@ public class UserDto implements Serializable {
     private User.Role role;
     private String creationDate;
     private Integer numberOfParticipatedTournaments;
+    private boolean dashBoardPrivacy;
 
     public UserDto(User user) {
         this.id = user.getId();
@@ -20,6 +21,15 @@ public class UserDto implements Serializable {
         this.role = user.getRole();
         this.creationDate = DateHandler.toISOString(user.getCreationDate());
         this.numberOfParticipatedTournaments = user.getNumberOfParticipatedTournaments();
+        this.dashBoardPrivacy = user.isDashboardPrivacy();
+    }
+
+    public boolean isDashBoardPrivacy() {
+        return dashBoardPrivacy;
+    }
+
+    public void setDashBoardPrivacy(boolean dashBoardPrivacy) {
+        this.dashBoardPrivacy = dashBoardPrivacy;
     }
 
     public int getId() {

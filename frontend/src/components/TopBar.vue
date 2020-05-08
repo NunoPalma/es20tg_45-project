@@ -133,12 +133,12 @@
                 <v-list-item-title>ImpExp</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/management/doubts">
+            <v-list-item to="/management/discussions">
               <v-list-item-action>
-                <v-icon>question_answer</v-icon>
+                <v-icon>fas fa-question-circle</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Doubts</v-list-item-title>
+                <v-list-item-title>Discussions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -190,6 +190,12 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Doubts</v-list-item-title>
+            <v-list-item to="/student/tournaments">
+              <v-list-item-action>
+                <v-icon>fas fa-trophy</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -202,6 +208,11 @@
         <v-btn to="/student/tournaments" data-cy="tournaments" v-if="isStudent && currentCourse" text dark>
           Tournaments
           <v-icon>fas fa-trophy</v-icon>
+
+        <v-btn  data-cy="studentDiscussions" to="/student/discussions" v-if="isStudent && currentCourse" text dark>
+          My Discussions
+          <v-icon>fas fa-question-circle
+          </v-icon>
         </v-btn>
         <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
           Stats
@@ -291,6 +302,10 @@
       >
         Tournaments
         <v-icon>question_answer</v-icon>
+      <v-btn to="/student/doubts" v-if="isStudent && currentCourse" text dark>
+        My Discussions
+        <v-icon>fas fa-question-circle
+        </v-icon>
       </v-btn>
 
 
@@ -314,6 +329,9 @@
       <v-btn v-else :href="fenixUrl" text dark>
         Login <v-icon>fas fa-sign-in-alt</v-icon>
       </v-btn>
+
+      </v-toolbar-items>
+      </v-app-bar>
     </v-navigation-drawer>
 
     <!-- Start of mobile side menu -->

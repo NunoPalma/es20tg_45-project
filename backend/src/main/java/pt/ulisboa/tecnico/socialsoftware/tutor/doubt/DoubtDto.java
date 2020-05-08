@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 
 import java.io.Serializable;
 
@@ -11,7 +12,9 @@ public class DoubtDto implements Serializable {
     private String author;
     private Doubt.Status status;
     private ClarificationDto clarificationDto;
-    private String questionTitle;
+    private String title;
+    private String creationDate;
+    private boolean isNew;
 
     public DoubtDto(){
     }
@@ -20,19 +23,28 @@ public class DoubtDto implements Serializable {
         this.id = doubt.getId();
         this.content = doubt.getContent();
         this.author = doubt.getAuthor().getName();
+        this.creationDate = doubt.getCreationDate();
         this.status = doubt.getStatus();
         if(doubt.getClarification() != null) {
             this.clarificationDto = new ClarificationDto(doubt.getClarification());
         }
-        this.questionTitle = doubt.getQuestionAnswer().getQuizQuestion().getQuestion().getTitle();
+        this.isNew = doubt.isNew();
     }
 
-    public String getQuestionTitle() {
-        return questionTitle;
+    public String getCreationDate() {
+        return creationDate;
     }
 
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
+    public boolean isNew(){
+        return isNew;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public ClarificationDto getClarificationDto() {

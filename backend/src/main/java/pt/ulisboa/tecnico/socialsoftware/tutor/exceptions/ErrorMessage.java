@@ -126,6 +126,14 @@ public enum ErrorMessage {
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
     DOUBT_NOT_FOUND("Doubt not found"),
+    DISCUSSION_NOT_FOUND("Discussion not found"),
+    DISCUSSION_CANNOT_BE_CLOSED("Discussion cannot be closed due to unsolved questions"),
+    DISCUSSION_USER_IS_EMPTY(""),
+    DISCUSSION_IS_EMPTY(""),
+    DISCUSSION_USER_IS_NOT_A_STUDENT(""),
+    USER_IS_EMPTY("User has no identifier"),
+    USER_IS_NOT_STUDENT("User doens't havr the role of student, but should"),
+
 
 
     CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request"),

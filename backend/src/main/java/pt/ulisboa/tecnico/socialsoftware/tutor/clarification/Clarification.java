@@ -53,7 +53,7 @@ public class Clarification {
         }
 
         if(author.getCourseExecutions().stream()
-                .noneMatch(courseExecution -> courseExecution.getCourse().equals(doubt.getQuestion().getCourse()))) {
+                .noneMatch(courseExecution -> courseExecution.getCourse().equals(doubt.getDiscussion().getQuestion().getCourse()))) {
             throw new TutorException(ErrorMessage.CLARIFICATION_INVALID_COURSE_TEACHER);
         }
     }

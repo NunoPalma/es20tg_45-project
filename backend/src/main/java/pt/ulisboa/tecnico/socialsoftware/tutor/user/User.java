@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Discussion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
@@ -76,10 +79,18 @@ public class User implements UserDetails, DomainEntity {
     private Set<Tournament> enrolledTournaments = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "author", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Discussion> discussions = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "author", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Doubt> doubts = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Clarification> clarifications = new HashSet<>();
+
+    @ColumnDefault("0")
+    @Column(name="dashboard_privacy", nullable = false)
+    @Type(type="true_false")
+    private boolean dashboardPrivacy = false;
 
 
     public User() {
@@ -102,6 +113,14 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
         this.privacy = false;
+    }
+
+    public boolean isDashboardPrivacy() {
+        return dashboardPrivacy;
+    }
+
+    public void setDashboardPrivacy(boolean dashboardPrivacy) {
+        this.dashboardPrivacy = dashboardPrivacy;
     }
 
     public void addClarification(Clarification clarification) {
@@ -225,8 +244,8 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfStudentQuizzes = numberOfStudentQuizzes;
     }
 
-    public List<Doubt> getDoubts() {
-        return doubts;
+    public List<Discussion> getDiscussions() {
+        return discussions;
     }
 
     public Integer getNumberOfInClassQuizzes() {
@@ -272,8 +291,8 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfInClassAnswers = numberOfInClassAnswers;
     }
 
-    public void addDoubt(Doubt doubt){
-        this.doubts.add(doubt);
+    public void addDiscussion(Discussion discussion){
+        this.discussions.add(discussion);
     }
 
     public Integer getNumberOfStudentAnswers() {
@@ -324,6 +343,14 @@ public class User implements UserDetails, DomainEntity {
 
     public void setNumberOfCorrectInClassAnswers(Integer numberOfCorrectInClassAnswers) {
         this.numberOfCorrectInClassAnswers = numberOfCorrectInClassAnswers;
+    }
+
+    public List<Doubt> getDoubts() {
+        return doubts;
+    }
+
+    public void addDoubt(Doubt doubt){
+        doubts.add(doubt);
     }
 
     public Integer getNumberOfCorrectStudentAnswers() {
