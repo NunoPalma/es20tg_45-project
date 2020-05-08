@@ -71,7 +71,7 @@
         <template v-slot:item.action="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon small class="mr-2" v-on="on" @click="seeDiscussion(item)"
+              <v-icon data-cy="seeDoubtButton" small class="mr-2" v-on="on" @click="seeDiscussion(item)"
                 >visibility</v-icon
               >
             </template>

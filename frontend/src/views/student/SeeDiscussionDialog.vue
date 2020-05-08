@@ -62,6 +62,7 @@
               label="Doubt here ..."
               outlined
               v-model="newDoubt.content"
+                    data-cy="doubtinput"
       ></v-text-field>
 
       <v-card-actions>
