@@ -121,17 +121,8 @@ public class TournamentService {
 
 		tournament.enrollStudent(user);
 
-		if (tournament.getParticipants().size() > 1) {
-			System.out.println("well well well");
-			System.out.println("well well well");
-			System.out.println("well well well");
-			System.out.println("well well well");
-			System.out.println("well well well");
-			System.out.println("well well well");
-			System.out.println("well well well");
-			System.out.flush();
+		if (tournament.getParticipants().size() > 1)
 			tournament.generateQuiz();
-		}
 
 		tournamentRepository.save(tournament);
 

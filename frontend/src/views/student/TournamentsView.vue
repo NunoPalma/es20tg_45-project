@@ -222,7 +222,6 @@
         }
 
         onEnrolledButtonClicked(tournament: Tournament) {
-            console.log("we're halfway there")
             if (this.isEnrolled(tournament.tournamentId)) return;
 
             tournament.isLoading = true;

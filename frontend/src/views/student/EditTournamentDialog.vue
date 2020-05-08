@@ -56,7 +56,7 @@
 							>
 								<template v-slot:item.selected="{ item }">
 									<v-checkbox
-											v-model="selectedBOis[item.name]"
+											v-model="selectedTopics[item.name]"
 											@change="onCheckboxChange(item.name)"
 											data-cy="checkTopic"
 											primary hide-details>
@@ -114,7 +114,7 @@
             {text: 'Name', value: 'name', align: 'left', width: '30%'},
             {text: 'Selected', value: 'selected', align: 'center', sortable: false, width: '5%'}
         ];
-        selectedBOis: {[name: string]: boolean } = {};
+        selectedTopics: {[name: string]: boolean } = {};
         counter: number = 0;
 
         async created() {
@@ -124,10 +124,7 @@
 			try {
 			  this.topics = await RemoteServices.getTopics();
 			  for (let i = 0; i < this.topics.length; ++i)
-			      this.selectedBOis[this.topics[i].name] = false;
-
-			  for (let i = 0; i < this.topics.length; ++i)
-			      console.log('and what we have is ' + this.selectedBOis[this.topics[i].name]);
+			      this.selectedTopics[this.topics[i].name] = false;
 			} catch (error) {
 			  await this.$store.dispatch('error', error);
 			}
@@ -138,16 +135,16 @@
 		onCheckboxChange(topicName: string) {
             if (this.counter === 0) {
                 for (let i = 0; i < this.topics.length; ++i)
-			      this.selectedBOis[this.topics[i].name] = false;
+			      this.selectedTopics[this.topics[i].name] = false;
                 this.counter++;
 			}
-            this.selectedBOis[topicName] = !this.selectedBOis[topicName];
+            this.selectedTopics[topicName] = !this.selectedTopics[topicName];
 		}
 
         async saveTournament() {
             if (this.editTournament) {
                 for (let i = 0; i < this.topics.length; ++i) {
-                    if (this.selectedBOis[this.topics[i].name]) {
+                    if (this.selectedTopics[this.topics[i].name]) {
                         this.editTournament.topics.push(this.topics[i]);
 					}
 				}
