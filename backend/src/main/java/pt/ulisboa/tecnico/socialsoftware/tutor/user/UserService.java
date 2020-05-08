@@ -174,4 +174,30 @@ public class UserService {
 
         return newDemoUser;
     }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public User changeDashBoardPrivacy(Integer userid){
+        if(userid == null){
+            throw new TutorException(USER_IS_EMPTY);
+        }
+        User user = userRepository.findById(userid).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userid));
+        if(user.getRole() != User.Role.STUDENT){
+            throw new TutorException(USER_IS_NOT_STUDENT);
+        }
+        user.setDashboardPrivacy(!user.isDashboardPrivacy());
+        userRepository.save(user);
+        return user;
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public User getDashBoardPrivacy(Integer userid){
+        if(userid == null){
+            throw new TutorException(USER_IS_EMPTY);
+        }
+        User user = userRepository.findById(userid).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userid));
+        if(user.getRole() != User.Role.STUDENT){
+            throw new TutorException(USER_IS_NOT_STUDENT);
+        }
+        return user;
+    }
 }

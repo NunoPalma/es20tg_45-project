@@ -32,6 +32,8 @@ public class User implements UserDetails, DomainEntity {
     @Column(unique=true, nullable = false)
     private Integer key;
 
+    private boolean dashboardPrivacy = false;
+
     @Enumerated(EnumType.STRING)
     private Role role;
     
@@ -100,6 +102,14 @@ public class User implements UserDetails, DomainEntity {
         this.numberOfCorrectTeacherAnswers = 0;
         this.numberOfCorrectInClassAnswers = 0;
         this.numberOfCorrectStudentAnswers = 0;
+    }
+
+    public boolean isDashboardPrivacy() {
+        return dashboardPrivacy;
+    }
+
+    public void setDashboardPrivacy(boolean dashboardPrivacy) {
+        this.dashboardPrivacy = dashboardPrivacy;
     }
 
     public void addClarification(Clarification clarification) {
