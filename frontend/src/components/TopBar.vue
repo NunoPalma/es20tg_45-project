@@ -85,7 +85,7 @@
                 <v-list-item-title>Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/management/evaluate_questions">
+            <v-list-item to="/management/evaluations">
               <v-list-item-action>
                 <v-icon>check</v-icon>
               </v-list-item-action>
