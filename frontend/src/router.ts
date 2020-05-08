@@ -30,6 +30,8 @@ import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import SolveDoubtsView from '@/views/teacher/doubts/SolveDoubtsView.vue';
 import SubmittedQuestionsView from '@/views/student/question/SubmittedQuestionsView.vue';
 import SeeStudentDiscussionsDashBoard from '@/views/student/SeeStudentDiscussionsDashBoard.vue';
+import StudentsStatsView from '@/views/student/StudentsStatsView.vue';
+
 Vue.use(Router);
 
 let router = new Router({
@@ -231,6 +233,15 @@ let router = new Router({
           component: StatsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Stats',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'globalStats',
+          name: 'globalStats',
+          component: StudentsStatsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Students Stats',
             requiredAuth: 'Student'
           }
         },
