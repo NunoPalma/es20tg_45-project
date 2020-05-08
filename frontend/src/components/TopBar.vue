@@ -199,7 +199,7 @@
           My Questions
           <v-icon>question_answer</v-icon>
         </v-btn>
-        <v-btn to="/student/tournaments" v-if="isStudent && currentCourse" text dark>
+        <v-btn to="/student/tournaments" data-cy="tournaments" v-if="isStudent && currentCourse" text dark>
           Tournaments
           <v-icon>fas fa-trophy</v-icon>
         </v-btn>

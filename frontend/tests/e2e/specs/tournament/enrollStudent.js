@@ -14,7 +14,8 @@ describe('Enroll student in tournament walkthrough', () => {
         name,
         '2020-05-20 12:40:00',
         '2020-05-20 12:41:00',
-        'GNU Mailman'
+        'GNU Mailman',
+        5
     );
     cy.contains('Logout').click({ force: true });
 
