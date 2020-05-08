@@ -13,6 +13,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Discussion
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DiscussionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
@@ -35,7 +37,7 @@ import spock.lang.Unroll
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
-class GetUserDoubtsListTest extends Specification {
+class GetUserDiscussionListTest extends Specification {
     public static final String COURSE_NAME = "Software Architecture"
     public static final String USER_NAME = "user"
     public static final String USERNAME_NAME = "username"
@@ -83,6 +85,9 @@ class GetUserDoubtsListTest extends Specification {
 
     @Autowired
     QuizAnswerRepository quizAnswerRepository
+
+    @Autowired
+    DiscussionRepository discussionRepository
 
     def student
     def question
@@ -152,7 +157,7 @@ class GetUserDoubtsListTest extends Specification {
     def "Get the doubt list of a user that has no doubts"(){
 
         when:
-        def result = doubtService.findUserDoubts(student.getId())
+        def result = doubtService.findUserDiscussions(student.getId())
 
         then:
         result.size() == 0
@@ -161,7 +166,7 @@ class GetUserDoubtsListTest extends Specification {
     def "Get the doubt list of a null user"(){
 
         when:
-        def result = doubtService.findUserDoubts(null)
+        def result = doubtService.findUserDiscussions(null)
 
         then:
         def error = thrown(TutorException)
@@ -172,17 +177,17 @@ class GetUserDoubtsListTest extends Specification {
     def "Get the doubt list of a user"(){
 
         given: "A doubt"
-        def doubt = new Doubt(questionanswer, student, DateHandler.now().toString(),DOUBT_TITLE ,DOUBT_CONTENT, true)
-        doubtRepositor.save(doubt)
+        def discussion = new Discussion(questionanswer, DOUBT_TITLE, student)
+        discussionRepository.save(discussion)
 
         when:
-        def result = doubtService.findUserDoubts(student.getId())
+        def result = doubtService.findUserDiscussions(student.getId())
 
         then:
         result.size() == 1
-        def newDoubt = result.get(0);
-        newDoubt.getAuthor() == student.getName()
-        newDoubt.getContent() == DOUBT_CONTENT
+        def newDiscussion = result.get(0);
+        newDiscussion.getAuthor() == student.getName()
+        newDiscussion.getTitle() == DOUBT_TITLE
     }
 
 

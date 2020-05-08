@@ -14,6 +14,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Discussion
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DiscussionDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DiscussionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
@@ -42,7 +45,7 @@ import java.time.LocalDateTime
 
 
 @DataJpaTest
-class CreateDoubtTest extends Specification {
+class CreateDiscussionTest extends Specification {
     public static final String COURSE_NAME = "Software Architecture"
     public static final String COURSE2_NAME = "Distributed Systems"
     public static final String QUESTION_TITLE = 'question title'
@@ -102,6 +105,9 @@ class CreateDoubtTest extends Specification {
 
     @Autowired
     CourseExecutionRepository courseExecutionRepository
+
+    @Autowired
+    DiscussionRepository discussionRepository
 
     def question
     def question2
@@ -208,30 +214,33 @@ class CreateDoubtTest extends Specification {
 
     }
 
-    def "create a Doubt with a User, Content and a Question"() {
-        given: "a DoubtDto"
+    def "create a Discussion with a User, Content and a Question"() {
+        given: "a DoubtDto and DiscussionDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
-        doubtdto.setTitle(DOUBT_TITLE)
         doubtdto.setAuthor(USER_NAME)
-        doubtdto.setStatus(Doubt.Status.UNSOLVED)
-        doubtdto.setQuestionTitle(QUESTION_TITLE)
+        def discussionDto = new DiscussionDto()
+        discussionDto.addPostDto(doubtdto)
+        discussionDto.setQuestionTitle(QUESTION_TITLE)
+        discussionDto.setStatus(Discussion.Status.OPEN)
+        discussionDto.setTitle(DOUBT_TITLE)
 
-        when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
+
+        when: "A discussion is created"
+        doubtService.createDiscussion(discussionDto, questionanswer.getId(), student.getId())
 
         then:
-        doubtRepository.count() == 1L
-        def result = doubtRepository.findAll().get(0)
+        discussionRepository.count() == 1L
+        def result = discussionRepository.findAll().get(0)
 
         result.getId() != null
-        result.getContent() == DOUBT_CONTENT
-        result.getAuthor().getName() == USER_NAME
-        result.getTitle() == DOUBT_TITLE
+        def getPostsList = new ArrayList<Doubt>(result.getPosts())
+        getPostsList.get(0).getContent() == DOUBT_CONTENT
+        getPostsList.get(0).getAuthor().getName() == USER_NAME
         result.getAuthor().getRole() == User.Role.STUDENT
-        result.getStatus() == Doubt.Status.UNSOLVED
+        result.getStatus() == Discussion.Status.OPEN;
         result.getQuestion().getTitle() == QUESTION_TITLE
-        questionanswer.getDoubts().get(0).equals(result)
+        questionanswer.getDiscussions().get(0).equals(result)
     }
 
     @Unroll
@@ -239,13 +248,15 @@ class CreateDoubtTest extends Specification {
         given: "a doubtdto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
-        doubtdto.setTitle(DOUBT_TITLE)
         doubtdto.setAuthor(USER_NAME)
-        doubtdto.setStatus(Doubt.Status.UNSOLVED)
-        doubtdto.setQuestionTitle(QUESTION_TITLE)
+        def discussionDto = new DiscussionDto()
+        discussionDto.addPostDto(doubtdto)
+        discussionDto.setQuestionTitle(QUESTION_TITLE)
+        discussionDto.setStatus(Discussion.Status.OPEN)
+        discussionDto.setTitle(DOUBT_TITLE)
 
         when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, questionid, userid)
+        doubtService.createDiscussion(discussionDto, questionid, userid)
 
         then:
         def error = thrown(TutorException)
@@ -267,9 +278,14 @@ class CreateDoubtTest extends Specification {
         given: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(content)
+        def discussionDto = new DiscussionDto()
+        discussionDto.addPostDto(doubtdto)
+        discussionDto.setQuestionTitle(QUESTION_TITLE)
+        discussionDto.setStatus(Discussion.Status.OPEN)
+        discussionDto.setTitle(DOUBT_TITLE)
 
         when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
+        doubtService.createDiscussion(discussionDto, questionanswer.getId(), student.getId())
 
         then:
         def error = thrown(TutorException)
@@ -287,13 +303,15 @@ class CreateDoubtTest extends Specification {
         given: "a DoubtDto"
         def doubtdto = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
-        doubtdto.setAuthor(TEACHER_NAME)
-        doubtdto.setTitle(DOUBT_TITLE)
-        doubtdto.setStatus(Doubt.Status.UNSOLVED)
-        doubtdto.setQuestionTitle(QUESTION_TITLE)
+        doubtdto.setAuthor(USER_NAME)
+        def discussionDto = new DiscussionDto()
+        discussionDto.addPostDto(doubtdto)
+        discussionDto.setQuestionTitle(QUESTION_TITLE)
+        discussionDto.setStatus(Discussion.Status.OPEN)
+        discussionDto.setTitle(DOUBT_TITLE)
 
         when: "A doubt is created"
-        doubtService.createDoubt(doubtdto, questionanswer.getId(), teacher.getId())
+        doubtService.createDiscussion(discussionDto, questionanswer.getId(), teacher.getId())
 
         then:
         def exception = thrown(TutorException)
@@ -306,37 +324,45 @@ class CreateDoubtTest extends Specification {
         def doubtdto = new DoubtDto()
         def doubtdto2 = new DoubtDto()
         doubtdto.setContent(DOUBT_CONTENT)
-        doubtdto.setTitle(DOUBT_TITLE)
         doubtdto.setAuthor(USER_NAME)
         doubtdto.setStatus(Doubt.Status.UNSOLVED)
-        doubtdto.setQuestionTitle(QUESTION_TITLE)
         doubtdto2.setContent(DOUBT2_CONTENT)
-        doubtdto2.setTitle(DOUBT_TITLE)
         doubtdto2.setAuthor(USER_NAME)
         doubtdto2.setStatus(Doubt.Status.UNSOLVED)
-        doubtdto2.setQuestionTitle(QUESTION2_TITLE)
+        def discussionDto = new DiscussionDto()
+        discussionDto.addPostDto(doubtdto)
+        discussionDto.setQuestionTitle(DOUBT_TITLE)
+        discussionDto.setStatus(Discussion.Status.OPEN)
+        discussionDto.setTitle(DOUBT_TITLE)
+        def discussionDto2 = new DiscussionDto()
+        discussionDto2.addPostDto(doubtdto2)
+        discussionDto2.setQuestionTitle(QUESTION2_TITLE)
+        discussionDto2.setStatus(Discussion.Status.OPEN)
+        discussionDto2.setTitle(DOUBT_TITLE)
 
         when:"The doubts are created"
-        doubtService.createDoubt(doubtdto, questionanswer.getId(), student.getId())
-        doubtService.createDoubt(doubtdto2, questionanswer2.getId(), student.getId())
+        doubtService.createDiscussion(discussionDto, questionanswer.getId(), student.getId())
+        doubtService.createDiscussion(discussionDto2, questionanswer2.getId(), student.getId())
 
         then:
-        doubtRepository.count() == 2L
-        def result = doubtRepository.findAll().get(0)
+        discussionRepository.count() == 2L
+        def result = discussionRepository.findAll().get(0)
+        def getPostsList = new ArrayList<Doubt>(result.getPosts())
         result.getId() != null
-        result.getContent() == DOUBT_CONTENT
+        getPostsList.get(0).getContent() == DOUBT_CONTENT
         result.getAuthor().getName() == USER_NAME
         result.getAuthor().getRole() == User.Role.STUDENT
-        questionanswer.getDoubts().get(0).equals(result)
-        student.getDoubts().get(0).equals(result)
-        def result2 = doubtRepository.findAll().get(1)
+        questionanswer.getDiscussions().get(0).equals(result)
+        student.getDiscussions().get(0).equals(result)
+        def result2 = discussionRepository.findAll().get(1)
+        def getPostsList2 = new ArrayList<Doubt>(result2.getPosts())
         result2.getId() != null
-        result2.getContent() == DOUBT2_CONTENT
+        getPostsList2.get(0).getContent() == DOUBT2_CONTENT
         result2.getAuthor().getName() == USER_NAME
         result2.getAuthor().getRole() == User.Role.STUDENT
-        questionanswer2.getDoubts().get(0).equals(result2)
-        student.getDoubts().get(1).equals(result2)
-        student.getDoubts().size() == 2
+        questionanswer2.getDiscussions().get(0).equals(result2)
+        student.getDiscussions().get(1).equals(result2)
+        student.getDiscussions().size() == 2
 
     }
 

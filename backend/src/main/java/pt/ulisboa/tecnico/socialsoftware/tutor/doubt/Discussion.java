@@ -47,9 +47,11 @@ public class Discussion {
 
     public Discussion(QuestionAnswer questionAnswer, String title, User author){
         this.questionAnswer = questionAnswer;
+        this.questionAnswer.addDiscussion(this);
+        this.author = author;
+        this.author.addDiscussion(this);
         this.title = title;
         this.questionTitle = questionAnswer.getQuizQuestion().getQuestion().getTitle();
-        this.author = author;
     }
 
     public Status getStatus() {
@@ -96,7 +98,9 @@ public class Discussion {
         return questionAnswer.getQuizQuestion().getQuestion();
     }
 
-
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getTitle() {
         return title;

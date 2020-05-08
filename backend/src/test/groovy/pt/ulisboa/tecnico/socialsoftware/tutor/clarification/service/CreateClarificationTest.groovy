@@ -13,6 +13,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.course.Course
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecution
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseExecutionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Discussion
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DiscussionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
@@ -103,6 +105,9 @@ class CreateClarificationTest extends Specification {
     @Autowired
     QuizRepository quizRepository
 
+    @Autowired
+    DiscussionRepository discussionRepository
+
     def Teacher
     def TeacherTwo
     def Student
@@ -117,6 +122,7 @@ class CreateClarificationTest extends Specification {
     def quizanswer
     def questionanswer
     def quiz
+    def discussion
 
     def setup() {
 
@@ -180,10 +186,13 @@ class CreateClarificationTest extends Specification {
         questionAnswerRepository.save(questionanswer)
         quizAnswerRepository.save(quizanswer)
 
-        Doubt = new Doubt(questionanswer, Student, DateHandler.now().toString(), DOUBT_TITLE,  DOUBT_DESCRIPTION, true)
+        discussion = new Discussion(questionanswer, DOUBT_TITLE, student)
+        Doubt = new Doubt(Student, DateHandler.now().toString(), DOUBT_DESCRIPTION, true, discussion)
+        discussion.addPost(Doubt)
+        discussionRepository.save(discussion)
         doubtRepository.save(Doubt)
 
-        SolvedDoubt = new Doubt(questionanswer, Student, DateHandler.now().toString(), DOUBT_TITLE, DOUBT_DESCRIPTION, true)
+        SolvedDoubt = new Doubt(Student, DateHandler.now().toString(), DOUBT_DESCRIPTION, true, discussion)
         SolvedDoubt.setStatus(Doubt.Status.SOLVED)
         doubtRepository.save(SolvedDoubt)
 
