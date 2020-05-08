@@ -22,7 +22,7 @@ describe('teacher discussion management walkthrough', () => {
     cy.contains('Logout').click();
   });
 
-  it('login creates a additional clarification for a open and unsolved discussion and teacher solve it', () => {
+  it('login creates a additional doubt for a open and unsolved discussion and teacher solve it', () => {
     cy.demoStudentLogin();
     cy.get('[data-cy="studentDiscussions"]').click();
     cy.get('[data-cy="seeDoubtButton"]')
