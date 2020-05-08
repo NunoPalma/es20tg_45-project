@@ -236,6 +236,11 @@ Cypress.Commands.add('createTournamentNoTopics', (name, startDate, endDate) => {
     cy.get('[data-cy="saveButton"]').click({force: true});
 });
 
+Cypress.Commands.add('cancelTournament', (tournamentName) => {
+    let search = '[data-cy="' + tournamentName + '"]';
+    cy.get(search).click({force: true});
+});
+
 Cypress.Commands.add('enrollStudent', (tournamentName) => {
     let search = '[data-cy="' + tournamentName + '"]';
     cy.get(search).click({force: true});

@@ -96,7 +96,7 @@
 							v-on="on"
 							@click="cancelTournament(item)"
 							color="red"
-							data-cy="cancelButton"
+							data-cy="item.name"
 					>cancel
 					</v-icon
 					>
@@ -199,8 +199,11 @@
             this.editTournamentDialog = true;
         }
 
-        cancelTournament(tournament: Tournament) {
-            RemoteServices.cancelTournament(tournament.tournamentId);
+        async cancelTournament(tournament: Tournament) {
+            let response = await RemoteServices.cancelTournament(tournament.tournamentId);
+			let cancelledTournament = this.tournaments.find(t => t.tournamentId == response.tournamentId);
+			if (cancelledTournament)
+				cancelledTournament.state = "CANCELLED";
         }
 
         async onCreateTournament(tournament: Tournament) {
