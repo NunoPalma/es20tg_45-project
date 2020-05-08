@@ -159,14 +159,15 @@
                     'error',
                     'Tournament must have name, start date, end date and at least one topic!'
                 );
-                return;
+				return;
 			}
 
             if (this.editTournament) {
-                try {
+
+				try {
                     const result = await RemoteServices.createTournament(this.editTournament);
-                    this.$emit('new-tournament', result);
-                } catch (error) {
+					this.$emit('new-tournament', result);
+				} catch (error) {
                     await this.$store.dispatch('error', error);
                 }
 			}

@@ -187,7 +187,6 @@
                 this.tournaments = await RemoteServices.getAvailableTournaments();
                 this.studentTournamentStats = await RemoteServices.getStudentTournamentStats();
                 this.numberOfParticipatedTournaments = this.studentTournamentStats.amountOfParticipatedTournaments;
-                console.log(this.studentTournamentStats.amountOfParticipatedTournaments);
             } catch (error) {
                 await this.$store.dispatch('error', error);
             }
@@ -203,7 +202,7 @@
             let response = await RemoteServices.cancelTournament(tournament.tournamentId);
 			let cancelledTournament = this.tournaments.find(t => t.tournamentId == response.tournamentId);
 			if (cancelledTournament)
-				cancelledTournament.state = "CANCELLED";
+				cancelledTournament.state = 'CANCELLED';
         }
 
         async onCreateTournament(tournament: Tournament) {

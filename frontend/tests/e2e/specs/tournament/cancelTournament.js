@@ -1,4 +1,4 @@
-describe('Create Tournament walkthrough', () => {
+describe('Cancel Tournament walkthrough', () => {
   beforeEach(() => {
     cy.demoStudentLogin();
   });
@@ -8,15 +8,20 @@ describe('Create Tournament walkthrough', () => {
   });
 
   it('login creates and cancels tournament', () => {
+    let name = 'New Tournament - 1 minute speedrun, a short movie';
     cy.viewTournaments();
     cy.createTournament(
-      'MyTournament 6 - Return of the Tournament',
-      '2020-05-20 12:40:00',
-      '2020-05-24 17:00:00',
-      'GNU Mailman',
+        name,
+        '2020-05-20 12:40:00',
+        '2020-05-20 12:41:00',
+        'GNU Mailman',
         5
     );
+    cy.contains('Logout').click({ force: true });
 
-    cy.cancelTournament('MyTournament 6 - Return of the Tournament');
+    cy.demoStudentLogin();
+    cy.viewTournaments();
+
+    cy.cancelTournament(name);
   });
 });
