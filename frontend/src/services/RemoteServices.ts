@@ -19,6 +19,7 @@ import Evaluation from '@/models/management/Evaluation';
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
 import Discussion from '@/models/management/Discussion';
+import User from '@/models/user/User';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 10000;
@@ -432,6 +433,30 @@ export default class RemoteServices {
       });
   }
 
+  static getPrivacy(): Promise<boolean> {
+    return httpClient
+      .get('/user/dashboard/privacy')
+      .then(response => {
+        console.log(response.data);
+        return response.data.dashBoardPrivacy;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static setPrivacy(): Promise<boolean> {
+    return httpClient
+      .put('/user/dashboard/privacy')
+      .then(response => {
+        console.log(response.data);
+        return response.data.dashBoardPrivacy;
+      })
+      .catch(async error => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static createDiscussion(
     discussion: Discussion,
     quizQuestionId: number,
@@ -447,10 +472,7 @@ export default class RemoteServices {
       });
   }
 
-  static addDoubt(
-    discussionId: number,
-    doubt: Doubt
-  ): Promise<Discussion> {
+  static addDoubt(discussionId: number, doubt: Doubt): Promise<Discussion> {
     return httpClient
       .post(`/discussions/${discussionId}`, doubt)
       .then(response => {
@@ -838,5 +860,4 @@ export default class RemoteServices {
         });
     else throw Error(await this.errorMessage('No discussion was provided.'));
   }
-
 }

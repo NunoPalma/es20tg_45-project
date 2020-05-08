@@ -1,30 +1,6 @@
 <template>
   <div>
-    <v-btn to="discussionStats"><v-card>Statistics</v-card></v-btn>
-    <div class="stats-container">
-      <div class="items">
-        <div class="icon-wrapper" ref="discussionsMade">
-          <animated-number :number="discussions.length">
-            {{ discussions.length }}</animated-number
-          >
-        </div>
-        <div class="project-name">
-          <p>Total Discussions Made</p>
-        </div>
-      </div>
-      <div class="items">
-        <div class="icon-wrapper" ref="discussionsMade">
-          <animated-number :number="discussions.length">
-            {{
-              discussions.filter(disc => disc.status === 'OPEN').length
-            }}</animated-number
-          >
-        </div>
-        <div class="project-name">
-          <p>Total Open Discussions</p>
-        </div>
-      </div>
-    </div>
+    <v-btn class="stats-button" color="blue" right to="discussionStats"><v-icon left>fas fa-chart-bar</v-icon>Dashboard</v-btn>
     <v-card class="table">
       <v-data-table
         :headers="headers"
