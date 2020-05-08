@@ -18,7 +18,7 @@ import Evaluation from '@/models/management/Evaluation';
 
 import Doubt from '@/models/management/Doubt';
 import Clarification from '@/models/management/Clarification';
-import StudentTournamentStats from "@/models/statement/StudentTournamentStats";
+import StudentTournamentStats from '@/models/statement/StudentTournamentStats';
 import Discussion from '@/models/management/Discussion';
 import User from '@/models/user/User';
 

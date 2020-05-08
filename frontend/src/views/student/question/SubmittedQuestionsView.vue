@@ -358,7 +358,9 @@ export default class SubmittedQuestionsView extends Vue {
 .project-name {
   display: flex;
   align-items: center;
-  justify-content: center
+  justify-content: center {
+  }
+}
 .icon-wrapper {
   font-size: 100px;
   transform: translateY(0px);
