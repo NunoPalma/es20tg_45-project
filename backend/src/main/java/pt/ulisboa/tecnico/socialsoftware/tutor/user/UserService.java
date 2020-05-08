@@ -175,7 +175,7 @@ public class UserService {
         return newDemoUser;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    /*@Transactional(isolation = Isolation.REPEATABLE_READ)
     public User changeDashBoardPrivacy(Integer userid){
         if(userid == null){
             throw new TutorException(USER_IS_EMPTY);
@@ -199,5 +199,5 @@ public class UserService {
             throw new TutorException(USER_IS_NOT_STUDENT);
         }
         return user;
-    }
+    }*/
 }

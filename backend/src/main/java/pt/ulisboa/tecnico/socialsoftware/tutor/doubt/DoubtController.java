@@ -9,7 +9,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.UserDto;
 
 
 import java.security.Principal;
@@ -27,6 +29,12 @@ public class DoubtController {
 
     @Autowired
     DoubtRepositor doubtRepositor;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("/discussions/{discussionId}/visibility/{status}")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -75,6 +83,13 @@ public class DoubtController {
         Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
         return doubtService.addDoubt(discussionId, studentId, doubtDto);
     }
+
+    /*@GetMapping(value = "user/dashboard/privacy")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public UserDto getDashBoardPrivacy(Principal principal){
+        Integer studentId = ((User) ((Authentication) principal).getPrincipal()).getId();
+        return new UserDto(userService.getDashBoardPrivacy(studentId));
+    }*/
 
 
 }
