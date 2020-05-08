@@ -10,13 +10,6 @@
 
     <div class="demo-buttons" v-if="!isLoggedIn">
       <v-btn depressed small color="primary" @click="demoStudent" data-cy="studentButton">
-      <v-btn
-        depressed
-        small
-        color="primary"
-        data-cy="demoStudentButton"
-        @click="demoStudent"
-      >
         <i class="fa fa-graduation-cap" />Demo as student
       </v-btn>
       <v-btn depressed small color="primary" @click="demoTeacher" data-cy="teacherButton">
@@ -30,6 +23,7 @@
               data-cy="adminButton"
       >
         <i class="fa fa-user-cog" />Demo as administrator
+      </v-btn>
       </v-btn>
     </div>
 
