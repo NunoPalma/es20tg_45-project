@@ -1,12 +1,9 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
-import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Set;
 
 public class UserDto implements Serializable {
     private int id;
@@ -14,23 +11,29 @@ public class UserDto implements Serializable {
     private String name;
     private User.Role role;
     private String creationDate;
+    private Integer numberOfParticipatedTournaments;
+    private boolean dashBoardPrivacy;
 
     public UserDto(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.name = user.getName();
         this.role = user.getRole();
+        this.creationDate = DateHandler.toISOString(user.getCreationDate());
+        this.numberOfParticipatedTournaments = user.getNumberOfParticipatedTournaments();
+        this.dashBoardPrivacy = user.isDashboardPrivacy();
+    }
 
-        if (user.getCreationDate() != null)
-            this.creationDate = user.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    public boolean isDashBoardPrivacy() {
+        return dashBoardPrivacy;
+    }
+
+    public void setDashBoardPrivacy(boolean dashBoardPrivacy) {
+        this.dashBoardPrivacy = dashBoardPrivacy;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {

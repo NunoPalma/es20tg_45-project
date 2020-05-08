@@ -13,7 +13,8 @@ describe('Create Tournament walkthrough', () => {
       'MyTournament - Christmas Special',
       '2020-05-20 12:40:00',
       '2020-05-24 17:00:00',
-      'GNU Mailman'
+      'GNU Mailman',
+        5
     );
   });
 
@@ -23,7 +24,8 @@ describe('Create Tournament walkthrough', () => {
       ' ',
       '2020-05-20 12:40:00',
       '2020-05-24 17:00:00',
-      'GNU Mailman'
+      'GNU Mailman',
+        5
     );
 
     cy.closeErrorMessage();
@@ -35,7 +37,8 @@ describe('Create Tournament walkthrough', () => {
       'MyTournament - Christmas Special',
       ' ',
       '2020-05-24 17:00:00',
-      'GNU Mailman'
+      'GNU Mailman',
+        5
     );
 
     cy.closeErrorMessage();
@@ -47,7 +50,8 @@ describe('Create Tournament walkthrough', () => {
       'MyTournament - Christmas Special',
       '2020-05-20 12:40:00',
       ' ',
-      'GNU Mailman'
+      'GNU Mailman',
+        5
     );
 
     cy.closeErrorMessage();
@@ -58,9 +62,10 @@ describe('Create Tournament walkthrough', () => {
     cy.createTournamentNoTopics(
       'MyTournament 2 - Electric Boogaloo',
       '2020-05-20 12:40:00',
-      '2020-05-24 17:00:00'
+      '2020-05-24 17:00:00',
+        ' ',
+        5
     );
-
-    cy.closeErrorMessage();
+    cy.closeErrorMessageCreateTournament();
   });
 });

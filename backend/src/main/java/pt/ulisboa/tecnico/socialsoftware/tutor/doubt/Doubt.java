@@ -1,20 +1,19 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.doubt;
 
-import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.Type;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.Clarification;
-import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
-
+import java.util.HashMap;
 import javax.persistence.*;
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.COURSE_NAME_IS_EMPTY;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DOUBT_CONTENT_IS_EMPTY;
 
 @Entity
-@Table(name = "Doubts")
-public class Doubt{
+@Table(name = "doubts")
+public class Doubt {
+
     public enum Status {SOLVED, UNSOLVED}
 
     @Id
@@ -26,6 +25,10 @@ public class Doubt{
 
     private String content;
 
+    @ManyToOne
+    @JoinColumn(name = "discussion_id")
+    private Discussion discussion;
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "doubt")
     private Clarification clarification = null;
 
@@ -33,33 +36,58 @@ public class Doubt{
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User author;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private QuestionAnswer questionAnswer;
+    private String creationDate;
+
+
+    @Column(name="is_new")
+    @Type(type="true_false")
+    private boolean isNew = false;
 
     public Doubt(){
     }
 
-    public Doubt(QuestionAnswer questionAnswer, User user, String content){
+    public Doubt(User user, String creationDate, String content, boolean isNew, Discussion discussion){
         this.author = user;
+        this.creationDate = creationDate;
         this.author.addDoubt(this);
         if (content == null || content.trim().isEmpty()) {
             throw new TutorException(DOUBT_CONTENT_IS_EMPTY);
         }
         this.content = content;
-        this.questionAnswer = questionAnswer;
-        this.questionAnswer.addDoubt(this);
+        this.isNew = isNew;
+        this.discussion = discussion;
+    }
+
+    public Discussion getDiscussion() {
+        return discussion;
+    }
+
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
     }
 
 
 
 
-    public QuestionAnswer getQuestionAnswer() {
-        return questionAnswer;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public void setQuestionAnswer(QuestionAnswer questionAnswer) {
-        this.questionAnswer = questionAnswer;
-    }
+
 
     public User getAuthor() {
         return author;
@@ -101,8 +129,6 @@ public class Doubt{
         this.status = status;
     }
 
-    public Question getQuestion(){
-        return questionAnswer.getQuizQuestion().getQuestion();
-    }
+
 }
 

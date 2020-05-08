@@ -4,6 +4,7 @@ import Store from '@/store';
 
 import LoginView from '@/views/LoginView.vue';
 import CourseSelectionView from '@/views/CourseSelectionView.vue';
+import DoubtsViewTest from '@/views/student/DiscussionsView.vue';
 
 import HomeView from '@/views/HomeView.vue';
 import ManagementView from '@/views/teacher/ManagementView.vue';
@@ -20,8 +21,6 @@ import ResultsView from './views/student/quiz/ResultsView.vue';
 import TournamentsView from './views/student/TournamentsView.vue';
 import StatsView from './views/student/StatsView.vue';
 import ScanView from './views/student/ScanView.vue';
-import DoubtsView from '@/views/student/DoubtsView.vue';
-
 import AdminManagementView from '@/views/admin/AdminManagementView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 import ImpExpView from '@/views/teacher/impexp/ImpExpView.vue';
@@ -30,6 +29,8 @@ import CreateQuizzesView from '@/views/student/CreateQuizzesView.vue';
 import CoursesView from '@/views/admin/Courses/CoursesView.vue';
 import SolveDoubtsView from '@/views/teacher/doubts/SolveDoubtsView.vue';
 import SubmittedQuestionsView from '@/views/student/question/SubmittedQuestionsView.vue';
+import SeeStudentDiscussionsDashBoard from '@/views/student/SeeStudentDiscussionsDashBoard.vue';
+import StudentsStatsView from '@/views/student/StudentsStatsView.vue';
 
 Vue.use(Router);
 
@@ -130,11 +131,11 @@ let router = new Router({
           }
         },
         {
-          path: 'doubts',
-          name: 'doubts-management',
+          path: 'discussions',
+          name: 'discussions-management',
           component: SolveDoubtsView,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Doubts',
+            title: process.env.VUE_APP_NAME + ' - Discussions',
             requiredAuth: 'Teacher'
           }
         }
@@ -173,6 +174,15 @@ let router = new Router({
           }
         },
         {
+          path: 'discussionStats',
+          name: 'student-discussionStats',
+          component: SeeStudentDiscussionsDashBoard,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Student DiscussionStats',
+            requiredAuth: 'Student'
+          }
+        },
+        {
           path: 'solved',
           name: 'solved-quizzes',
           component: SolvedQuizzesView,
@@ -182,11 +192,11 @@ let router = new Router({
           }
         },
         {
-          path: 'doubts',
-          name: 'see-doubts',
-          component: DoubtsView,
+          path: 'discussions',
+          name: 'see-discussions',
+          component: DoubtsViewTest,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Doubts',
+            title: process.env.VUE_APP_NAME + ' - Discussions',
             requiredAuth: 'Student'
           }
         },
@@ -223,6 +233,15 @@ let router = new Router({
           component: StatsView,
           meta: {
             title: process.env.VUE_APP_NAME + ' - Stats',
+            requiredAuth: 'Student'
+          }
+        },
+        {
+          path: 'globalStats',
+          name: 'globalStats',
+          component: StudentsStatsView,
+          meta: {
+            title: process.env.VUE_APP_NAME + ' - Students Stats',
             requiredAuth: 'Student'
           }
         },

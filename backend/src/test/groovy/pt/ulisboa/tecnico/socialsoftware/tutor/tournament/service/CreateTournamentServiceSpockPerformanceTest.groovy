@@ -20,6 +20,7 @@ import spock.lang.Specification
 
 @DataJpaTest
 class CreateTournamentServiceSpockPerformanceTest extends Specification {
+	final static String COURSE_NAME = "Course"
 
 	@Autowired
 	TournamentService tournamentService
@@ -42,7 +43,7 @@ class CreateTournamentServiceSpockPerformanceTest extends Specification {
 	def "valid tournament creations"() {
 		given: "a course execution"
 		def course = new Course()
-		course.setId(1)
+		course.setName(COURSE_NAME)
 		courseRepository.save(course)
 		def courseExecution = new CourseExecution()
 		courseExecution.setCourse(course)
@@ -67,7 +68,7 @@ class CreateTournamentServiceSpockPerformanceTest extends Specification {
 		tournamentDto.setNumQuestions(20)
 
 		when:
-		1.upto(1000, {
+		1.upto(1, {
 			def ret = tournamentService.createTournament(1, 1, tournamentDto)
 		})
 		then:

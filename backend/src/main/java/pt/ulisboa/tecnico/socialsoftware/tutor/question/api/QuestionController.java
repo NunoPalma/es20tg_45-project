@@ -45,7 +45,7 @@ public class QuestionController {
 
     @GetMapping("/courses/{courseId}/questions")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
-    public List<QuestionDto> getCourseQuestions(@PathVariable int courseId){
+    public List<QuestionDto> getCourseQuestions(@PathVariable int courseId) {
         return this.questionService.findQuestions(courseId);
     }
 
@@ -61,7 +61,7 @@ public class QuestionController {
 
     @GetMapping("/courses/{courseId}/questions/available")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#courseId, 'COURSE.ACCESS')")
-    public List<QuestionDto> getAvailableQuestions(@PathVariable int courseId){
+    public List<QuestionDto> getAvailableQuestions(@PathVariable int courseId) {
         return this.questionService.findAvailableQuestions(courseId);
     }
 
@@ -161,6 +161,12 @@ public class QuestionController {
         return questionService.submitQuestion(user.getId(), courseId, question);
     }
 
+    @PutMapping("/questions/{questionId}/resubmit")
+    @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    public QuestionDto resubmitQuestion(@PathVariable Integer questionId, @Valid @RequestBody QuestionDto question) {
+        return this.questionService.resubmitQuestion(questionId, question);
+    }
+
     @GetMapping("/courses/{courseId}/questions/submitted")
     @PreAuthorize("hasRole('ROLE_STUDENT') and hasPermission(#courseId, 'COURSE.ACCESS')")
     public List<QuestionDto> sortStudentSubmittedQuestionsByCreationDate(Principal principal, @PathVariable Integer courseId){
@@ -171,6 +177,18 @@ public class QuestionController {
         }
 
         return questionService.sortStudentSubmittedQuestionsByCreationDate(user.getUsername());
+    }
+
+    @GetMapping("/questions/stats")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public List<Integer> calculateApprovedVersusProposed(Principal principal){
+        User user = (User) ((Authentication) principal).getPrincipal();
+
+        if (user == null) {
+            throw new TutorException(AUTHENTICATION_ERROR);
+        }
+
+        return questionService.calculateApprovedVersusProposed(user.getUsername());
     }
 
     private Path getTargetLocation(String url) {

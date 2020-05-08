@@ -8,25 +8,41 @@ public enum ErrorMessage {
     CLARIFICATION_DOUBT_IS_EMPTY("The clarification's question is empty"),
     CLARIFICATION_USER_IS_EMPTY("The clarification's content is empty"),
 
+    INVALID_ACADEMIC_TERM_FOR_COURSE_EXECUTION("Invalid academic term for course execution"),
+    INVALID_ACRONYM_FOR_COURSE_EXECUTION("Invalid acronym for course execution"),
+    INVALID_CONTENT_FOR_OPTION("Invalid content for option"),
+    INVALID_CONTENT_FOR_QUESTION("Invalid content for question"),
+    INVALID_NAME_FOR_COURSE("Invalid name for course"),
+    INVALID_NAME_FOR_TOPIC("Invalid name for topic"),
+    INVALID_SEQUENCE_FOR_OPTION("Invalid sequence for option"),
+    INVALID_SEQUENCE_FOR_QUESTION_ANSWER("Invalid sequence for question answer"),
+    INVALID_TITLE_FOR_ASSESSMENT("Invalid title for assessment"),
+    INVALID_TITLE_FOR_QUESTION("Invalid title for question"),
+    INVALID_URL_FOR_IMAGE("Invalid url for image"),
+    INVALID_TYPE_FOR_COURSE("Invalid type for course"),
+    INVALID_TYPE_FOR_COURSE_EXECUTION("Invalid type for course execution"),
+    INVALID_AVAILABLE_DATE_FOR_QUIZ("Invalid available date for quiz"),
+    INVALID_CONCLUSION_DATE_FOR_QUIZ("Invalid conclusion date for quiz"),
+    INVALID_RESULTS_DATE_FOR_QUIZ("Invalid results date for quiz"),
+    INVALID_TITLE_FOR_QUIZ("Invalid title for quiz"),
+    INVALID_TYPE_FOR_QUIZ("Invalid type for quiz"),
+    INVALID_QUESTION_SEQUENCE_FOR_QUIZ("Invalid question sequence for quiz"),
+
+    ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
+    COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
+    OPTION_NOT_FOUND("Option not found with id %d"),
+    QUESTION_ANSWER_NOT_FOUND("Question answer not found with id %d"),
+    QUESTION_NOT_FOUND("Question not found with id %d"),
+    QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
     QUIZ_NOT_FOUND("Quiz not found with id %d"),
     QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
-    QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
-    QUESTION_ANSWER_NOT_FOUND("Question answer not found with id %d"),
-    OPTION_NOT_FOUND("Option not found with id %d"),
-    QUESTION_NOT_FOUND("Question not found with id %d"),
-    USER_NOT_FOUND("User not found with id %d"),
-    TOPIC_NOT_FOUND("Topic not found with id %d"),
-    ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     TOPIC_CONJUNCTION_NOT_FOUND("Topic Conjunction not found with id %d"),
-    COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
-
+    TOPIC_NOT_FOUND("Topic not found with id %d"),
+    USER_NOT_FOUND("User not found with id %d"),
     COURSE_NOT_FOUND("Course not found with name %s"),
-    COURSE_NAME_IS_EMPTY("The course name is empty"),
-    COURSE_TYPE_NOT_DEFINED("The course type is not defined"),
-    COURSE_EXECUTION_ACRONYM_IS_EMPTY("The course execution acronym is empty"),
-    COURSE_EXECUTION_ACADEMIC_TERM_IS_EMPTY("The course execution academic term is empty"),
+
     CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
-    USERNAME_NOT_FOUND("Username %s not found"),
+    USERNAME_NOT_FOUND("Username %d not found"),
 
     QUIZ_USER_MISMATCH("Quiz %s is not assigned to student %s"),
     QUIZ_MISMATCH("Quiz Answer Quiz %d does not match Quiz Question Quiz %d"),
@@ -44,16 +60,14 @@ public enum ErrorMessage {
     QUIZZES_IMPORT_ERROR("Error importing quizzes: %s"),
 
     QUESTION_IS_USED_IN_QUIZ("Question is used in quiz %s"),
-    QUIZ_NOT_CONSISTENT("Field %s of quiz is not consistent"),
     USER_NOT_ENROLLED("%s - Not enrolled in any available course"),
     QUIZ_NO_LONGER_AVAILABLE("This quiz is no longer available"),
     QUIZ_NOT_YET_AVAILABLE("This quiz is not yet available"),
 
     NO_CORRECT_OPTION("Question does not have a correct option"),
     NOT_ENOUGH_QUESTIONS("Not enough questions to create a quiz"),
-    QUESTION_MISSING_DATA("Missing information for quiz"),
-    QUESTION_MULTIPLE_CORRECT_OPTIONS("Questions can only have 1 correct option"),
-    QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
+    ONE_CORRECT_OPTION_NEEDED("Questions need to have 1 and only 1 correct option"),
+    CANNOT_CHANGE_ANSWERED_QUESTION("Can not change answered question"),
     QUIZ_HAS_ANSWERS("Quiz already has answers"),
     QUIZ_ALREADY_COMPLETED("Quiz already completed"),
     QUIZ_ALREADY_STARTED("Quiz was already started"),
@@ -63,7 +77,22 @@ public enum ErrorMessage {
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
 
+    ACCESS_DENIED("You do not have permission to view this resource"),
+
+
+
+    COURSE_NAME_IS_EMPTY("The course name is empty"),
+    COURSE_TYPE_NOT_DEFINED("The course type is not defined"),
+    COURSE_EXECUTION_ACRONYM_IS_EMPTY("The course execution acronym is empty"),
+    COURSE_EXECUTION_ACADEMIC_TERM_IS_EMPTY("The course execution academic term is empty"),
+
+    QUIZ_NOT_CONSISTENT("Field %s of quiz is not consistent"),
+
+    QUESTION_MISSING_DATA("Missing information for quiz"),
+    QUESTION_MULTIPLE_CORRECT_OPTIONS("Questions can only have 1 correct option"),
+    QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
     QUESTION_NOT_PENDING("Expected Question to be in pending status"),
+    QUESTION_NOT_ALTERED("Expected alterations on question for resubmission"),
 
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
     MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),
@@ -80,7 +109,12 @@ public enum ErrorMessage {
     INVALID_ENROLLMENT_CREATED_TOURNAMENT("The tournament hasn't been open yet"),
     INVALID_ENROLLMENT_CANCELLED_TOURNAMENT("The tournament has been cancelled"),
     TOURNAMENT_NOT_FOUND("Tournament with id %d not found"),
+    TOURNAMENT_IS_CLOSED("Tournament with id %d is closed"),
+    TOURNAMENT_IS_CREATED("Tournament with id %d hasn't open yet"),
     TOPIC_WITH_NAME_NOT_FOUND("Topic with name %s not found"),
+    USER_NOT_TOURNAMENT_CREATOR("User %d is not the creator of the tournament"),
+    CANNOT_CANCEL_CLOSED_TOURNAMENT("Closed tournaments cannot be cancelled"),
+    CANNOT_CANCEL_CANCELLED_TOURNAMENT("Cancelled tournaments cannot be cancelled"),
 
     INVALID_USER_ID("Invalid user ID"),
     INVALID_TOURNAMENT_ID("Invalid tournament ID"),
@@ -92,11 +126,17 @@ public enum ErrorMessage {
     DOUBT_USER_IS_NOT_A_STUDENT("Doubts can only be created by Students"),
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
     DOUBT_NOT_FOUND("Doubt not found"),
+    DISCUSSION_NOT_FOUND("Discussion not found"),
+    DISCUSSION_CANNOT_BE_CLOSED("Discussion cannot be closed due to unsolved questions"),
+    DISCUSSION_USER_IS_EMPTY(""),
+    DISCUSSION_IS_EMPTY(""),
+    DISCUSSION_USER_IS_NOT_A_STUDENT(""),
+    USER_IS_EMPTY("User has no identifier"),
+    USER_IS_NOT_STUDENT("User doens't havr the role of student, but should"),
 
-    ACCESS_DENIED("You do not have permission to view this resource"),
+
 
     CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request"),
-
 
     CANNOT_OPEN_FILE("Cannot open file");
 
