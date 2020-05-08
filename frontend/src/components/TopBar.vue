@@ -71,7 +71,7 @@
       <v-toolbar-items class="hidden-sm-and-down" hide-details>
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" text dark>
+            <v-btn v-on="on" text dark data-cy="Management">
               Management
               <v-icon>fas fa-file-alt</v-icon>
             </v-btn>
@@ -79,7 +79,7 @@
           <v-list dense>
             <v-list-item to="/management/questions">
               <v-list-item-action>
-                <v-icon>question_answer</v-icon>
+                <v-icon data-cy="Questions">question_answer</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Questions</v-list-item-title>
@@ -208,6 +208,33 @@
           <v-icon>fas fa-user</v-icon>
         </v-btn>
 
+        <v-menu offset-y v-if="isStudent && currentCourse" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn  v-on="on" text dark>
+              Stats
+              <v-icon>fas fa-user</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/student/stats">
+              <v-list-item-action>
+                <v-icon>fas fa-user-graduate</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>My Stats</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/student/globalStats">
+              <v-list-item-action>
+                <v-icon>fas fa-users</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Course Stats</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
         <v-btn
                 v-if="isLoggedIn && moreThanOneCourse"
                 to="/courses"
@@ -220,11 +247,11 @@
         </v-btn>
 
         <v-btn
-          v-if="isLoggedIn"
-          @click="logout"
-          data-cy="logoutButton"
-          text
-          dark
+                v-if="isLoggedIn"
+                @click="logout"
+                data-cy="logoutButton"
+                text
+                dark
         >
           Logout
           <v-icon>fas fa-sign-out-alt</v-icon>
@@ -456,6 +483,13 @@
             </v-list-item-action>
             <v-list-item-content>Stats</v-list-item-content>
           </v-list-item>
+          <v-list-item to="/student/globalStats">
+            <v-list-item-action>
+               <v-icon>fas fa-users</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Course Stats</v-list-item-content>
+          </v-list-item>
+
           <v-list-item to="/student/tournaments">
             <v-list-item-action>
               <v-icon>fas fa-trophy</v-icon>

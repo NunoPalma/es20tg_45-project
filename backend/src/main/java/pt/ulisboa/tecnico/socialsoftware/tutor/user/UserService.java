@@ -43,9 +43,6 @@ public class UserService {
     @Autowired
     private CourseExecutionRepository courseExecutionRepository;
 
-    @Autowired
-    private QuestionService questionService;
-
     @PersistenceContext
     EntityManager entityManager;
 
@@ -115,16 +112,31 @@ public class UserService {
         courseExecution.addUser(user);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Boolean getPrivacy(int userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+        return user.getPrivacy();
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void togglePrivacy(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new TutorException(USER_NOT_FOUND, userId));
+
+        user.togglePrivacy();
+    }
+
+
     public String exportUsers() {
         UsersXmlExport xmlExporter = new UsersXmlExport();
 
-       return xmlExporter.export(userRepository.findAll());
+        return xmlExporter.export(userRepository.findAll());
     }
 
 
     @Retryable(
-      value = { SQLException.class },
-      backoff = @Backoff(delay = 5000))
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void importUsers(String usersXML) {
         UsersXmlImport xmlImporter = new UsersXmlImport();

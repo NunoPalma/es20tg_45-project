@@ -9,8 +9,6 @@ describe('Student Submit Question action', () => {
     cy.contains('Logout').click();
   });
 
-  //trying to merge +
-
 
   it('login creates and submits a question', () => {
     let title = 'Test_Title' + Date.now();

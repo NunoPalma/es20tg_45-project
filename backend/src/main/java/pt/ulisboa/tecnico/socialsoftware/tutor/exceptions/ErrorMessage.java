@@ -8,10 +8,6 @@ public enum ErrorMessage {
     CLARIFICATION_DOUBT_IS_EMPTY("The clarification's question is empty"),
     CLARIFICATION_USER_IS_EMPTY("The clarification's content is empty"),
 
-    QUIZ_NOT_FOUND("Quiz not found with id %d"),
-    QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
-    QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
-    QUESTION_ANSWER_NOT_FOUND("Question answer not found with id %d"),
     INVALID_ACADEMIC_TERM_FOR_COURSE_EXECUTION("Invalid academic term for course execution"),
     INVALID_ACRONYM_FOR_COURSE_EXECUTION("Invalid acronym for course execution"),
     INVALID_CONTENT_FOR_OPTION("Invalid content for option"),
@@ -35,12 +31,15 @@ public enum ErrorMessage {
     ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
     OPTION_NOT_FOUND("Option not found with id %d"),
+    QUESTION_ANSWER_NOT_FOUND("Question answer not found with id %d"),
     QUESTION_NOT_FOUND("Question not found with id %d"),
+    QUIZ_ANSWER_NOT_FOUND("Quiz answer not found with id %d"),
+    QUIZ_NOT_FOUND("Quiz not found with id %d"),
+    QUIZ_QUESTION_NOT_FOUND("Quiz question not found with id %d"),
     TOPIC_CONJUNCTION_NOT_FOUND("Topic Conjunction not found with id %d"),
     TOPIC_NOT_FOUND("Topic not found with id %d"),
     USER_NOT_FOUND("User not found with id %d"),
     COURSE_NOT_FOUND("Course not found with name %s"),
-    COURSE_NAME_IS_EMPTY("The course name is empty"),
 
     CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
     USERNAME_NOT_FOUND("Username %d not found"),
@@ -78,10 +77,21 @@ public enum ErrorMessage {
     FENIX_CONFIGURATION_ERROR("Incorrect server configuration files for fenix"),
 
 
-    QUESTION_NOT_PENDING("Expected Question to be in pending status"),
-    QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
+    ACCESS_DENIED("You do not have permission to view this resource"),
+
+
+
+    COURSE_NAME_IS_EMPTY("The course name is empty"),
+    COURSE_TYPE_NOT_DEFINED("The course type is not defined"),
+    COURSE_EXECUTION_ACRONYM_IS_EMPTY("The course execution acronym is empty"),
+    COURSE_EXECUTION_ACADEMIC_TERM_IS_EMPTY("The course execution academic term is empty"),
+
+    QUIZ_NOT_CONSISTENT("Field %s of quiz is not consistent"),
+
     QUESTION_MISSING_DATA("Missing information for quiz"),
     QUESTION_MULTIPLE_CORRECT_OPTIONS("Questions can only have 1 correct option"),
+    QUESTION_CHANGE_CORRECT_OPTION_HAS_ANSWERS("Can not change correct option of answered question"),
+    QUESTION_NOT_PENDING("Expected Question to be in pending status"),
     QUESTION_NOT_ALTERED("Expected alterations on question for resubmission"),
 
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
@@ -117,10 +127,8 @@ public enum ErrorMessage {
     DOUBT_USER_HASNT_ANSWERED("Can't create doubts to unanswered questions"),
     DOUBT_NOT_FOUND("Doubt not found"),
 
-    ACCESS_DENIED("You do not have permission to view this resource"),
 
     CLARIFICATION_INVALID_COURSE_TEACHER("This teacher cannot solve this clarification request"),
-
 
     CANNOT_OPEN_FILE("Cannot open file");
 

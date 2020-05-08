@@ -23,6 +23,7 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
 Cypress.Commands.add('demoTeacherLogin', () => {
     cy.visit('/');
     cy.get('[data-cy="demoTeacherButton"]').click();
@@ -129,9 +130,9 @@ Cypress.Commands.add('closeErrorMessageCreateTournament', () => {
 
 //Commands for Submit Question Test
 
-Cypress.Commands.add('submitQuestion', (title, content, option) => {
-    cy.get('[data-cy="submitButton"]').click();
-    cy.get('[data-cy="Title"]').type(title, {force: true});
+  Cypress.Commands.add('submitQuestion', (title, content, option) => {
+    cy.get('[data-cy="submitButton"]').click({ force: true });
+    cy.get('[data-cy="Title"]').type(title, { force: true });
     cy.get('[data-cy="Content"]').type(content);
     cy.get('[data-cy="Correct"]').eq(0).click({force: true});
     cy.get('[data-cy="Option"]').eq(0).type(option);
@@ -155,13 +156,22 @@ Cypress.Commands.add('submitQuestionNoCorrect', (title, content, option) => {
 
 Cypress.Commands.add('deleteQuestion', (title) => {
     cy.contains(title)
-        .parent()
-        .should('have.length', 1)
-        .children()
-        .should('have.length', 7)
-        .find('[data-cy="deleteQuestion"]')
-        .click({force: true});
-});
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 7)
+      .find('[data-cy="deleteQuestion"]')
+      .click({ force: true });
+  });
+
+  Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
+    cy.contains(title1)
+      .parent()
+      .should('have.length', 1)
+      .parent()
+      .should('have.length', 1)
+      .contains(title2);
+  });
 
 Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
     cy.contains(title1)
@@ -172,29 +182,64 @@ Cypress.Commands.add('checkOrderTwoQuestions', (title1, title2) => {
         .contains(title2);
 });
 
+  Cypress.Commands.add( 'resubmitQuestion', (title, newContent) => {
+    cy.contains(title)
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 7)
+      .find('[data-cy="resubmit"]')
+      .click({ force: true });
+    cy.get('[data-cy="Content"]').type(newContent);
+    cy.get('[data-cy="saveButton"]').click({force:true});
+  });
+
 
 Cypress.Commands.add('approveQuestion', (title) => {
     cy.get('[data-cy="Management"]').click();
     cy.get('[data-cy="Evaluate"]').click();
     cy.contains(title)
-        .parent()
-        .should('have.length', 1)
-        .children()
-        .should('have.length', 7)
-        .find('[data-cy="evaluateQuestion"]')
-        .click({force: true});
-    cy.get('[data-cy="approve"]').click({force: true});
-    cy.get('[data-cy="saveEvaluation"]').click({force: true});
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 7)
+      .find('[data-cy="evaluateQuestion"]')
+      .click({ force: true });
+    cy.get('[data-cy="approve"]').click({ force: true });
+    cy.get('[data-cy="skipApprove"]').click({ force: true });
+  });
+
+Cypress.Commands.add('approveQuestion2', (title) => {
+  cy.get('[data-cy="Management"]').click();
+  cy.get('[data-cy="Evaluate"]').click();
+  cy.contains(title)
+    .parent()
+    .should('have.length', 1)
+    .children()
+    .should('have.length', 7)
+    .find('[data-cy="evaluateQuestion"]')
+    .click({ force: true });
+  cy.get('[data-cy="approve"]').click({ force: true });
+  cy.get('[data-cy="saveQuestion"]').click({ force: true });
 });
 
-Cypress.Commands.add('rejectQuestion', (title, justification) => {
+  Cypress.Commands.add('checkIfAvailable', (title) => {
+    cy.get('[data-cy="Management"]').click();
+    cy.get('[data-cy="Questions"]').click();
     cy.contains(title)
-        .parent()
-        .should('have.length', 1)
-        .children()
-        .should('have.length', 7)
-        .find('[data-cy="evaluateQuestion"]')
-        .click({force: true});
+      .parent()
+      .should('have.length', 1);
+  });
+
+  Cypress.Commands.add('rejectQuestion', (title, justification) => {
+    cy.contains(title)
+      .parent()
+      .should('have.length', 1)
+      .children()
+      .should('have.length', 7)
+      .find('[data-cy="evaluateQuestion"]')
+      .click({ force: true });
+    cy.get('[data-cy="reject"]').click({force:true});
     cy.get('[data-cy="justification"]').type(justification);
     cy.get('[data-cy="saveEvaluation"]').click({force: true});
 });
@@ -252,3 +297,4 @@ Cypress.Commands.add('enrollStudent', (tournamentName) => {
     let search = '[data-cy="' + tournamentName + '"]';
     cy.get(search).click({force: true});
 });
+

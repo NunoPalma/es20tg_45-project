@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.QuestionRepos
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -32,6 +33,9 @@ public class StatsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -101,4 +105,24 @@ public class StatsService {
         }
         return statsDto;
     }
+}
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Boolean getPrivacy(int userId) {
+
+        return this.userService.getPrivacy(userId);
+    }
+
+    @Retryable(
+            value = { SQLException.class },
+            backoff = @Backoff(delay = 5000))
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void togglePrivacy(int userId) {
+
+        this.userService.togglePrivacy(userId);
+    }
+
 }

@@ -309,6 +309,14 @@ public class Question implements DomainEntity {
         return chosenAssessment.getTopicConjunctions().stream().map(TopicConjunction::getTopics).collect(Collectors.toList()).contains(this.topics);
     }
 
+    public void resubmit(QuestionDto questionDto) {
+        checkAlteredQuestion(questionDto);
+
+        update(questionDto);
+        setStatus(Status.PENDING);
+    }
+
+
     private void checkConsistentQuestion(QuestionDto questionDto) {
         if (questionDto.getTitle() == null ||
                 questionDto.getContent() == null ||
@@ -339,6 +347,30 @@ public class Question implements DomainEntity {
         setTitle(questionDto.getTitle());
         setContent(questionDto.getContent());
         setOptions(questionDto.getOptions());
+    }
+
+    private void checkAlteredQuestion(QuestionDto questionDto) {
+        List<OptionDto> currentOptions = this.getOptions().stream().map(OptionDto::new).collect(Collectors.toList());
+        List<OptionDto> newOptions = questionDto.getOptions();
+
+
+        if (questionDto.getTitle() == this.getTitle() &&
+                questionDto.getContent() == this.getContent()) {
+
+            if(newOptions.size() == currentOptions.size() && checkIfSameOptions(currentOptions,newOptions)) {
+                    throw new TutorException(QUESTION_NOT_ALTERED);
+                }
+            }
+        }
+
+    private boolean checkIfSameOptions(List<OptionDto> list1, List<OptionDto> list2) {
+        for(int i = 0; i < list1.size(); i++){
+            if(!list1.get(i).getContent().equals(list2.get(i).getContent()) ||
+                    list1.get(i).getCorrect() != list2.get(i).getCorrect()){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void updateTopics(Set<Topic> newTopics) {
