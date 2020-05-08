@@ -762,6 +762,23 @@ export default class RemoteServices {
     }
   }
 
+  static async cancelTournament(tournamentId: number): Promise<Tournament> {
+    if (tournamentId) {
+      return httpClient
+        .post(
+          `/tournament/cancel/${Store.getters.getUser.id}/${tournamentId}`
+        )
+        .then(response => {
+          return new Tournament(response.data);
+        })
+        .catch(async error => {
+          throw Error(await this.errorMessage(error));
+        });
+    } else {
+      throw Error(await this.errorMessage('No tournament id provided.'));
+    }
+  }
+
   static async getAvailableTournaments(): Promise<Tournament[]> {
     return httpClient
       .get(`/tournament/show/${Store.getters.getUser.id}`)
