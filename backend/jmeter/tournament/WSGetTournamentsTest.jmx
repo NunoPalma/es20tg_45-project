@@ -112,7 +112,7 @@
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/executions/students/11/676</stringProp>
+            <stringProp name="HTTPSampler.path">/tournament/create/11/676</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -148,7 +148,7 @@
             <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/executions/students/11/676</stringProp>
+            <stringProp name="HTTPSampler.path">/tournament/create/11/676</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -206,7 +206,7 @@
             </JSONPathAssertion>
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert topic 1 tournament 1" enabled="true">
-              <stringProp name="JSON_PATH">$.[0].topics[0].name</stringProp>
+              <stringProp name="JSON_PATH">$.[0].topics.[1]</stringProp>
               <stringProp name="EXPECTED_VALUE">GNU Mailman</stringProp>
               <boolProp name="JSONVALIDATION">false</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
@@ -225,7 +225,7 @@
             <hashTree/>
             <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert topic 3 tournament 1" enabled="true">
               <stringProp name="JSON_PATH">$.[0].topics[2].name</stringProp>
-              <stringProp name="EXPECTED_VALUE">Nginx</stringProp>
+              <stringProp name="EXPECTED_VALUE">GNU Mailman</stringProp>
               <boolProp name="JSONVALIDATION">false</boolProp>
               <boolProp name="EXPECT_NULL">false</boolProp>
               <boolProp name="INVERT">false</boolProp>

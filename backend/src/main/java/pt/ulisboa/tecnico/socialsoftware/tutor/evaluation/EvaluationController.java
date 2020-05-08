@@ -11,6 +11,7 @@ import java.security.Principal;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.AUTHENTICATION_ERROR;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.CLARIFICATION_INVALID_USER;
+//trying to merge
 
 @RestController
 public class EvaluationController {
@@ -19,9 +20,15 @@ public class EvaluationController {
 
     EvaluationController(EvaluationService evaluationService){ this.evaluationService = evaluationService;}
 
+    @GetMapping("/evaluations/{questionId}")
+    @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
+    public EvaluationDto findEvaluation(@PathVariable Integer questionId){
+        return this.evaluationService.findEvaluationByKey(questionId);
+    }
+
     @PutMapping("/evaluations/{questionId}")
     @PreAuthorize("hasRole('ROLE_TEACHER') and hasPermission(#questionId, 'QUESTION.ACCESS')")
-    public EvaluationDto submitEvaluation(Principal principal, @Valid @RequestBody EvaluationDto evaluationDto, @PathVariable Integer questionId){
+    public EvaluationDto submitEvaluation(Principal principal, @PathVariable Integer questionId, @Valid @RequestBody EvaluationDto evaluationDto){
 
         User user = (User) ((Authentication) principal).getPrincipal();
 
@@ -31,7 +38,7 @@ public class EvaluationController {
             throw new TutorException(CLARIFICATION_INVALID_USER);
         }
 
-        return this.evaluationService.submitEvaluation(user.getUsername(), evaluationDto, questionId);
+        return this.evaluationService.submitEvaluation(user.getUsername(), questionId, evaluationDto);
     }
 }
 

@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class StudentDto implements Serializable {
     private String username;
@@ -22,6 +24,7 @@ public class StudentDto implements Serializable {
     private int percentageOfCorrectTeacherAnswers = 0;
     private int percentageOfCorrectInClassAnswers = 0;
     private int percentageOfCorrectStudentAnswers = 0;
+    private Integer amountOfParticipatedTournaments;
     private String creationDate;
     private String lastAccess;
     private List<Integer> tournaments = new ArrayList<>();
@@ -29,15 +32,16 @@ public class StudentDto implements Serializable {
     public StudentDto(User user) {
         this.username = user.getUsername();
         this.name = user.getName();
-
         this.numberOfTeacherQuizzes = user.getNumberOfTeacherQuizzes();
         this.numberOfInClassQuizzes = user.getNumberOfInClassQuizzes();
         this.numberOfStudentQuizzes = user.getNumberOfStudentQuizzes();
-
         this.numberOfAnswers = user.getNumberOfTeacherAnswers() + user.getNumberOfInClassAnswers() + user.getNumberOfStudentAnswers();
         this.numberOfTeacherAnswers = user.getNumberOfTeacherAnswers();
         this.numberOfInClassAnswers = user.getNumberOfInClassAnswers();
         this.numberOfStudentAnswers = user.getNumberOfStudentAnswers();
+        this.lastAccess = DateHandler.toISOString(user.getLastAccess());
+        this.creationDate = DateHandler.toISOString(user.getCreationDate());
+        this.amountOfParticipatedTournaments = user.getNumberOfParticipatedTournaments();
 
         if (this.numberOfTeacherAnswers != 0)
             this.percentageOfCorrectTeacherAnswers = user.getNumberOfCorrectTeacherAnswers() * 100 / this.numberOfTeacherAnswers;
@@ -175,6 +179,14 @@ public class StudentDto implements Serializable {
 
     public void setPercentageOfCorrectStudentAnswers(int percentageOfCorrectStudentAnswers) {
         this.percentageOfCorrectStudentAnswers = percentageOfCorrectStudentAnswers;
+    }
+
+    public Integer getAmountOfParticipatedTournaments() {
+        return amountOfParticipatedTournaments;
+    }
+
+    public void setAmountOfParticipatedTournaments(int amountOfParticipatedTournaments) {
+        this.amountOfParticipatedTournaments = amountOfParticipatedTournaments;
     }
 
     @Override

@@ -15,8 +15,13 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 
+import java.time.LocalDateTime
+
 @DataJpaTest
 class EnrollStudentServiceSpockPerformanceTest extends Specification {
+    final static String COURSE_NAME = "Course"
+    static final LocalDateTime START_DATE = LocalDateTime.now().withSecond(0).withNano(0)
+    static final LocalDateTime END_DATE = START_DATE.plusDays(20)
 
     def USER_ID = 1000
 
@@ -44,7 +49,7 @@ class EnrollStudentServiceSpockPerformanceTest extends Specification {
 
         and: "a course execution"
         def course = new Course()
-        course.setId(1)
+        course.setName(COURSE_NAME)
         courseRepository.save(course)
         def courseExecution = new CourseExecution()
         courseExecution.setCourse(course)
@@ -53,13 +58,15 @@ class EnrollStudentServiceSpockPerformanceTest extends Specification {
         and: "a tournament"
         def tournament = new Tournament()
         tournament.setState(Tournament.State.OPEN)
+        tournament.setStartDate(START_DATE)
+        tournament.setEndDate(END_DATE)
         tournament.setCreator(creator)
         tournament.setCourseExecution(courseExecution)
         tournament.setNumQuestions(1)
         tournamentRepository.save(tournament)
 
-        when: "1000 users try to enroll in a tournament"
-        1.upto(1000, {
+        when: "1 user tries to enroll in a tournament"
+        1.upto(1, {
             def student = new User()
             student.setRole(User.Role.STUDENT)
             student.setKey(USER_ID)

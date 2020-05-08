@@ -7,9 +7,13 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -17,204 +21,231 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 @Table(name = "tournaments")
 public class Tournament {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User creator;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User creator;
 
-    @ManyToOne
-    @JoinColumn(name = "course_execution_id")
-    private CourseExecution courseExecution;
+	@ManyToOne
+	@JoinColumn(name = "course_execution_id")
+	private CourseExecution courseExecution;
 
-    @Column(name = "name")
-    private String name;
+	@Column(name = "name")
+	private String name;
 
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
+	@Column(name = "start_date")
+	private LocalDateTime startDate;
 
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
+	@Column(name = "end_date")
+	private LocalDateTime endDate;
 
-    @ManyToMany
-    @JoinTable(
-            name = "topics_of_tournament",
-            joinColumns = @JoinColumn(name = "tournament_id"),
-            inverseJoinColumns = @JoinColumn(name = "topic_id")
-    )
-    private Set<Topic> topics;
+	@ManyToMany
+	@JoinTable(
+			name = "topics_of_tournament",
+			joinColumns = @JoinColumn(name = "tournament_id"),
+			inverseJoinColumns = @JoinColumn(name = "topic_id")
+	)
+	private Set<Topic> topics;
 
-    @Column(name = "num_questions")
-    private Integer numQuestions;
+	@Column(name = "num_questions")
+	private Integer numQuestions;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "quiz_id")
+	private Quiz quiz = null;
 
-    @ManyToMany
-    @JoinTable(
-            name = "participants_of_tournament",
-            joinColumns = @JoinColumn(name = "tournament_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+	@ManyToMany
+	@JoinTable(
+			name = "participants_of_tournament",
+			joinColumns = @JoinColumn(name = "tournament_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
+	private final Set<User> participants;
 
-    private Set<User> participants;
+	@Enumerated(EnumType.STRING)
+	private State state = State.CREATED;
 
-    @Enumerated(EnumType.STRING)
-    private State state = State.CREATED;
+	public enum State {
+		CREATED, OPEN, CLOSED, CANCELLED
+	}
 
-    public enum State {
-        CREATED, OPEN, CLOSED, CANCELLED
-    }
+	public Tournament() {
+		this.participants = new HashSet<>();
+		this.topics = new HashSet<>();
+	}
 
-    public Tournament() {
-        this.participants = new HashSet<>();
-        this.topics = new HashSet<>();
-    }
+	public Tournament(User creator, CourseExecution courseExecution) {
+		this.participants = new HashSet<>();
+		this.creator = creator;
+		this.courseExecution = courseExecution;
+		this.topics = new HashSet<>();
+	}
 
-    public Tournament(User creator, CourseExecution courseExecution) {
-        this.participants = new HashSet<>();
-        this.creator = creator;
-        this.courseExecution = courseExecution;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public User getCreator() {
+		return creator;
+	}
 
-    public User getCreator() {
-        return creator;
-    }
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
 
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
+	public void setCourseExecution(CourseExecution courseExecution) {
+		this.courseExecution = courseExecution;
+	}
 
-    public void setCourseExecution(CourseExecution courseExecution) {
-        this.courseExecution = courseExecution;
-    }
+	public CourseExecution getCourseExecution() {
+		return courseExecution;
+	}
 
-    public CourseExecution getCourseExecution() {
-        return courseExecution;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setName(String name) {
+		checkName(name);
+		this.name = name;
+	}
 
-    public void setName(String name) {
-        checkName(name);
-        this.name = name;
-    }
+	public LocalDateTime getStartDate() {
+		return startDate;
+	}
 
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
+	public void setStartDate(LocalDateTime startDate) {
+		checkStartDate(startDate);
+		this.startDate = startDate;
+	}
 
-    public void setStartDate(LocalDateTime startDate) {
-        checkStartDate(startDate);
-        this.startDate = startDate;
-    }
+	public LocalDateTime getEndDate() {
+		return endDate;
+	}
 
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
+	public void setEndDate(LocalDateTime endDate) {
+		checkEndDate(endDate);
+		this.endDate = endDate;
 
-    public void setEndDate(LocalDateTime endDate) {
-        checkEndDate(endDate);
-        this.endDate = endDate;
-    }
+		//scheduleEndTournament();
+	}
 
-    public Set<Topic> getTopics() {
-        return topics;
-    }
+	private void scheduleEndTournament() {
+		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
 
-    public void setTopics(Set<Topic> topics) {
-        this.topics = topics;
-    }
+		Duration ms = Duration.between(LocalDateTime.now(), this.endDate);
+		service.schedule(new TournamentStateTask(this, State.CLOSED), ms.toMillis(), TimeUnit.MILLISECONDS);
+	}
 
-    public void addTopic(Topic topic) {
-        topics.add(topic);
-    }
+	public Set<Topic> getTopics() {
+		return topics;
+	}
 
-    public Integer getNumQuestions() {
-        return numQuestions;
-    }
+	public void setTopics(Set<Topic> topics) {
+		this.topics = topics;
+	}
 
-    public void setNumQuestions(Integer numQuestions) {
-        checkNumQuestions(numQuestions);
-        this.numQuestions = numQuestions;
-    }
+	public void addTopic(Topic topic) {
+		this.topics.add(topic);
+	}
 
-    public Quiz getQuiz() {
-        return quiz;
-    }
+	public Integer getNumQuestions() {
+		return numQuestions;
+	}
 
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
+	public void setNumQuestions(Integer numQuestions) {
+		checkNumQuestions(numQuestions);
+		this.numQuestions = numQuestions;
+	}
 
-    public void setState(State state) {
-        this.state = state;
-    }
+	public Quiz getQuiz() {
+		return quiz;
+	}
 
-    public State getState() {
-        return state;
-    }
+	public void setQuiz(Quiz quiz) {
+		this.quiz = quiz;
+	}
 
-    private void checkName(String name) {
-        if (name == null || name.trim().length() == 0)
-            throw new TutorException(TOURNAMENT_NAME_EMPTY);
-    }
+	public void setState(State state) {
+		this.state = state;
+	}
 
-    private void checkStartDate(LocalDateTime startDate) {
-        if (startDate == null)
-            throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
-    }
+	public State getState() {
+		return state;
+	}
 
-    private void checkEndDate(LocalDateTime endDate) {
-        if (this.startDate == null)
-            throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
-        if (endDate == null)
-            throw new TutorException(TOURNAMENT_END_DATE_EMPTY);
-        if (endDate.isBefore(this.startDate))
-            throw new TutorException(TOURNAMENT_INVALID_END_DATE);
-        if (endDate.isEqual(this.startDate))
-            throw new TutorException(TOURNAMENT_DATES_OVERLAP);
-    }
+	private void checkName(String name) {
+		if (name == null || name.trim().length() == 0)
+			throw new TutorException(TOURNAMENT_NAME_EMPTY);
+	}
 
-    private void checkNumQuestions(Integer numQuestions) {
-        if (numQuestions < 1)
-            throw new TutorException(TOURNAMENT_NOT_ENOUGH_QUESTIONS);
-    }
+	private void checkStartDate(LocalDateTime startDate) {
+		if (startDate == null)
+			throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
+	}
 
-    public void addParticipant(User user) {
-        if (participants.contains(user))
-            throw new TutorException(STUDENT_ALREADY_ENROLLED);
-        participants.add(user);
-    }
+	private void checkEndDate(LocalDateTime endDate) {
+		if (this.startDate == null)
+			throw new TutorException(TOURNAMENT_START_DATE_EMPTY);
+		if (endDate == null)
+			throw new TutorException(TOURNAMENT_END_DATE_EMPTY);
+		if (endDate.isBefore(this.startDate))
+			throw new TutorException(TOURNAMENT_INVALID_END_DATE);
+		if (endDate.isEqual(this.startDate))
+			throw new TutorException(TOURNAMENT_DATES_OVERLAP);
+	}
 
-    public Set<User> getParticipants() {
-        return participants;
-    }
+	private void checkNumQuestions(Integer numQuestions) {
+		if (numQuestions < 1)
+			throw new TutorException(TOURNAMENT_NOT_ENOUGH_QUESTIONS);
+	}
 
-    public void enrollStudent(User user) {
-        switch (state) {
-            case CREATED:
-                throw new TutorException(INVALID_ENROLLMENT_CREATED_TOURNAMENT);
-            case OPEN:
-               addParticipant(user);
-               break;
-            case CLOSED:
-                throw new TutorException(INVALID_ENROLLMENT_CLOSED_TOURNAMENT);
-            case CANCELLED:
-                throw new TutorException(INVALID_ENROLLMENT_CANCELLED_TOURNAMENT);
-        }
-    }
+	public void addParticipant(User user) {
+		if (participants.contains(user))
+			throw new TutorException(STUDENT_ALREADY_ENROLLED);
+		participants.add(user);
+	}
+
+	public Set<User> getParticipants() {
+		return participants;
+	}
+
+	public void enrollStudent(User user) {
+		switch (state) {
+			case CREATED:
+				throw new TutorException(INVALID_ENROLLMENT_CREATED_TOURNAMENT);
+			case OPEN:
+				addParticipant(user);
+				break;
+			case CLOSED:
+				throw new TutorException(INVALID_ENROLLMENT_CLOSED_TOURNAMENT);
+			case CANCELLED:
+				throw new TutorException(INVALID_ENROLLMENT_CANCELLED_TOURNAMENT);
+		}
+	}
+
+	public boolean isCreator(User user) {
+		return this.creator.equals(user);
+	}
+
+	public void generateQuiz() {
+		this.quiz = new Quiz();
+		quiz.setType(Quiz.QuizType.PROPOSED.toString());
+		quiz.setCourseExecution(this.courseExecution);
+		quiz.setTitle(this.name + " Quiz");
+		quiz.setScramble(true);
+		quiz.setQrCodeOnly(false);
+		quiz.setOneWay(false);
+		quiz.setCreationDate(LocalDateTime.now());
+		quiz.setAvailableDate(this.startDate);
+		quiz.setConclusionDate(this.endDate);
+		quiz.setResultsDate(this.endDate);
+	}
 }

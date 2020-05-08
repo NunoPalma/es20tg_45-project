@@ -2,19 +2,19 @@
   <nav>
     <v-app-bar color="primary" clipped-left>
       <v-app-bar-nav-icon
-        @click.stop="drawer = !drawer"
-        class="hidden-md-and-up"
-        aria-label="Menu"
+              @click.stop="drawer = !drawer"
+              class="hidden-md-and-up"
+              aria-label="Menu"
       />
 
       <v-toolbar-title>
         <v-btn
-          dark
-          active-class="no-active"
-          text
-          tile
-          to="/"
-          v-if="currentCourse"
+                dark
+                active-class="no-active"
+                text
+                tile
+                to="/"
+                v-if="currentCourse"
         >
           {{ currentCourse.name }}
         </v-btn>
@@ -24,6 +24,28 @@
       </v-toolbar-title>
 
       <v-spacer />
+
+      <v-toolbar-items class="hidden-sm-and-down" hide-details>
+        <v-menu offset-y v-if="isAdmin" open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" text dark data-cy="administrationMenuButton">
+              Administration
+              <v-icon>fas fa-file-alt</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item to="/admin/courses" data-cy="manageCoursesMenuButton">
+              <v-list-item-action>
+                <v-icon>fas fa-school</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Manage Courses</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-toolbar-items>
+
 
       <v-toolbar-items class="hidden-sm-and-down" hide-details>
         <v-menu offset-y v-if="isAdmin" open-on-hover>
@@ -46,28 +68,6 @@
         </v-menu>
       </v-toolbar-items>
 
-
-			<v-toolbar-items class="hidden-sm-and-down" hide-details>
-				<v-menu offset-y v-if="isAdmin" open-on-hover>
-					<template v-slot:activator="{ on }">
-						<v-btn v-on="on" text dark>
-							Administration
-							<v-icon>fas fa-file-alt</v-icon>
-						</v-btn>
-					</template>
-					<v-list dense>
-						<v-list-item to="/admin/courses">
-							<v-list-item-action>
-								<v-icon>fas fa-school</v-icon>
-							</v-list-item-action>
-							<v-list-item-content>
-								<v-list-item-title>Manage Courses</v-list-item-title>
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</v-toolbar-items>
-        
       <v-toolbar-items class="hidden-sm-and-down" hide-details>
         <v-menu offset-y v-if="isTeacher && currentCourse" open-on-hover>
           <template v-slot:activator="{ on }">
@@ -85,9 +85,9 @@
                 <v-list-item-title>Questions</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/management/evaluate_questions">
-              <v-list-item-action>
-                <v-icon>check</v-icon>
+            <v-list-item to="/management/evaluations">
+              <v-list-item-action data-cy="Evaluate">
+                <v-icon>fas fa-check-circle</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>Evaluate Questions</v-list-item-title>
@@ -184,14 +184,6 @@
                 <v-list-item-title data-cy="solved">Solved</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/tournaments">
-              <v-list-item-action>
-                <v-icon>fas fa-trophy</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>Tournaments</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
             <v-list-item to="/student/doubts">
               <v-list-item-action>
                 <v-icon>question_answer</v-icon>
@@ -200,79 +192,40 @@
                 <v-list-item-title>Doubts</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/student/tournaments">
-							<v-list-item-action>
-								<v-icon>fas fa-trophy</v-icon>
-							</v-list-item-action>
-							<v-list-item-content>
-								<v-list-item-title data-cy="Tournaments">Tournaments</v-list-item-title>
-							</v-list-item-content>
-						</v-list-item>
           </v-list>
         </v-menu>
-				
 
-				<v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
-					Stats
-					<v-icon>fas fa-user</v-icon>
-				</v-btn>
-
-				<v-btn
-						v-if="isLoggedIn && moreThanOneCourse"
-						to="/courses"
-						active-class="no-active"
-						text
-						dark
-				>
-					Change course
-					<v-icon>fa fa-book</v-icon>
-				</v-btn>
-
-				<v-btn v-if="isLoggedIn" @click="logout" text dark data-cy="Logout">
-					Logout
-					<v-icon>fas fa-sign-out-alt</v-icon>
-				</v-btn>
-
-				<v-btn v-else :href="fenixUrl" text dark>
-					Login <v-icon>fas fa-sign-in-alt</v-icon>
-				</v-btn>
-			</v-toolbar-items>
-		</v-app-bar>
-
-		<!-- Start of mobile side menu -->
-		<v-navigation-drawer app v-model="drawer" absolute dark temporary>
-			<v-toolbar flat>
-				<v-list>
-					<v-list-item>
-						<v-list-item-title class="title">Menu</v-list-item-title>
-					</v-list-item>
-				</v-list>
-			</v-toolbar>
-
-        <v-btn
-          to="/student/questions"
-          v-if="isStudent && currentCourse"
-          text
-          dark
-        >
+        <v-btn to="/student/questions" v-if="isStudent && currentCourse" text dark>
           My Questions
           <v-icon>question_answer</v-icon>
         </v-btn>
-
+        <v-btn to="/student/tournaments" data-cy="tournaments" v-if="isStudent && currentCourse" text dark>
+          Tournaments
+          <v-icon>fas fa-trophy</v-icon>
+        </v-btn>
+        <v-btn to="/student/stats" v-if="isStudent && currentCourse" text dark>
+          Stats
+          <v-icon>fas fa-user</v-icon>
+        </v-btn>
 
         <v-btn
-          v-if="isLoggedIn && moreThanOneCourse"
-          to="/courses"
-          active-class="no-active"
-          text
-          dark
+                v-if="isLoggedIn && moreThanOneCourse"
+                to="/courses"
+                active-class="no-active"
+                text
+                dark
         >
-      
           Change course
           <v-icon>fa fa-book</v-icon>
         </v-btn>
 
-        <v-btn v-if="isLoggedIn" @click="logout" text dark>
+        <v-btn
+          v-if="isLoggedIn"
+          @click="logout"
+          data-cy="logoutButton"
+          text
+          dark
+        >
           Logout
           <v-icon>fas fa-sign-out-alt</v-icon>
         </v-btn>
@@ -293,16 +246,69 @@
         </v-list>
       </v-toolbar>
 
+      <v-btn
+              to="/student/questions"
+              v-if="isStudent && currentCourse"
+              text
+              dark
+      >
+        My Questions
+        <v-icon>question_answer</v-icon>
+      </v-btn>
+
+      <v-btn
+              to="/student/tournaments"
+              v-if="isStudent && currentCourse"
+              text
+              dark
+      >
+        Tournaments
+        <v-icon>question_answer</v-icon>
+      </v-btn>
+
+
+      <v-btn
+              v-if="isLoggedIn && moreThanOneCourse"
+              to="/courses"
+              active-class="no-active"
+              text
+              dark
+      >
+
+        Change course
+        <v-icon>fa fa-book</v-icon>
+      </v-btn>
+
+      <v-btn v-if="isLoggedIn" @click="logout" text dark>
+        Logout
+        <v-icon>fas fa-sign-out-alt</v-icon>
+      </v-btn>
+
+      <v-btn v-else :href="fenixUrl" text dark>
+        Login <v-icon>fas fa-sign-in-alt</v-icon>
+      </v-btn>
+    </v-navigation-drawer>
+
+    <!-- Start of mobile side menu -->
+    <v-navigation-drawer app v-model="drawer" absolute dark temporary>
+      <v-toolbar flat>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title class="title">Menu</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-toolbar>
+
       <v-list class="pt-0" dense>
         <!-- Administration Group-->
         <v-list-group
-          prepend-icon="fas fa-file-alt"
-          :value="false"
-          v-if="isAdmin"
+                prepend-icon="fas fa-file-alt"
+                :value="false"
+                v-if="isAdmin"
         >
           <template v-slot:activator>
             <v-list-item-title data-cy="Administration"
-              >Administration</v-list-item-title
+            >Administration</v-list-item-title
             >
           </template>
           <v-list-item to="/admin/courses">
@@ -314,12 +320,12 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-        
+
         <!-- Management Group-->
         <v-list-group
-          prepend-icon="fas fa-file-alt"
-          :value="false"
-          v-if="isTeacher && currentCourse"
+                prepend-icon="fas fa-file-alt"
+                :value="false"
+                v-if="isTeacher && currentCourse"
         >
           <template v-slot:activator>
             <v-list-item-title>Management</v-list-item-title>
@@ -330,6 +336,14 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>Questions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/management/evaluations">
+            <v-list-item-action>
+              <v-icon>fas fa-check-circle</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Evaluate Questions</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/management/topics">
@@ -376,17 +390,17 @@
 
         <!-- Student Group-->
         <v-list-group
-          prepend-icon="account_circle"
-          :value="false"
-          v-if="isStudent && currentCourse"
+                prepend-icon="account_circle"
+                :value="false"
+                v-if="isStudent && currentCourse"
         >
           <template v-slot:activator>
             <v-list-item-title>Student</v-list-item-title>
           </template>
 
           <v-list-item
-            to="/student/available"
-            v-if="isStudent && currentCourse"
+                  to="/student/available"
+                  v-if="isStudent && currentCourse"
           >
             <v-list-item-action>
               <v-icon>assignment</v-icon>
@@ -429,6 +443,13 @@
             <v-list-item-content>My Questions</v-list-item-content>
           </v-list-item>
 
+          <v-list-item to="/student/tournaments">
+            <v-list-item-action>
+              <v-icon>fas fa-trophy</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Tournaments</v-list-item-content>
+          </v-list-item>
+
           <v-list-item to="/student/stats">
             <v-list-item-action>
               <v-icon>fas fa-user</v-icon>
@@ -436,12 +457,12 @@
             <v-list-item-content>Stats</v-list-item-content>
           </v-list-item>
           <v-list-item to="/student/tournaments">
-						<v-list-item-action>
-							<v-icon>fas fa-trophy</v-icon>
-						</v-list-item-action>
-						<v-list-item-content>Tournaments
-						</v-list-item-content>
-					</v-list-item>
+            <v-list-item-action>
+              <v-icon>fas fa-trophy</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>Tournaments
+            </v-list-item-content>
+          </v-list-item>
         </v-list-group>
 
         <v-list-item to="/courses" v-if="isLoggedIn && moreThanOneCourse">
@@ -469,45 +490,45 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-@Component
-export default class TopBar extends Vue {
-  fenixUrl: string = process.env.VUE_APP_FENIX_URL;
-  appName: string = process.env.VUE_APP_NAME;
-  drawer: boolean = false;
-  get currentCourse() {
-    return this.$store.getters.getCurrentCourse;
+  import { Component, Vue } from 'vue-property-decorator';
+  @Component
+  export default class TopBar extends Vue {
+    fenixUrl: string = process.env.VUE_APP_FENIX_URL;
+    appName: string = process.env.VUE_APP_NAME;
+    drawer: boolean = false;
+    get currentCourse() {
+      return this.$store.getters.getCurrentCourse;
+    }
+    get moreThanOneCourse() {
+      return (
+              this.$store.getters.getUser.coursesNumber > 1 &&
+              this.$store.getters.getCurrentCourse
+      );
+    }
+    get isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    }
+    get isTeacher() {
+      return this.$store.getters.isTeacher;
+    }
+    get isAdmin() {
+      return this.$store.getters.isAdmin;
+    }
+    get isStudent() {
+      return this.$store.getters.isStudent;
+    }
+    async logout() {
+      await this.$store.dispatch('logout');
+      await this.$router.push({ name: 'home' }).catch(() => {});
+    }
   }
-  get moreThanOneCourse() {
-    return (
-      this.$store.getters.getUser.coursesNumber > 1 &&
-      this.$store.getters.getCurrentCourse
-    );
-  }
-  get isLoggedIn() {
-    return this.$store.getters.isLoggedIn;
-  }
-  get isTeacher() {
-    return this.$store.getters.isTeacher;
-  }
-  get isAdmin() {
-    return this.$store.getters.isAdmin;
-  }
-  get isStudent() {
-    return this.$store.getters.isStudent;
-  }
-  async logout() {
-    await this.$store.dispatch('logout');
-    await this.$router.push({ name: 'home' }).catch(() => {});
-  }
-}
 </script>
 
 <style lang="scss" scoped>
-.no-active::before {
-  opacity: 0 !important;
-}
-nav {
-  z-index: 300;
-}
+  .no-active::before {
+    opacity: 0 !important;
+  }
+  nav {
+    z-index: 300;
+  }
 </style>
