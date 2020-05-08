@@ -116,6 +116,9 @@ public enum ErrorMessage {
     DISCUSSION_USER_IS_EMPTY(""),
     DISCUSSION_IS_EMPTY(""),
     DISCUSSION_USER_IS_NOT_A_STUDENT(""),
+    USER_IS_EMPTY("User has no identifier"),
+    USER_IS_NOT_STUDENT("User doens't havr the role of student, but should"),
+
 
     ACCESS_DENIED("You do not have permission to view this resource"),
 
