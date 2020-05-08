@@ -119,6 +119,13 @@ Cypress.Commands.add(
     }
 );
 
+Cypress.Commands.add('closeErrorMessageCreateTournament', () => {
+    cy.contains('Tournament must have name, start date, end date and at least one topic!')
+        .parent()
+        .find('button')
+        .click();
+});
+
 
 //Commands for Submit Question Test
 
@@ -193,8 +200,7 @@ Cypress.Commands.add('rejectQuestion', (title, justification) => {
 });
 
 Cypress.Commands.add('viewTournaments', () => {
-    cy.get('[data-cy="Quizzes"]').click({force: true});
-    cy.get('[data-cy="Tournaments"]').click({force: true});
+    cy.get('[data-cy="tournaments"]').click({force: true});
 });
 
 Cypress.Commands.add('createTournament', (name, startDate, endDate, topicName, numQuestions) => {
@@ -230,10 +236,11 @@ Cypress.Commands.add('createTournamentNoTopics', (name, startDate, endDate) => {
     cy.get('[data-cy="endDate"]').click({force: true}).type(endDate);
 
     // select the number of questions
-    cy.get('[data-cy="Questions10"]').click({force: true});
+    cy.get('[data-cy="numQuestions"]').click({force: true});
 
     // save the tournament (should throw error)
     cy.get('[data-cy="saveButton"]').click({force: true});
+
 });
 
 Cypress.Commands.add('cancelTournament', (tournamentName) => {

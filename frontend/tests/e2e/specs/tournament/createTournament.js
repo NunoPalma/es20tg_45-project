@@ -62,9 +62,10 @@ describe('Create Tournament walkthrough', () => {
     cy.createTournamentNoTopics(
       'MyTournament 2 - Electric Boogaloo',
       '2020-05-20 12:40:00',
-      '2020-05-24 17:00:00'
+      '2020-05-24 17:00:00',
+        ' ',
+        5
     );
-
-    cy.closeErrorMessage();
+    cy.closeErrorMessageCreateTournament();
   });
 });
