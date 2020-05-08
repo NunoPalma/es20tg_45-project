@@ -1,6 +1,5 @@
 <template>
   <div>
-    <v-btn class="stats-button" color="blue" right to="discussionStats"><v-icon left>fas fa-chart-bar</v-icon>Dashboard</v-btn>
     <v-card class="table">
       <v-data-table
         :headers="headers"
@@ -19,6 +18,19 @@
               label="Search"
               class="mx-2"
             />
+            <v-spacer />
+            <v-btn
+              class="white--text"
+              color="blue"
+              style="text-decoration-color: white;"
+              right to="discussionStats"
+              ><v-icon
+                color="white"
+                small
+                style="position: relative;  padding-left:0cm; padding-right: 0.1cm;"
+                >fas fa-chart-bar</v-icon
+              >Dashboard
+            </v-btn>
           </v-card-title>
         </template>
 
@@ -47,7 +59,12 @@
         <template v-slot:item.action="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon data-cy="seeDoubtButton" small class="mr-2" v-on="on" @click="seeDiscussion(item)"
+              <v-icon
+                data-cy="seeDoubtButton"
+                small
+                class="mr-2"
+                v-on="on"
+                @click="seeDiscussion(item)"
                 >visibility</v-icon
               >
             </template>

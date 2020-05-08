@@ -1,7 +1,14 @@
 <template>
   <div>
-    <v-btn @click="changePrivacy()"><v-icon>{{privacyIcon()}}</v-icon>{{privacyMessage()}}</v-btn>
-    <div class="stats-container" v-if="!privacy">
+    <v-btn style="position: relative; top:0.8cm; right: 1.5cm; " color="blue" class="white--text" to="/student/discussions"
+    ><v-icon style="position: relative; right: 0.25cm;">fas fa-arrow-left</v-icon
+    >Back</v-btn
+    >
+    <v-btn style="position: relative; top:0.8cm; right: 1.25cm; " color="blue" class="white--text" @click="changePrivacy()"
+      ><v-icon style="position: relative; right: 0.25cm;">{{ privacyIcon() }}</v-icon
+      >{{ privacyMessage() }}</v-btn
+    >
+    <div class="stats-container" style="position:relative; top: 1cm;">
       <div class="items">
         <div class="icon-wrapper" ref="discussionsMade">
           <animated-number> {{ discussions.length }}</animated-number>

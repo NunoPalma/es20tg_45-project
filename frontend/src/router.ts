@@ -190,11 +190,11 @@ let router = new Router({
           }
         },
         {
-          path: 'doubts',
-          name: 'see-doubts',
+          path: 'discussions',
+          name: 'see-discussions',
           component: DoubtsViewTest,
           meta: {
-            title: process.env.VUE_APP_NAME + ' - Doubts',
+            title: process.env.VUE_APP_NAME + ' - Discussions',
             requiredAuth: 'Student'
           }
         },
