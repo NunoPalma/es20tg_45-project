@@ -11,6 +11,7 @@ public class UserDto implements Serializable {
     private String name;
     private User.Role role;
     private String creationDate;
+    private boolean dashBoardPrivacy;
 
     public UserDto(User user) {
         this.id = user.getId();
@@ -18,6 +19,15 @@ public class UserDto implements Serializable {
         this.name = user.getName();
         this.role = user.getRole();
         this.creationDate = DateHandler.toISOString(user.getCreationDate());
+        this.dashBoardPrivacy = user.isDashboardPrivacy();
+    }
+
+    public boolean isDashBoardPrivacy() {
+        return dashBoardPrivacy;
+    }
+
+    public void setDashBoardPrivacy(boolean dashBoardPrivacy) {
+        this.dashBoardPrivacy = dashBoardPrivacy;
     }
 
     public int getId() {

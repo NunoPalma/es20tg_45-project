@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.user;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,10 +34,6 @@ public class User implements UserDetails, DomainEntity {
 
     @Column(unique=true, nullable = false)
     private Integer key;
-
-    @Column(name="dashboard_privacy")
-    @Type(type="true_false")
-    private boolean dashboardPrivacy = false;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -85,6 +83,11 @@ public class User implements UserDetails, DomainEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Clarification> clarifications = new HashSet<>();
+
+    @ColumnDefault("0")
+    @Column(name="dashboard_privacy", nullable = false)
+    @Type(type="true_false")
+    private boolean dashboardPrivacy = false;
 
 
     public User() {
