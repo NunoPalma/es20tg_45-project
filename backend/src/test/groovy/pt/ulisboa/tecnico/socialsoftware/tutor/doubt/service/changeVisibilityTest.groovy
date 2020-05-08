@@ -7,10 +7,13 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuestionAnswerRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.repository.QuizAnswerRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.clarification.ClarificationService
 import pt.ulisboa.tecnico.socialsoftware.tutor.config.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.course.CourseRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Discussion
+import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DiscussionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.Doubt
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.doubt.DoubtService
@@ -92,6 +95,12 @@ class changeVisibilityTest extends Specification {
     @Autowired
     ClarificationService clarificationService
 
+    @Autowired
+    DiscussionRepository discussionRepository
+
+    @Autowired
+    QuestionAnswerRepository questionAnswerRepository
+
     def question
     def question2
     def questiondto
@@ -107,6 +116,9 @@ class changeVisibilityTest extends Specification {
     def quizquestion
     def quizquestion2
     def quizanswer
+    def discussion
+    def doubt
+    def questionanswer
 
 
     def setup() {
@@ -165,10 +177,17 @@ class changeVisibilityTest extends Specification {
         quizanswer = new QuizAnswer(student, quiz)
         quizAnswerRepository.save(quizanswer)
 
+
+
+
         quizquestion = new QuizQuestion(quiz, question, 1)
         quizquestion2 = new QuizQuestion(quiz, question2, 2)
         quizQuestionRepository.save(quizquestion)
         quizQuestionRepository.save(quizquestion2)
+        questionanswer = new QuestionAnswer(quizanswer,quizquestion,2)
+        questionAnswerRepository.save(questionanswer)
+        discussion = new Discussion(questionanswer, "Bom Dia", student)
+        discussionRepository.save(discussion)
 
 
 
@@ -176,19 +195,17 @@ class changeVisibilityTest extends Specification {
 
     def "public doubt"() {
         given: "a DoubtDto"
-        def doubtdto = new DoubtDto()
-        doubtdto.setContent(DOUBT_CONTENT)
-        QuestionAnswer questionAnswer = new QuestionAnswer(quizanswer,quizquestion,2);
-        Doubt doubt = new Doubt(questionAnswer,student,"11111","aaa",DOUBT_CONTENT,true);
+        doubt = new Doubt(student,DateHandler.now().toString(),DOUBT_CONTENT,true,discussion)
+        discussion.addPost(doubt)
         doubtRepository.save(doubt)
         when: "a doubt is set to public"
 
         then:
-        doubtService.changeVisibility(doubt.getId(),Doubt.Visibility.PUBLIC);
-        doubtRepository.count() == 1L
-        def result = doubtRepository.findAll().get(0)
+        doubtService.changeVisibility(discussion.getId(), Discussion.Visibility.PUBLIC);
+        discussionRepository.count() == 1L
+        def result = discussionRepository.findAll().get(0)
 
-        result.getVisibility().equals(Doubt.Visibility.PUBLIC)
+        result.getVisibility() == Discussion.Visibility.PUBLIC
     }
 
     @TestConfiguration
