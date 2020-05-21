@@ -42,10 +42,10 @@ public class DoubtController {
         return doubtService.changeVisibility(discussionId, status);
     }
 
-    @PostMapping("/discussions/{discussionId}/close")
+    @PostMapping("/discussions/{discussionId}/close/{reason}")
     @PreAuthorize("hasRole('ROLE_TEACHER') || hasRole('ROLE_STUDENT')")
-    public DiscussionDto closeDiscussion(@PathVariable int discussionId) {
-        return doubtService.closeDiscussion(discussionId);
+    public DiscussionDto closeDiscussion(@PathVariable int discussionId, @PathVariable String reason) {
+        return doubtService.closeDiscussion(discussionId, reason);
     }
 
     @GetMapping("/discussions")

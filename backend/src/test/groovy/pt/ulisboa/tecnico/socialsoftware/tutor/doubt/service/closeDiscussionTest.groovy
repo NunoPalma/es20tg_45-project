@@ -255,6 +255,7 @@ class closeDiscussionTest extends Specification {
 
         then:
         result.status == Discussion.Status.CLOSED;
+        result.reason == Discussion.Reason.CLOSEDINACTIVITY;
     }
 
 

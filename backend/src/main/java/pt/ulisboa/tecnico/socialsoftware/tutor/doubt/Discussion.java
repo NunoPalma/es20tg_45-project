@@ -22,10 +22,14 @@ public class Discussion {
 
     public enum Status {OPEN, CLOSED}
 
+    public enum Reason {NONCLOSED, CLOSEDINACTIVITY}
 
     @JoinColumn(name = "user_id")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User author;
+
+    @Enumerated(EnumType.STRING)
+    private  Reason reason = Reason.NONCLOSED;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.PRIVATE;
@@ -52,6 +56,14 @@ public class Discussion {
         this.author.addDiscussion(this);
         this.title = title;
         this.questionTitle = questionAnswer.getQuizQuestion().getQuestion().getTitle();
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+
+    public void setReason(Reason reason) {
+        this.reason = reason;
     }
 
     public Status getStatus() {

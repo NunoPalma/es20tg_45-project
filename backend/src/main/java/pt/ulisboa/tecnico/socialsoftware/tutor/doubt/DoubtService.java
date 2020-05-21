@@ -164,12 +164,16 @@ public class DoubtService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public DiscussionDto closeDiscussion(Integer discussionId) {
+    public DiscussionDto closeDiscussion(Integer discussionId, String reason) {
         if(discussionId == null){
             throw new TutorException(DISCUSSION_IS_EMPTY);
         }
         Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(()-> new TutorException(DISCUSSION_NOT_FOUND));
         discussion.setStatus(Discussion.Status.CLOSED);
+
+        if(reason!=null)
+            discussion.setReason(Discussion.Reason.CLOSEDINACTIVITY);
+
         return new DiscussionDto(discussion);
     }
 
