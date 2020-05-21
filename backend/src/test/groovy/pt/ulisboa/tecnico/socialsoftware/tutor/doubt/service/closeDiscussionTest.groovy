@@ -38,6 +38,7 @@ import spock.lang.Specification
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DISCUSSION_IS_EMPTY
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DISCUSSION_NOT_FOUND
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DISCUSSION_USER_IS_EMPTY
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.DOUBT_QUESTION_IS_EMPTY
 
 @DataJpaTest
@@ -230,7 +231,7 @@ class closeDiscussionTest extends Specification {
     def "close a discussion that doesn't exist"(){
 
         when:
-        def result = doubtService.closeDiscussion(0)
+        def result = doubtService.closeDiscussion(0, Discussion.Reason.IRRELEVANT)
 
         then:
         def error = thrown(TutorException)
@@ -240,7 +241,7 @@ class closeDiscussionTest extends Specification {
     def "close a null discussion"(){
 
         when:
-        def result = doubtService.closeDiscussion(null)
+        def result = doubtService.closeDiscussion(null, Discussion.Reason.IRRELEVANT)
 
         then:
         def error = thrown(TutorException)
@@ -248,13 +249,15 @@ class closeDiscussionTest extends Specification {
 
     }
 
+
     def "closes a discussion"(){
 
         when:
-        def result = doubtService.closeDiscussion(discussion.getId())
+        def result = doubtService.closeDiscussion(discussion.getId(), Discussion.Reason.IRRELEVANT)
 
         then:
         result.status == Discussion.Status.CLOSED;
+        result.reason == Discussion.Reason.IRRELEVANT;
     }
 
 

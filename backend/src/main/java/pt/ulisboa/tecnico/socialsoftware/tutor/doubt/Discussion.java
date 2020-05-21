@@ -22,10 +22,15 @@ public class Discussion {
 
     public enum Status {OPEN, CLOSED}
 
+    public enum Reason {IRRELEVANT, SPAM}
+
 
     @JoinColumn(name = "user_id")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User author;
+
+    @Enumerated(EnumType.STRING)
+    private Reason reason;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.PRIVATE;
@@ -64,6 +69,14 @@ public class Discussion {
 
     public User getAuthor() {
         return author;
+    }
+
+    public void setReason(Discussion.Reason reason){
+        this.reason = reason;
+    }
+
+    public Reason getReason() {
+        return reason;
     }
 
     public String getQuestionTitle() {

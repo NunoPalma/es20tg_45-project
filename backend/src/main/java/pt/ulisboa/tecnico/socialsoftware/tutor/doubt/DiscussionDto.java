@@ -10,6 +10,7 @@ public class DiscussionDto implements Serializable {
     private Set<DoubtDto> postsDto = new HashSet<>();
     private String questionTitle;
     private Discussion.Visibility visibility;
+    private Discussion.Reason reason;
     private String title;
     private String author;
     private Discussion.Status status;
@@ -26,6 +27,15 @@ public class DiscussionDto implements Serializable {
         this.title = discussion.getTitle();
         this.author = discussion.getAuthor().getName();
         this.status = discussion.getStatus();
+        this.reason = discussion.getReason();
+    }
+
+    public Discussion.Reason getReason() {
+        return reason;
+    }
+
+    public void setReason(Discussion.Reason reason) {
+        this.reason = reason;
     }
 
     public Discussion.Status getStatus() {
