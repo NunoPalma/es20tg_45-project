@@ -101,7 +101,6 @@ export default class EditDoubtDialog extends Vue {
   canCreateNewDoubt: boolean = true;
   created() {
     console.log(this.discussion);
-    console.log('nibba');
     this.newDoubt = new Doubt();
     this.Discussion = new Discussion(this.discussion);
     this.canCreateNewDoubt =

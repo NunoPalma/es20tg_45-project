@@ -1,4 +1,4 @@
-o<template>
+<!---<template>
   <div>
     <template>
       <div class="container">
@@ -390,4 +390,4 @@ export default class SubmittedQuestionsView extends Vue {
     transform: translateY(5px);
   }
 }
-</style>
+</style> !>
