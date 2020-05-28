@@ -34,6 +34,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 	static final Integer ONE_QUESTION = 1
 	static final String TOPIC_NAME = "InterestingTopic"
 	static final int USER_ID = 1
+	static final int MAX_PARTICIPANTS = 10
 	static final String COURSE_NAME = "LEIC-T"
 	static final String COURSE_EXECUTION_ACRONYM = "CS101"
 	static final String COURSE_EXECUTION_ACADEMIC_TERM = "1º Semestre"
@@ -118,6 +119,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 		tournament.setEndDate(END_DATE)
 		tournament.setTopics(topics)
 		tournament.setNumQuestions(ONE_QUESTION)
+		tournament.setMaxParticipants(MAX_PARTICIPANTS)
 		tournament.setCreator(userStudent)
 		tournament.setCourseExecution(courseExecution)
 		tournamentRepository.save(tournament)
@@ -177,6 +179,15 @@ class CreateTournamentServiceSpockTest extends Specification {
 		exception.getErrorMessage() == NOT_ENOUGH_TOPICS
 	}
 
+	def "create tournament with no valid number of max participants"() {
+		given: "a tournament with no set value for a number of maximum participants"
+
+		when:
+		tournamentService.createTournament(userStudent.getId(), courseExecution.getId(), tournamentDto)
+
+		then: "an "
+	}
+
 	def "all arguments are valid and create tournament"() {
 		given: "a tournamentDto"
 		def _tournament = new Tournament()
@@ -207,6 +218,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 		tournament.endDate.format(formatter) == END_DATE.format(formatter)
 		tournament.numQuestions == ONE_QUESTION
 		tournament.topics.size() == 1
+		tournament.maxParticipants == 10
 	}
 
 	@TestConfiguration

@@ -53,6 +53,9 @@ public class Tournament {
 	@Column(name = "num_questions")
 	private Integer numQuestions;
 
+	@Column(name = "max_participants")
+	private Integer maxParticipants;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "quiz_id")
 	private Quiz quiz = null;
@@ -160,9 +163,18 @@ public class Tournament {
 		return numQuestions;
 	}
 
+	public Integer getMaxParticipants() {
+		return this.maxParticipants;
+	}
+
 	public void setNumQuestions(Integer numQuestions) {
 		checkNumQuestions(numQuestions);
 		this.numQuestions = numQuestions;
+	}
+
+	public void setMaxParticipants(Integer maxParticipants) {
+		//checkMaxParticipants(maxParticipants);
+		this.maxParticipants = maxParticipants;
 	}
 
 	public Quiz getQuiz() {
@@ -247,5 +259,9 @@ public class Tournament {
 		quiz.setAvailableDate(this.startDate);
 		quiz.setConclusionDate(this.endDate);
 		quiz.setResultsDate(this.endDate);
+	}
+
+	public boolean canEnroll() {
+		return this.participants.size() < this.maxParticipants;
 	}
 }

@@ -23,6 +23,7 @@ public class TournamentDto implements Serializable {
 	private String endDate;
 	private Set<TopicDto> topics = new HashSet<>();
 	private Integer numQuestions;
+	private Integer maxParticipants;
 	private QuizDto quizDto = null;
 	private Tournament.State state;
 
@@ -45,6 +46,7 @@ public class TournamentDto implements Serializable {
 			this.endDate = tournament.getEndDate().format(formatter);
 
 		this.numQuestions = tournament.getNumQuestions();
+		this.maxParticipants = tournament.getMaxParticipants();
 
 		if (deepCopy) {
 			this.topics = tournament.getTopics().stream()
@@ -115,6 +117,8 @@ public class TournamentDto implements Serializable {
 	public int getNumQuestions() {
 		return numQuestions;
 	}
+
+	public Integer getMaxParticipants() { return this.maxParticipants; }
 
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;

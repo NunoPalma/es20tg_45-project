@@ -97,6 +97,7 @@ public enum ErrorMessage {
     EVALUATION_NOT_AVAILABLE("Accessed Evaluation doesn't exist"),
     MUST_HAVE_JUSTIFICATION("Expected justification can't be empty"),
 
+    TOURNAMENT_MAX_NUMBER_OF_PARTICIPANTS("The tournament has achieved is maximum enrolled students capacity"),
     TOURNAMENT_NAME_EMPTY("The tournament name is empty"),
     TOURNAMENT_START_DATE_EMPTY("The tournament start date is empty"),
     TOURNAMENT_END_DATE_EMPTY("The tournament end date is empty"),

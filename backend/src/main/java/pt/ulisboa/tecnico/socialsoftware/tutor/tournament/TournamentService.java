@@ -122,6 +122,9 @@ public class TournamentService {
 			tournament.setState(Tournament.State.CLOSED);
 		}
 
+		if (!tournament.canEnroll())
+			throw new TutorException(TOURNAMENT_MAX_NUMBER_OF_PARTICIPANTS);
+
 		tournament.enrollStudent(user);
 
 		if (tournament.getParticipants().size() > 1) {
