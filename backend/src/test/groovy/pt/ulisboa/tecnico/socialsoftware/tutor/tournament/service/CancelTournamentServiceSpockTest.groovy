@@ -84,7 +84,7 @@ class CancelTournamentServiceSpockTest extends Specification {
 		courseExecution.setCourse(course)
 		courseExecutionRepository.save(courseExecution)
 
-		tournament = new Tournament()
+		tournament = new Tournament(maxEnrollments)
 		tournament.setCourseExecution(courseExecution)
 		tournament.setCreator(creatorStudent)
 		tournament.setName(TOURNAMENT_NAME)

@@ -25,6 +25,7 @@ public class TournamentDto implements Serializable {
 	private Integer numQuestions;
 	private QuizDto quizDto = null;
 	private Tournament.State state;
+	private Integer maxEnrollments;
 
 	@Transient
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -38,6 +39,7 @@ public class TournamentDto implements Serializable {
 		this.courseExecutionId = tournament.getCourseExecution().getId();
 		this.name = tournament.getName();
 		this.state = tournament.getState();
+		this.maxEnrollments = tournament.getMaxEnrollments();
 
 		if (tournament.getStartDate() != null)
 			this.startDate = tournament.getStartDate().format(formatter);

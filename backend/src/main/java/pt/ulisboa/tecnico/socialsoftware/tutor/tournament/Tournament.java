@@ -65,6 +65,8 @@ public class Tournament {
 	)
 	private final Set<User> participants;
 
+	private int maxEnrollments;
+
 	@Enumerated(EnumType.STRING)
 	private State state = State.CREATED;
 
@@ -77,11 +79,12 @@ public class Tournament {
 		this.topics = new HashSet<>();
 	}
 
-	public Tournament(User creator, CourseExecution courseExecution) {
+	public Tournament(User creator, CourseExecution courseExecution, int maxEnrollments) {
 		this.participants = new HashSet<>();
 		this.creator = creator;
 		this.courseExecution = courseExecution;
 		this.topics = new HashSet<>();
+		this.maxEnrollments = maxEnrollments;
 	}
 
 	public Integer getId() {
@@ -235,6 +238,9 @@ public class Tournament {
 		return this.creator.equals(user);
 	}
 
+	public int getMaxEnrollments() {
+		return this.maxEnrollments;
+	}
 	public void generateQuiz() {
 		this.quiz = new Quiz();
 		quiz.setType(Quiz.QuizType.PROPOSED.toString());

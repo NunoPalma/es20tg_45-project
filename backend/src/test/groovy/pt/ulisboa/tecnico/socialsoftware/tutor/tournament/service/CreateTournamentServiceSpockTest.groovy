@@ -41,6 +41,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 	static final LocalDateTime END_DATE = START_DATE.plusDays(20)
 	static final LocalDateTime OVERLAP_END_DATE = START_DATE
 	static final LocalDateTime EARLY_END_DATE = START_DATE.minusDays(1)
+	static final int maxEnrollment = 1;
 
 	@Autowired
 	TournamentService tournamentService
@@ -112,7 +113,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 		courseExecution.setCourse(course)
 		courseExecutionRepository.save(courseExecution)
 
-		tournament = new Tournament()
+		tournament = new Tournament(maxEnrollments)
 		tournament.setName(TOURNAMENT_NAME)
 		tournament.setStartDate(START_DATE)
 		tournament.setEndDate(END_DATE)
@@ -179,7 +180,7 @@ class CreateTournamentServiceSpockTest extends Specification {
 
 	def "all arguments are valid and create tournament"() {
 		given: "a tournamentDto"
-		def _tournament = new Tournament()
+		def _tournament = new Tournament(maxEnrollments)
 		_tournament.setName(TOURNAMENT_NAME_1)
 		_tournament.setStartDate(START_DATE)
 		_tournament.setEndDate(END_DATE)

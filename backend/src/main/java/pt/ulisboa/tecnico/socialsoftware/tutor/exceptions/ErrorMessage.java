@@ -115,6 +115,7 @@ public enum ErrorMessage {
     USER_NOT_TOURNAMENT_CREATOR("User %d is not the creator of the tournament"),
     CANNOT_CANCEL_CLOSED_TOURNAMENT("Closed tournaments cannot be cancelled"),
     CANNOT_CANCEL_CANCELLED_TOURNAMENT("Cancelled tournaments cannot be cancelled"),
+    MAX_ENROLLMENTS_EXCEEDED("Tournament's capacity has been exceeded"),
 
     INVALID_USER_ID("Invalid user ID"),
     INVALID_TOURNAMENT_ID("Invalid tournament ID"),

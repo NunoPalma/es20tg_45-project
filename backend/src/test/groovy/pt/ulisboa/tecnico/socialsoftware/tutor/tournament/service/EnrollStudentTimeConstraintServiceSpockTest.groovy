@@ -14,12 +14,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.Tournament
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
-import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
 class EnrollStudentTimeConstraintServiceSpockTest extends Specification {

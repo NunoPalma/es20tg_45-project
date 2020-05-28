@@ -118,6 +118,9 @@ public class TournamentService {
 
 		Tournament tournament = tournamentRepository.findById(tournamentId).orElseThrow(() -> new TutorException(TOURNAMENT_NOT_FOUND, tournamentId));
 
+		if (tournament.getParticipants().size() >= tournament.getMaxEnrollments())
+			throw new TutorException(MAX_ENROLLMENTS_EXCEEDED);
+
 		if (Duration.between(LocalDateTime.now(), tournament.getEndDate()).toMillis() < 0 && tournament.getState() != Tournament.State.CLOSED) {
 			tournament.setState(Tournament.State.CLOSED);
 		}

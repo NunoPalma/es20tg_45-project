@@ -56,7 +56,7 @@ class EnrollStudentServiceSpockPerformanceTest extends Specification {
         courseExecutionRepository.save(courseExecution)
 
         and: "a tournament"
-        def tournament = new Tournament()
+        def tournament = new Tournament(maxEnrollments)
         tournament.setState(Tournament.State.OPEN)
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)

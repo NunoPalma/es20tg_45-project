@@ -80,7 +80,7 @@ class ShowOpenTournamentServiceSpockTest extends Specification {
 		topicRepository.save(topic)
 
 		and: "two tournaments"
-		def tournamentOne = new Tournament()
+		def tournamentOne = new Tournament(maxEnrollments)
 		tournamentOne.setName(TOURNAMENT_NAME_TWO)
 		tournamentOne.setStartDate(START_DATE)
 		tournamentOne.setEndDate(END_DATE)

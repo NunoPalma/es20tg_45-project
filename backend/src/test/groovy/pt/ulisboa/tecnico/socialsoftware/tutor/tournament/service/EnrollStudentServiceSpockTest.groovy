@@ -119,7 +119,7 @@ class EnrollStudentServiceSpockTest extends Specification {
         user.setKey(USER_ID)
         userRepository.save(user)
         and: "a tournament"
-        def tournament = new Tournament()
+        def tournament = new Tournament(maxEnrollments)
         tournament.setName(TOURNAMENT_NAME)
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
@@ -161,7 +161,7 @@ class EnrollStudentServiceSpockTest extends Specification {
         student.setKey(USER_ID)
         userRepository.save(student)
         and: "a tournament"
-        def tournament = new Tournament()
+        def tournament = new Tournament(maxEnrollments)
         tournament.setName(TOURNAMENT_NAME)
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)
@@ -196,7 +196,7 @@ class EnrollStudentServiceSpockTest extends Specification {
         user.setCourseExecutions(courseExecutions)
         userRepository.save(user)
         and: "a tournament"
-        def tournament = new Tournament()
+        def tournament = new Tournament(maxEnrollments)
         tournament.setName(TOURNAMENT_NAME)
         tournament.setStartDate(START_DATE)
         tournament.setEndDate(END_DATE)

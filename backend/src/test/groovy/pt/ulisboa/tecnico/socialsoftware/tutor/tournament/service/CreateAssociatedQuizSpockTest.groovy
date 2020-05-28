@@ -89,7 +89,7 @@ class CreateAssociatedQuizSpockTest extends Specification {
 		courseExecution.setCourse(course)
 		courseExecutionRepository.save(courseExecution)
 
-		def tournament = new Tournament()
+		def tournament = new Tournament(maxEnrollments)
 		tournament.setName(TOURNAMENT_NAME)
 		tournament.setStartDate(START_DATE)
 		tournament.setEndDate(END_DATE)
