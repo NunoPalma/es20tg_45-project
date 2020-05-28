@@ -79,6 +79,8 @@ public enum ErrorMessage {
 
     ACCESS_DENIED("You do not have permission to view this resource"),
 
+    CANNOT_SUBMIT("Can't submit question"),
+
 
 
     COURSE_NAME_IS_EMPTY("The course name is empty"),

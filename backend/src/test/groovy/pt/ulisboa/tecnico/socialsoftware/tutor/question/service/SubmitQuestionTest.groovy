@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserRepository
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.CANNOT_SUBMIT
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_CONTENT_FOR_OPTION
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_CONTENT_FOR_QUESTION
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.INVALID_CONTENT_FOR_QUESTION
@@ -148,6 +149,50 @@ class SubmitQuestionTest extends Specification {
 
         then:
         true
+    }
+
+    def "cannot submit if 3 rejected, pending also counts"(){
+        given: "A question1"
+        def questionDto1 = new QuestionDto()
+        questionDto1.setKey(1)
+        questionDto1.setTitle(QUESTION_TITLE)
+        questionDto1.setContent(QUESTION_CONTENT)
+        questionDto1.setStatus(Question.Status.PENDING.name())
+        def questionDto2 = new QuestionDto()
+        questionDto2.setKey(2)
+        questionDto2.setTitle(QUESTION_TITLE)
+        questionDto2.setContent(QUESTION_CONTENT)
+        questionDto2.setStatus(Question.Status.PENDING.name())
+        def questionDto3 = new QuestionDto()
+        questionDto3.setKey(3)
+        questionDto3.setTitle(QUESTION_TITLE)
+        questionDto3.setContent(QUESTION_CONTENT)
+        questionDto3.setStatus(Question.Status.PENDING.name())
+        def questionDto4 = new QuestionDto()
+        questionDto4.setKey(4)
+        questionDto4.setTitle(QUESTION_TITLE)
+        questionDto4.setContent(QUESTION_CONTENT)
+        questionDto4.setStatus(Question.Status.PENDING.name())
+        and: 'a optionId'
+        def optionDto = new OptionDto()
+        optionDto.setContent(OPTION_CONTENT)
+        optionDto.setCorrect(true)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+        questionDto1.setOptions(options)
+        questionDto2.setOptions(options)
+        questionDto3.setOptions(options)
+        questionDto4.setOptions(options)
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto1)
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto2)
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto3)
+
+        when:
+        questionService.submitQuestion(student.getId(), course.getId(), questionDto4)
+
+        then:"a TutorException is thrown"
+        def error = thrown(TutorException)
+        error.errorMessage == CANNOT_SUBMIT
     }
 
     @Unroll("invalid arguments: #questionTitle | #questionContent | #optionContent1 | #correctOption1 || errorMessage ")

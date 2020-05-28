@@ -49,6 +49,9 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.CO
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_NOT_FOUND;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USER_NOT_FOUND;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.USERNAME_NOT_FOUND;
+import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.CANNOT_SUBMIT;
+
+
 
 
 
@@ -166,6 +169,17 @@ public class QuestionService {
 
         if (questionDto.getCreationDate() == null) {
             questionDto.setCreationDate(LocalDateTime.now().format(Course.formatter));
+        }
+
+        Set<Question> submittedQuestions = student.getSubmittedQuestions();
+        int count = 0;
+        for( Question question: submittedQuestions){
+            if (question.getStatus() == Question.Status.PENDING|| question.getStatus() == Question.Status.REJECTED){
+                count++;
+            }
+        }
+        if(count >=3){
+            new TutorException(CANNOT_SUBMIT);
         }
 
         questionDto.setStatus(Question.Status.PENDING.name());
